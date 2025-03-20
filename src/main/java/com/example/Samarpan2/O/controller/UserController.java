@@ -1,9 +1,9 @@
 package com.example.Samarpan2.O.controller;
 
 import com.example.Samarpan2.O.model.User;
-import com.example.Samarpan2.O.model.response.UserResponse;
+import com.example.Samarpan2.O.model.createRequest.UserResponse;
+import com.example.Samarpan2.O.service.Impl.UserServiceImpl;
 import com.example.Samarpan2.O.service.UserService;
-import com.example.Samarpan2.O.service.impl.UserServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -2,7 +2,6 @@ package com.example.Samarpan2.O.service.Impl;
 
 import com.example.Samarpan2.O.model.Branch;
 import com.example.Samarpan2.O.repository.BranchRepository;
-import com.example.Samarpan2.O.service.BranchService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
