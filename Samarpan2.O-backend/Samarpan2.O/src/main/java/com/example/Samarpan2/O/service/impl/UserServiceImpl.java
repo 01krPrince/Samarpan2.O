@@ -1,8 +1,10 @@
 package com.example.Samarpan2.O.service.impl;
 
+import com.example.Samarpan2.O.model.Batch;
 import com.example.Samarpan2.O.model.User;
 import com.example.Samarpan2.O.model.createRequest.UserResponse;
 import com.example.Samarpan2.O.repository.UserRepository;
+import com.example.Samarpan2.O.service.BranchService;
 import com.example.Samarpan2.O.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +15,11 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-//    private final BatchService batchService;
+    private final BranchService branchService;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, BranchService branchService) {
         this.userRepository = userRepository;
+        this.branchService = branchService;
     }
 
     public User registerUser(UserResponse userResponse) {
@@ -69,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUserByBatch(String batchId) {
-        return null;
+        return userRepository.findAllByBatch(batchId);
     }
 
 }
