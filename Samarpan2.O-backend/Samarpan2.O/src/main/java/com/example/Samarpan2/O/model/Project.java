@@ -13,8 +13,7 @@ import java.time.LocalDateTime;
 @Document(collection = "project")
 public class Project {
     @Id
-    private Long id;
-
+    private String projectId;
     private User student;
     private String projectName;
     private String githubLink;
