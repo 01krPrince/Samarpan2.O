@@ -18,7 +18,7 @@ public class User {
     private String name;
     private String phone;
     private String batch;
-    private Role role = Role.STUDENT;  // STUDENT or ADMIN
+    private Role role;  // STUDENT or ADMIN
     public enum Role {
         STUDENT, ADMIN
     }

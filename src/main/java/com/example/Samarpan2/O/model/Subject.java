@@ -11,12 +11,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "batch")
-public class Batch {
+@Document(collection = "subject")
+public class Subject {
     @Id
     private String id;
-    private String batchName;
 
-    private Branch branch;  // KANKARBAGH, BORING_ROAD
-
+    private String subjectName;
 }

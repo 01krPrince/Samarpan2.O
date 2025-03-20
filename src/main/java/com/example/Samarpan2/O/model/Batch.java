@@ -18,5 +18,8 @@ public class Batch {
     private String batchName;
 
     private Branch branch;  // KANKARBAGH, BORING_ROAD
+    public enum Branch {
+        KANKARBAGH, BORING_ROAD
+    }
 
 }

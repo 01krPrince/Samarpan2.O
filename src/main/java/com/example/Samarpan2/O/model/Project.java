@@ -5,22 +5,21 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "assignment")
-public class Assignment {
+@Document(collection = "project")
+public class Project {
     @Id
-    private Long id;
-
-    private String title;
-    private String description;
+    private String projectId;
+    private User student;
+    private String projectName;
+    private String githubLink;
+    private String deployedLink;
+    private String imageUrls;
     private String batch;
     private String subject;
-    private LocalDateTime deadline;
-    private User admin;
-    private List<Project> submittedProjects;
+    private LocalDateTime submissionDate = LocalDateTime.now();
 }

@@ -7,16 +7,16 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Document(collection = "batch")
-public class Batch {
+@Document(collection = "branch")
+public class Branch {
     @Id
     private String id;
-    private String batchName;
 
-    private Branch branch;  // KANKARBAGH, BORING_ROAD
-
+    private String branchName;
 }
