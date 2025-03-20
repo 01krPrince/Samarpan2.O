@@ -1,7 +1,7 @@
 package com.example.Samarpan2.O.service.impl;
 
 import com.example.Samarpan2.O.model.User;
-import com.example.Samarpan2.O.model.response.UserResponse;
+import com.example.Samarpan2.O.model.createRequest.UserResponse;
 import com.example.Samarpan2.O.repository.UserRepository;
 import com.example.Samarpan2.O.service.UserService;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,8 @@ public class UserServiceImpl implements UserService {
         newUser.setEmail(userResponse.getEmail());
         newUser.setPassword(userResponse.getPassword());
         newUser.setPhone(userResponse.getPhone());
-        return null;
+
+        return userRepository.save(newUser);
     }
 
     public User loginUser(String email, String password) {
