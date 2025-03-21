@@ -1,7 +1,7 @@
 package com.example.Samarpan2.O.service;
 
 import com.example.Samarpan2.O.model.User;
-import com.example.Samarpan2.O.model.response.UserResponse;
+import com.example.Samarpan2.O.model.createRequest.UserResponse;
 
 import java.util.List;
 import java.util.Optional;

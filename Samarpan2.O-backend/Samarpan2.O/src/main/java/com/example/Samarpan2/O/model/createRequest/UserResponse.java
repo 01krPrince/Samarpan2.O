@@ -1,7 +1,5 @@
-package com.example.Samarpan2.O.model.response;
+package com.example.Samarpan2.O.model.createRequest;
 
-import com.example.Samarpan2.O.model.User;
-import org.springframework.data.annotation.Id;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 

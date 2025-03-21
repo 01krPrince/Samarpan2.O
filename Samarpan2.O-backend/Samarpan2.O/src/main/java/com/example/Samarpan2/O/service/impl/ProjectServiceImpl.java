@@ -1,4 +1,4 @@
-package com.example.Samarpan2.O.service.Impl;
+package com.example.Samarpan2.O.service.impl;
 
 import com.example.Samarpan2.O.model.Project;
 import com.example.Samarpan2.O.model.createRequest.ProjectCreateRequest;
