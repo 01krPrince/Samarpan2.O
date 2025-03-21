@@ -16,7 +16,7 @@ public class Batch {
     @Id
     private String id;
     private String batchName;
-
+    private String newBatchName;
     private Branch branch;  // KANKARBAGH, BORING_ROAD
 
 }
