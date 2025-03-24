@@ -33,6 +33,4 @@ public class SubjectController {
         return subjectService.getAllSubjects();
     }
 
-
-
 }

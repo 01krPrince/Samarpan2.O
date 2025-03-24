@@ -1,10 +1,9 @@
-package com.example.Samarpan2.O.service.impl;
+package com.example.Samarpan2.O.service.impl;//package com.example.Samarpan2.O.service.impl;
 
-import com.example.Samarpan2.O.model.Batch;
+import com.example.Samarpan2.O.exception.ResourceNotFoundException;
 import com.example.Samarpan2.O.model.User;
 import com.example.Samarpan2.O.model.createRequest.UserResponse;
 import com.example.Samarpan2.O.repository.UserRepository;
-import com.example.Samarpan2.O.service.BranchService;
 import com.example.Samarpan2.O.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -15,18 +14,21 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final BranchService branchService;
 
-    public UserServiceImpl(UserRepository userRepository, BranchService branchService) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.branchService = branchService;
     }
 
     public User registerUser(UserResponse userResponse) {
-        User user = userRepository.findByEmail(userResponse.getEmail());
-        if (user != null) {
-            return new User();
+        if (userResponse == null) {
+            throw new IllegalArgumentException("User response cannot be null");
         }
+        
+        User existingUser = userRepository.findByEmail(userResponse.getEmail());
+        if (existingUser != null) {
+            throw new IllegalArgumentException("User with this email already exists");
+        }
+
         User newUser = new User();
         newUser.setName(userResponse.getName());
         newUser.setEmail(userResponse.getEmail());
@@ -37,42 +39,71 @@ public class UserServiceImpl implements UserService {
     }
 
     public User loginUser(String email, String password) {
-        User user = userRepository.findByEmail(email);
-        if (user.getPassword().equals(email)) {
-            return user;
+        if (email == null || password == null) {
+            throw new IllegalArgumentException("Email and password cannot be null");
         }
-        return null;
+
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found with email: " + email);
+        }
+
+        if (!user.getPassword().equals(password)) {
+            throw new IllegalArgumentException("Invalid password");
+        }
+
+        return user;
     }
 
     public User updateUser(UserResponse userResponse) {
+        if (userResponse == null) {
+            throw new IllegalArgumentException("User response cannot be null");
+        }
+
         User user = userRepository.findByEmail(userResponse.getEmail());
-        if (user != null) {
-            throw new RuntimeException("User not found");
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found with email: " + userResponse.getEmail());
         }
-        if (user.getPassword().equals(userResponse.getPassword())) {
-            throw new RuntimeException("Username & Password not correct");
+
+        if (!user.getPassword().equals(userResponse.getPassword())) {
+            throw new IllegalArgumentException("Invalid password");
         }
-        User newUser = new User();
-        newUser.setName(userResponse.getName());
-        newUser.setEmail(userResponse.getEmail());
-        newUser.setPassword(userResponse.getPassword());
-        newUser.setPhone(userResponse.getPhone());
-        return newUser;
+
+        user.setName(userResponse.getName());
+        user.setPhone(userResponse.getPhone());
+        return userRepository.save(user);
     }
 
     @Override
     public List<User> getAllUser() {
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+        if (users.isEmpty()) {
+            throw new ResourceNotFoundException("No users found");
+        }
+        return users;
     }
 
     @Override
     public Optional<User> getUserById(String userId) {
-        return userRepository.findById(userId);
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            throw new ResourceNotFoundException("User not found with ID: " + userId);
+        }
+        return user;
     }
 
     @Override
     public List<User> getAllUserByBatch(String batchId) {
-        return userRepository.findAllByBatch(batchId);
+        if (batchId == null) {
+            throw new IllegalArgumentException("Batch ID cannot be null");
+        }
+        List<User> users = userRepository.findAllByBatch(batchId);
+        if (users.isEmpty()) {
+            throw new ResourceNotFoundException("No users found for batch: " + batchId);
+        }
+        return users;
     }
-
 }
