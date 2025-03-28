@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/projects")
 public class ProjectController {
 
@@ -26,19 +27,19 @@ public class ProjectController {
         return projectService.getProjectById(projectId);
     }
 
-    // Create a new project
+
     @PostMapping("/create")
     public Project createProject(@RequestBody ProjectCreateRequest projectCreateRequest) {
         return projectService.createProject(projectCreateRequest);
     }
 
-    // Update an existing project
+
     @PutMapping("/update")
     public Project updateProject(  @RequestBody ProjectUpdateRequest projectUpdateRequest) {
         return projectService.updateProject( projectUpdateRequest);
     }
 
-    // Delete a project by ID
+
     @DeleteMapping("/delete ")
     public String deleteProject(@RequestParam String projectId) {
         projectService.deleteProject(projectId);
