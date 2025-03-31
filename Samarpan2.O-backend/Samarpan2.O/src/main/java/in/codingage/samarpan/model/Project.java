@@ -20,6 +20,8 @@ public class Project {
     private String deployedLink;
     private String imageUrls;
     private String batch;
+    private String batchId;
     private String subject;
+    private String subjectId;
     private LocalDateTime submissionDate = LocalDateTime.now();
 }
