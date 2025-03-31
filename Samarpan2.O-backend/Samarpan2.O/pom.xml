@@ -12,10 +12,10 @@
 		<relativePath/>
 	</parent>
 
-	<groupId>com.example</groupId>
-	<artifactId>Samarpan2.O</artifactId>
+	<groupId>in.codingage</groupId>
+	<artifactId>samarpan</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Samarpan2.O</name>
+	<name>Samarpan</name>
 	<description>A Smart Project Submission and Management System</description>
 
 	<properties>
