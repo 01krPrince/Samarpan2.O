@@ -8,20 +8,25 @@ import AdminSignUp from "./component/ADMIN/AdminSignUp";
 import CreateBatch from "./component/ADMIN/CreateBatch";
 import CreateSubject from "./component/ADMIN/CreateSubject";
 import ViewAll from "./component/ADMIN/viewAll";
+import Landing from "./component/ADMIN/Landing";
+import ProjectDetails from "./component/ADMIN/ProjectDetails";
 
 
 function App() {
   return (
     <div className="flex ">
-      <Sidebar/>
+      <Sidebar />
       <div className="flex-1 ">
         <Routes>
-          <Route path="/" element={<Dashboard/>} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="/login" element={<AdminLogin />} />
           <Route path="/signup" element={<AdminSignUp />} />
           <Route path="/createBatch" element={<CreateBatch />} />
           <Route path="/createSubject" element={<CreateSubject />} />
           <Route path="/viewAll" element={<ViewAll />} />
+          <Route path="/landing" element={<Landing />} />
+          <Route path="/project/:id" element={<ProjectDetails />} />
+          <Route path="/submit" element={<SubmitProject />} />
         </Routes>
       </div>
     </div>
