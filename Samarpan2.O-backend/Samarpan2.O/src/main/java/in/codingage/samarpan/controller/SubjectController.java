@@ -3,12 +3,14 @@ package in.codingage.samarpan.controller;
 import in.codingage.samarpan.model.Subject;
 import in.codingage.samarpan.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api/subject")
+@PreAuthorize("hasRole('ADMIN')")
 public class SubjectController {
     @Autowired
     private SubjectService subjectService;

@@ -11,11 +11,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProjectCreateRequest {
-    private User student;
     private String projectName;
     private String githubLink;
     private String deployedLink;
     private String imageUrls;
     private String batch;
+    private String batchId;
     private String subject;
+    private String subjectId;
 }

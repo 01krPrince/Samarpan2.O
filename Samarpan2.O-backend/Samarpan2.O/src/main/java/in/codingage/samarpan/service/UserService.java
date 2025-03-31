@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    User registerUser(UserResponse userResponse);
-
-    User loginUser(String email, String password);
 
     User updateUser(UserResponse userResponse);
 

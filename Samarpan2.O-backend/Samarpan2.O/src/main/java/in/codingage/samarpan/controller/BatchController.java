@@ -3,6 +3,7 @@ package in.codingage.samarpan.controller;
 import in.codingage.samarpan.model.Batch;
 import in.codingage.samarpan.service.BatchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api/v1/Batch")
+@PreAuthorize("hasRole('ADMIN')")
 public class BatchController {
 
     @Autowired

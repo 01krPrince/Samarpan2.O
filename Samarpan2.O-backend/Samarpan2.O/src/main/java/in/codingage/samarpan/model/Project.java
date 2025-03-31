@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class Project {
     @Id
     private String projectId;
-    private User student;
+    private String studentId;
     private String projectName;
     private String githubLink;
     private String deployedLink;

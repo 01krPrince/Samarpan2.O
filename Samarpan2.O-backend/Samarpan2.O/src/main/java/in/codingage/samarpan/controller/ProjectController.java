@@ -4,6 +4,7 @@ import in.codingage.samarpan.model.Project;
 import in.codingage.samarpan.model.createRequest.ProjectCreateRequest;
 import in.codingage.samarpan.model.updateRequest.ProjectUpdateRequest;
 import in.codingage.samarpan.service.ProjectService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +19,9 @@ public class ProjectController {
     private ProjectService projectService;
 
     @GetMapping("/all")
-    public List<Project> getAllProjects() {
-        return projectService.getAllProjects();
+    public List<Project> getAllProjectsForStudent(HttpServletRequest request) {
+        String remoteUser = request.getRemoteUser();
+        return projectService.getAllProjectsForStudent(remoteUser);
     }
 
     @GetMapping("/getProjectById")
@@ -29,8 +31,9 @@ public class ProjectController {
 
 
     @PostMapping("/create")
-    public Project createProject(@RequestBody ProjectCreateRequest projectCreateRequest) {
-        return projectService.createProject(projectCreateRequest);
+    public Project createProject(@RequestBody ProjectCreateRequest projectCreateRequest, HttpServletRequest request) {
+        String remoteUser = request.getRemoteUser();
+        return projectService.createProject(projectCreateRequest, remoteUser);
     }
 
 

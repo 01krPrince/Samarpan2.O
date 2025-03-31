@@ -61,7 +61,7 @@ public class AuthController {
         return ResponseEntity.ok(loginResponse);
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/signup/student")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getContact())) {
             return ResponseEntity.badRequest()
@@ -80,6 +80,36 @@ public class AuthController {
 
         Set<String> roles = new HashSet<>();
         roles.add("STUDENT");
+        user.setRoles(roles);
+        User savedUser = userRepository.save(user);
+
+        savedUser.setAccountNonExpired(true);
+        savedUser.setActivated(true);
+
+        userRepository.save(savedUser);
+
+        return ResponseEntity.ok("User registered successfully!");
+    }
+
+    @PostMapping("/signup/admin")
+    public ResponseEntity<?> registerAdmin(@Valid @RequestBody SignupRequest signUpRequest) {
+        if (userRepository.existsByUsername(signUpRequest.getContact())) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: This contact number is is already registered!"));
+        }
+
+        if (null != signUpRequest.getEmail() && userRepository.existsByEmail(signUpRequest.getEmail())) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: Email is already in use!"));
+        }
+
+
+        User user = new User(signUpRequest.getContact(), signUpRequest.getEmail(),
+                encoder.encode(signUpRequest.getPassword()), signUpRequest.getContact(), signUpRequest.getInstituteName(), false, false);
+
+
+        Set<String> roles = new HashSet<>();
+        roles.add("ADMIN");
         user.setRoles(roles);
         User savedUser = userRepository.save(user);
 

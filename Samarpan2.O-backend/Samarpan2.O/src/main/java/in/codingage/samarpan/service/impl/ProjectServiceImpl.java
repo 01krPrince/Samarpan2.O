@@ -1,11 +1,15 @@
 package in.codingage.samarpan.service.impl;
 
+import in.codingage.samarpan.exception.ApplicationException;
+import in.codingage.samarpan.exception.ResourceNotFoundException;
 import in.codingage.samarpan.model.Project;
 import in.codingage.samarpan.model.createRequest.ProjectCreateRequest;
 import in.codingage.samarpan.model.updateRequest.ProjectUpdateRequest;
+import in.codingage.samarpan.repository.BatchRepository;
 import in.codingage.samarpan.repository.ProjectRepository;
+import in.codingage.samarpan.repository.SubjectRepository;
+import in.codingage.samarpan.repository.UserRepository;
 import in.codingage.samarpan.service.ProjectService;
-import in.codingage.samarpan.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +21,15 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     public ProjectRepository projectRepository;
+
+    @Autowired
+    private BatchRepository batchRepository;
+
+    @Autowired
+    private SubjectRepository subjectRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<Project> getAllProjects() {
@@ -41,9 +54,22 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project createProject(ProjectCreateRequest projectCreateRequest) {
+    public Project createProject(ProjectCreateRequest projectCreateRequest, String remoteUser) {
         if (projectCreateRequest == null) {
             throw new IllegalArgumentException("Project create request cannot be null");
+        }
+
+        if (projectCreateRequest.getBatchId() == null || projectCreateRequest.getBatchId().trim().isEmpty()) {
+            throw new IllegalArgumentException("BatchId ID cannot be null or empty");
+        } else {
+            batchRepository.findById(projectCreateRequest.getBatchId()).orElseThrow(() -> new ApplicationException("BATCH", "DOES_NOT_EXIST"));
+        }
+
+        if (projectCreateRequest.getSubjectId() == null || projectCreateRequest.getSubjectId().trim().isEmpty()) {
+            throw new IllegalArgumentException("Subject ID cannot be null or empty");
+        } else {
+            subjectRepository.findById(projectCreateRequest.getSubjectId()).orElseThrow(() -> new ApplicationException("SUBJECT", "DOES_NOT_EXIST"));
+
         }
 
         if (projectCreateRequest.getProjectName() == null || projectCreateRequest.getProjectName().trim().isEmpty()) {
@@ -55,10 +81,12 @@ public class ProjectServiceImpl implements ProjectService {
             throw new IllegalArgumentException("A project with this name already exists");
         }
 
+        String studentId = userRepository.findByUsername(remoteUser).get().getId();
+
         Project project = new Project();
         project.setProjectName(projectCreateRequest.getProjectName());
         project.setBatch(projectCreateRequest.getBatch());
-        project.setStudent(projectCreateRequest.getStudent());
+        project.setStudentId(studentId);
         project.setSubject(projectCreateRequest.getSubject());
         project.setDeployedLink(projectCreateRequest.getDeployedLink());
         project.setGithubLink(projectCreateRequest.getGithubLink());
@@ -81,6 +109,19 @@ public class ProjectServiceImpl implements ProjectService {
             throw new IllegalArgumentException("Project ID cannot be null or empty");
         }
 
+        if (projectUpdateRequest.getBatchId() == null || projectUpdateRequest.getBatchId().trim().isEmpty()) {
+            throw new IllegalArgumentException("BatchId ID cannot be null or empty");
+        } else {
+            batchRepository.findById(projectUpdateRequest.getBatchId()).orElseThrow(() -> new ApplicationException("BATCH", "DOES_NOT_EXIST"));
+        }
+
+        if (projectUpdateRequest.getSubjectId() == null || projectUpdateRequest.getSubjectId().trim().isEmpty()) {
+            throw new IllegalArgumentException("Subject ID cannot be null or empty");
+        } else {
+            subjectRepository.findById(projectUpdateRequest.getSubjectId()).orElseThrow(() -> new ApplicationException("SUBJECT", "DOES_NOT_EXIST"));
+
+        }
+
         Project existingProject = getProjectById(projectUpdateRequest.getProjectId());
 
         if (projectUpdateRequest.getProjectName() != null && !projectUpdateRequest.getProjectName().trim().isEmpty()) {
@@ -92,9 +133,6 @@ public class ProjectServiceImpl implements ProjectService {
             existingProject.setProjectName(projectUpdateRequest.getProjectName().trim());
         }
 
-        if (projectUpdateRequest.getStudent() != null) {
-            existingProject.setStudent(projectUpdateRequest.getStudent());
-        }
 
         if (projectUpdateRequest.getGithubLink() != null && !projectUpdateRequest.getGithubLink().trim().isEmpty()) {
             existingProject.setGithubLink(projectUpdateRequest.getGithubLink().trim());
@@ -139,5 +177,11 @@ public class ProjectServiceImpl implements ProjectService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete project: " + e.getMessage());
         }
+    }
+
+    @Override
+    public List<Project> getAllProjectsForStudent(String remoteUser) {
+        String studentId = userRepository.findByUsername(remoteUser).get().getId();
+        return projectRepository.findAllByStudentId(studentId);
     }
 }

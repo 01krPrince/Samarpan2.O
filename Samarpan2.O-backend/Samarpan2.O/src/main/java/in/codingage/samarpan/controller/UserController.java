@@ -5,6 +5,7 @@ import in.codingage.samarpan.model.createRequest.UserResponse;
 import in.codingage.samarpan.service.UserService;
 import in.codingage.samarpan.service.impl.UserServiceImpl;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,22 +20,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("register")
-    public User registerUser(@RequestBody UserResponse userResponse) {
-        return userService.registerUser(userResponse);
-    }
-
-    @PostMapping("login")
-    public User loginUser(@RequestParam String email, @RequestParam String password) {
-        return userService.loginUser(email, password);
-    }
-
     @PutMapping("updateUser")
     public User updateUser(@RequestBody UserResponse userResponse) {
         return userService.updateUser(userResponse);
     }
 
     @GetMapping("getAllUser")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAllUser(@RequestParam String userName) {
         return userService.getAllUser();
     }
@@ -45,6 +37,7 @@ public class UserController {
     }
 
     @GetMapping("userByBatch")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAllUserByBatch(@RequestParam String batchId) {
         return userService.getAllUserByBatch(batchId);
     }

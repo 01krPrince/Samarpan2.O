@@ -9,7 +9,9 @@ import java.util.List;
 public interface ProjectService {
     List<Project> getAllProjects();
     Project getProjectById(String projectId);
-    Project createProject(ProjectCreateRequest projectCreateRequest);
+    Project createProject(ProjectCreateRequest projectCreateRequest, String remoteUser);
     Project updateProject( ProjectUpdateRequest projectUpdateRequest);
     boolean deleteProject(String projectId);
+
+    List<Project> getAllProjectsForStudent(String remoteUser);
 }
