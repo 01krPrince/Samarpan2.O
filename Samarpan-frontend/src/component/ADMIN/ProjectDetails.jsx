@@ -1,12 +1,12 @@
-import React, { useEffect, useState,useCallback } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useParams } from "react-router-dom";
-import {FaCheck, FaGithub, FaExternalLinkAlt, FaDownload } from "react-icons/fa";
+import { FaCheck, FaGithub, FaExternalLinkAlt, FaDownload } from "react-icons/fa";
 
 const ProjectDetails = () => {
-const { id } = useParams(); 
+  const { id } = useParams();
   const [details, setDetails] = useState(null);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const [isReviewed, setIsReviewed] = useState(false);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const { id } = useParams();
         console.error("Error fetching data:", error);
         setError(error.message);
       })
-      .finally(() => setLoading(false)); 
+      .finally(() => setLoading(false));
   }, [id]);
 
   if (error) return <p className="text-red-500">Error: {error}</p>;
@@ -41,17 +41,17 @@ const { id } = useParams();
 
   if (!details) return <p className="text-gray-500">No project details available</p>;
 
-//   useEffect(() => {
-//     const savedReviewStatus = localStorage.getItem(`reviewed-${id}`);
-//     if (savedReviewStatus === "true") {
-//       setIsReviewed(true);
-//     }},[id])
+  //   useEffect(() => {
+  //     const savedReviewStatus = localStorage.getItem(`reviewed-${id}`);
+  //     if (savedReviewStatus === "true") {
+  //       setIsReviewed(true);
+  //     }},[id])
 
-//     const handleMarkAsReviewed = useCallback(() => {
-//         setIsReviewed(true);
-//         localStorage.setItem(`reviewed-${id}`, "true");
-//       }, [id]);
-      
+  //     const handleMarkAsReviewed = useCallback(() => {
+  //         setIsReviewed(true);
+  //         localStorage.setItem(`reviewed-${id}`, "true");
+  //       }, [id]);
+
 
   return (
     <div className="xl:w-[800px] md:w-[600px] md:mt-12 xl:mt-10 w-[300px] mt-4 h-screen mx-auto p-6  ">
@@ -91,27 +91,27 @@ const { id } = useParams();
       </div>
       <div className="mt-6 xl:grid xl:grid-cols-2 gap-7 ">
         <div>
-         
+
           <div className="flex items-center space-x-2  mt-2 text-blue-500">
-            <FaGithub /> <a 
-           href={details.githubLink.startsWith("http") ? details.githubLink : `https://${details.githubLink}`}
-           target="_blank"
-           rel="noopener noreferrer"
-          className="hover:underline"
+            <FaGithub /> <a
+              href={details.githubLink.startsWith("http") ? details.githubLink : `https://${details.githubLink}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
             >
-         {details.githubLink}
-             </a>
+              {details.githubLink}
+            </a>
           </div>
-          
+
           <div className="flex items-center space-x-2 mt-2 text-blue-500">
-          <FaExternalLinkAlt />
-           <button
-          onClick={() => window.open(details.deployedLink.startsWith("http") ? details.deployedLink : `https://${details.deployedLink}`, "_blank")}
-          className="hover:underline"
-          >
-          {details.deployedLink}
-           </button>
-</div>
+            <FaExternalLinkAlt />
+            <button
+              onClick={() => window.open(details.deployedLink.startsWith("http") ? details.deployedLink : `https://${details.deployedLink}`, "_blank")}
+              className="hover:underline"
+            >
+              {details.deployedLink}
+            </button>
+          </div>
         </div>
         <div>
           <h3 className="font-semibold mt-1">Submission Files</h3>
@@ -136,7 +136,6 @@ const { id } = useParams();
           <span className="text-gray-500">March 10, 2025</span>
         </div>
       </div>
-      
     </div>
   );
 };

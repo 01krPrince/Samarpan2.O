@@ -74,7 +74,7 @@ public class AuthController {
         }
 
 
-        User user = new User(signUpRequest.getContact(), signUpRequest.getEmail(),
+        User user = new User(signUpRequest.getEmail(), signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()), signUpRequest.getContact(), signUpRequest.getInstituteName(), false, false);
 
 
@@ -104,7 +104,7 @@ public class AuthController {
         }
 
 
-        User user = new User(signUpRequest.getContact(), signUpRequest.getEmail(),
+        User user = new User(signUpRequest.getEmail(), signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()), signUpRequest.getContact(), signUpRequest.getInstituteName(), false, false);
 
 

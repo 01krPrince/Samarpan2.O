@@ -1,23 +1,60 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaGoogle, FaShieldAlt, FaLock, FaEnvelope, FaSignInAlt } from "react-icons/fa";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-const AdminLogin = () => {
-  const [email, setEmail] = useState("");
+const Login = () => {
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser && storedUser.roles) {
+      const role = storedUser.roles[0];
+      navigate(role === "ADMIN" ? "/landingpage" : "/dashboard");
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
+    try {
+      const response = await fetch("http://localhost:8080/api/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    setTimeout(() => {
+      const text = await response.text();
+      let data;
+
+      try {
+        data = JSON.parse(text);
+        console.log("Getting response ", data);
+      } catch {
+        throw new Error(`Unexpected response from server: ${text}`);
+      }
+
+      if (response.ok) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        const role = data.user.roles[0];
+        navigate(role === "ADMIN" ? "/landingpage" : "/dashboard");
+      } else {
+        setError(data.message || "Invalid email or password");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      setError(error.message || "Something went wrong. Please try again.");
+    } finally {
       setLoading(false);
-      setIsLoggedIn(true);
-      navigate('/dashboard');
-    }, 1000);
+    }
   };
 
   return (
@@ -29,6 +66,8 @@ const AdminLogin = () => {
         <h2 className="text-2xl font-bold text-center">Login</h2>
         <p className="text-center text-gray-600 mb-4">Please login to continue</p>
 
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700">Email</label>
@@ -38,8 +77,8 @@ const AdminLogin = () => {
                 type="email"
                 placeholder="admin@example.com"
                 className="w-full outline-none"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>
@@ -60,19 +99,16 @@ const AdminLogin = () => {
             </div>
           </div>
 
-          <div className="flex justify-between items-center text-sm text-gray-600 mb-4">
-            <label className="flex items-center">
-              <input type="checkbox" className="mr-2" /> Remember me
-            </label>
-            <a href="#" className="text-blue-700">Forgot password?</a>
-          </div>
-
-          <button 
+          <button
             type="submit"
             className="w-full bg-gray-900 text-white py-2 rounded-md flex justify-center items-center text-lg font-medium cursor-pointer"
             disabled={loading}
           >
-            {loading ? "Logging in..." : <><FaSignInAlt className="mr-2" /> Login</>}
+            {loading ? "Logging in..." : (
+              <>
+                <FaSignInAlt className="mr-2" /> Login
+              </>
+            )}
           </button>
         </form>
 
@@ -91,15 +127,15 @@ const AdminLogin = () => {
           <span>This login is protected by reCAPTCHA</span>
         </div>
 
-          <button 
-            onClick={() => navigate('/signup')}
-            className="mt-2 w-full border border-gray-900 text-gray-900 py-2 rounded-md flex justify-center items-center text-sm font-medium cursor-pointer hover:bg-gray-900 hover:text-white transition"
-          >
-           Don't have an account? Sign Up
-          </button>
+        <button
+          onClick={() => navigate("/signup")}
+          className="mt-2 w-full border border-gray-900 text-gray-900 py-2 rounded-md flex justify-center items-center text-sm font-medium cursor-pointer hover:bg-gray-900 hover:text-white transition"
+        >
+          Don't have an account? Sign Up
+        </button>
       </div>
     </div>
   );
 };
 
-export default AdminLogin;
+export default Login;

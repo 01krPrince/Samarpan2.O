@@ -1,15 +1,14 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Home, LogOut } from "lucide-react";
-import user from "../../../assets/generic-profile-icon.png";
 
-const Sidebar = () => {
+
+const AdminSidebar = () => {
   const sidebarRef = useRef(null);
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
 
- 
+  
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 640);
@@ -20,7 +19,7 @@ const Sidebar = () => {
 
   return (
     <div className="flex h-screen md:pt-[5vh] pt-[4vh]">
-    
+      {/* Sidebar */}
       <div
         ref={sidebarRef}
         className={`fixed left-0 h-full bg-white text-black shadow-lg flex flex-col justify-between transition-all duration-300 
@@ -39,6 +38,7 @@ const Sidebar = () => {
         </div>
       </div>
 
+      {/* Main Content Area */}
       <div className={`flex-1 flex flex-col transition-all duration-300 ${isMobile ? "ml-14" : "ml-64"}`}>
         <Header />
       </div>
@@ -51,10 +51,10 @@ const Header = () => {
     <header className="w-full flex justify-between bg-white text-black md:p-4 p-2 shadow-sm fixed top-0 left-0 z-10">
       <h1 className="text-lg font-bold">Project Track</h1>
       <div className="flex items-center">
-        <img src={user} alt="profile" className="w-10 h-10 rounded-full" />
+        
         <div className="ml-3 hidden md:block">
-          <h1 className="text-sm font-semibold">Student Name</h1>
-          <h3 className="text-xs text-gray-500">Batch</h3>
+          <h1 className="text-sm font-semibold">Admin</h1>
+          
         </div>
       </div>
     </header>
@@ -75,4 +75,4 @@ const NavItem = ({ to, icon, text, active, isOpen }) => {
   );
 };
 
-export default Sidebar;
+export default AdminSidebar;
