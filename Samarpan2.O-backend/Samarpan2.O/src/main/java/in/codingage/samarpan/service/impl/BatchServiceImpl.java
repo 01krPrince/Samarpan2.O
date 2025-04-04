@@ -5,6 +5,7 @@ import in.codingage.samarpan.model.Batch;
 import in.codingage.samarpan.repository.BatchRepository;
 import in.codingage.samarpan.service.BatchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -60,8 +61,10 @@ public class BatchServiceImpl implements BatchService {
         return batch;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public List<Batch> getAllBatch() {
+        System.out.println("Hello");
         return batchRepository.findAll();
     }
 }

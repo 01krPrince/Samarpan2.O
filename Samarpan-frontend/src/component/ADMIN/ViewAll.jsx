@@ -10,10 +10,9 @@ const ViewAll = () => {
   const [branch, setBranch] = useState('');
   const [batch, setBatch] = useState('');
   const [subject, setSubject] = useState('');
-  const [sortCheckedOnTop, setSortCheckedOnTop] = useState(false); // Default is "Unchecked on Top"
-  const [searchQuery, setSearchQuery] = useState(''); // State for search bar
+  const [sortCheckedOnTop, setSortCheckedOnTop] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Apply filters, search, and sorting
   const applyFiltersAndSort = () => {
     let filteredProjects = [...initialProjects];
 
@@ -86,7 +85,6 @@ const ViewAll = () => {
 
   return (
     <div className="mt-16 min-h-screen/2 bg-gradient-to-br from-gray-50 to-gray-100 p-8">
-      {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center">
           <svg className="w-8 h-8 mr-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -103,7 +101,6 @@ const ViewAll = () => {
         </div>
       </div>
 
-      {/* Search Bar and Filters */}
       <div className="flex flex-row items-center gap-4 mb-8">
         <div className="w-full sm:w-1/4">
           <div className="relative">
@@ -183,8 +180,6 @@ const ViewAll = () => {
         </div>
       </div>
 
-
-      {/* Sort Toggle with MUI Switch */}
       <div className="flex items-center mb-8">
         <span className="mr-4 text-sm font-semibold text-gray-800 tracking-wide">
           {sortCheckedOnTop ? 'Checked on Top' : 'Unchecked on Top'}
@@ -210,7 +205,6 @@ const ViewAll = () => {
         />
       </div>
 
-      {/* Project Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {projects.length > 0 ? (
           projects.map((project) => (
@@ -244,7 +238,6 @@ const ViewAll = () => {
         )}
       </div>
 
-      {/* Footer */}
       <div className="mt-12 py-4 text-center text-gray-500 text-sm bg-white border border-gray-200">
         © 2025 Project Management System. All rights reserved.
       </div>

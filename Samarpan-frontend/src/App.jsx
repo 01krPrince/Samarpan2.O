@@ -1,123 +1,92 @@
-import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Dashboard from "./component/STUDENT/dashboard/Dashboard";
 import SubmitProject from "./component/STUDENT/dashboard/SubmitProject";
-import AdminLogin from "./component/Auth/Login";
-import AdminSignUp from "./component/Auth/SignUp";
 import CreateBatch from "./component/ADMIN/CreateBatch";
 import CreateSubject from "./component/ADMIN/CreateSubject";
-import ViewAll from "./component/ADMIN/viewAll";
-import Landing from "./component/ADMIN/Landing";
 import ProjectDetails from "./component/ADMIN/ProjectDetails";
-import StudentSidebar from "./component/STUDENT/navbar/StudentSidebar";
+import Login from "./component/Auth/Login";
+import SignUp from "./component/Auth/SignUp";
+import Landing from "./component/ADMIN/Landing";
 import AdminSidebar from "./component/ADMIN/AdminSidebar";
-import { useEffect, useState } from "react";
+import StudentSidebar from "./component/STUDENT/navbar/StudentSidebar";
+import ViewAll from "./component/ADMIN/ViewAll";
 
 function App() {
-  const location = useLocation();
   const [userRole, setUserRole] = useState(null);
+  const location = useLocation();
 
-  // Fetch user role from localStorage on mount
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser && storedUser.roles) {
-      console.log(storedUser);
-      setUserRole(storedUser.roles[0]);
-    }
+    const fetchUserRole = () => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          if (parsedUser.roles && parsedUser.roles.length > 0) {
+            const role = parsedUser.roles[0];
+            setUserRole(role);
+          } else {
+            setUserRole(null);
+          }
+        } catch (error) {
+          console.error("Error parsing user role:", error);
+          setUserRole(null);
+        }
+      } else {
+        setUserRole(null);
+      }
+    };
+  
+    fetchUserRole();
+    window.addEventListener("storage", fetchUserRole);
+    return () => window.removeEventListener("storage", fetchUserRole);
   }, []);
 
-  // Define paths where Sidebar should be hidden
-  const hideSidebarPaths = ["/", "/signup"];
-
-  // Check if the user is authenticated
-  const isAuthenticated = !!localStorage.getItem("token");
-
-  // Protected Route Component
-  const ProtectedRoute = ({ children, allowedRole }) => {
-    if (!isAuthenticated) {
-      return <Navigate to="/" />;
-    }
-    if (allowedRole && userRole !== allowedRole) {
-      return <Navigate to={userRole === "ADMIN" ? "/landingpage" : "/dashboard"} />;
-    }
-    return children;
-  };
-
-  // Conditionally render the appropriate sidebar
-  const renderSidebar = () => {
-    if (hideSidebarPaths.includes(location.pathname)) return null;
-    if (userRole === "ADMIN") return <AdminSidebar />;
-    if (userRole === "STUDENT") return <StudentSidebar />;
-    return null; // Default case (e.g., no role yet)
-  };
+  const hideSidebarRoutes = ["/login", "/signup"];
+  const shouldShowSidebar = !hideSidebarRoutes.includes(location.pathname) && userRole;
 
   return (
     <div className="flex">
-      {renderSidebar()}
+      {shouldShowSidebar && userRole === "ADMIN" && <AdminSidebar />}
+      {shouldShowSidebar && userRole === "STUDENT" && <StudentSidebar />}
+
       <div className="flex-1">
         <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<AdminLogin />} />
-          <Route path="/signup" element={<AdminSignUp />} />
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
 
           {/* Student Routes */}
           <Route
             path="/dashboard"
-            element={
-              <ProtectedRoute allowedRole="STUDENT">
-                <Dashboard />
-              </ProtectedRoute>
-            }
+            element={userRole === "STUDENT" ? <Dashboard /> : <Navigate to="/login" />}
           />
           <Route
             path="/submit-project"
-            element={
-              <ProtectedRoute allowedRole="STUDENT">
-                <SubmitProject />
-              </ProtectedRoute>
-            }
+            element={userRole === "STUDENT" ? <SubmitProject /> : <Navigate to="/login" />}
           />
 
-          {/* Admin Routes */}
           <Route
             path="/landingpage"
-            element={
-              <ProtectedRoute allowedRole="ADMIN">
-                <Landing />
-              </ProtectedRoute>
-            }
+            element={userRole === "ADMIN" ? <Landing /> : <Navigate to="/login" />}
           />
           <Route
-            path="/createBatch"
-            element={
-              <ProtectedRoute allowedRole="ADMIN">
-                <CreateBatch />
-              </ProtectedRoute>
-            }
+            path="/admin/create-batch"
+            element={userRole === "ADMIN" ? <CreateBatch /> : <Navigate to="/login" />}
           />
           <Route
-            path="/createSubject"
-            element={
-              <ProtectedRoute allowedRole="ADMIN">
-                <CreateSubject />
-              </ProtectedRoute>
-            }
+            path="/admin/create-subject"
+            element={userRole === "ADMIN" ? <CreateSubject /> : <Navigate to="/login" />}
           />
           <Route
-            path="/viewAll"
-            element={
-              <ProtectedRoute allowedRole="ADMIN">
-                <ViewAll />
-              </ProtectedRoute>
-            }
+            path="/admin/view-all"
+            element={userRole === "ADMIN" ? <ViewAll /> : <Navigate to="/login" />}
           />
           <Route
-            path="/project/:id"
-            element={
-              <ProtectedRoute allowedRole="ADMIN">
-                <ProjectDetails />
-              </ProtectedRoute>
-            }
+            path="/admin/project/:id"
+            element={userRole === "ADMIN" ? <ProjectDetails /> : <Navigate to="/login" />}
           />
+          
         </Routes>
       </div>
     </div>

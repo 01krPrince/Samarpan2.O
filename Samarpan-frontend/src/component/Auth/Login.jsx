@@ -9,25 +9,15 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // Redirect if already logged in
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser && storedUser.roles) {
-      const role = storedUser.roles[0];
-      navigate(role === "ADMIN" ? "/landingpage" : "/dashboard");
-    }
-  }, [navigate]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+
     try {
       const response = await fetch("http://localhost:8080/api/auth/signin", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
 
@@ -36,15 +26,22 @@ const Login = () => {
 
       try {
         data = JSON.parse(text);
-        console.log("Getting response ", data);
       } catch {
         throw new Error(`Unexpected response from server: ${text}`);
       }
 
       if (response.ok) {
+        console.log("Login Response:", data);
+        if (!data.user || !data.user.roles || data.user.roles.length === 0) {
+          throw new Error("Invalid user data received");
+        }
+
+        const role = data.user.roles[0]; // Extract user role
+
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        const role = data.user.roles[0];
+        localStorage.setItem("userRole", role); // Store user role separately
+
         navigate(role === "ADMIN" ? "/landingpage" : "/dashboard");
       } else {
         setError(data.message || "Invalid email or password");

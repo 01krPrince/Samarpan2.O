@@ -82,8 +82,10 @@ public class WebSecurityConfig {
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"
                         ).permitAll()
+                        .requestMatchers("/api/v1/Batch/getAllBatch").hasAuthority("ADMIN") // ✅ Explicitly allow ADMIN
                         .anyRequest().authenticated()
                 );
+
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 

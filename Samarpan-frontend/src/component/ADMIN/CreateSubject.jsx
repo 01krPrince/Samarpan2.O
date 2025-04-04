@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 
 const CreateSubject = () => {
-  // State for form inputs
   const [subjectName, setSubjectName] = useState('');
   const [mentorName, setMentorName] = useState('');
 
-  // State for the list of existing subjects
   const [subjects, setSubjects] = useState([
     { id: 1, name: 'Web Development', mentor: 'John Doe' },
     { id: 2, name: 'Data Structures', mentor: 'Jane Smith' },
   ]);
 
-  // Handle form submission to add a new subject
   const handleAddSubject = (e) => {
     e.preventDefault();
     if (!subjectName || !mentorName) {
@@ -20,13 +17,13 @@ const CreateSubject = () => {
     }
 
     const newSubject = {
-      id: subjects.length + 1, // Simple ID generation (replace with a better method in production)
+      id: subjects.length + 1,
       name: subjectName,
       mentor: mentorName,
     };
 
     setSubjects([...subjects, newSubject]);
-    setSubjectName(''); // Reset form
+    setSubjectName('');
     setMentorName('');
   };
 
