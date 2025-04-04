@@ -9,6 +9,13 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   const userRole = localStorage.getItem("userRole");
+  //   if (userRole) {
+  //     navigate(userRole === "ADMIN" ? "/landingpage" : "/dashboard");
+  //   }
+  // }, [navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -32,18 +39,26 @@ const Login = () => {
 
       if (response.ok) {
         console.log("Login Response:", data);
-        if (!data.user || !data.user.roles || data.user.roles.length === 0) {
-          throw new Error("Invalid user data received");
+        
+        // Check for different role structures
+        let role = data.user.roles ? data.user.roles[0] : data.user.role;
+        
+        if (!role) {
+          throw new Error("Role not found in response");
         }
-
-        const role = data.user.roles[0]; // Extract user role
-
+      
+        console.log("User Role:", role);
+        
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("userRole", role); // Store user role separately
-
-        navigate(role === "ADMIN" ? "/landingpage" : "/dashboard");
-      } else {
+        localStorage.setItem("userRole", role.toUpperCase()); // Make role uppercase for consistency
+      
+        console.log("Navigating to:", role.toUpperCase() === "ADMIN" ? "/landingpage" : "/dashboard");
+      
+        navigate(role.toUpperCase() === "ADMIN" ? "/landingpage" : "/dashboard");
+      }
+      
+       else {
         setError(data.message || "Invalid email or password");
       }
     } catch (error) {

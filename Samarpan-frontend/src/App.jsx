@@ -36,11 +36,9 @@ function App() {
         setUserRole(null);
       }
     };
-  
+
     fetchUserRole();
-    window.addEventListener("storage", fetchUserRole);
-    return () => window.removeEventListener("storage", fetchUserRole);
-  }, []);
+  }, [location.pathname]); // Trigger re-evaluation on route changes
 
   const hideSidebarRoutes = ["/login", "/signup"];
   const shouldShowSidebar = !hideSidebarRoutes.includes(location.pathname) && userRole;
@@ -53,7 +51,7 @@ function App() {
       <div className="flex-1">
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login setUserRole={setUserRole} />} />
           <Route path="/signup" element={<SignUp />} />
 
           {/* Student Routes */}
@@ -66,6 +64,7 @@ function App() {
             element={userRole === "STUDENT" ? <SubmitProject /> : <Navigate to="/login" />}
           />
 
+          {/* Admin Routes */}
           <Route
             path="/landingpage"
             element={userRole === "ADMIN" ? <Landing /> : <Navigate to="/login" />}
@@ -86,7 +85,6 @@ function App() {
             path="/admin/project/:id"
             element={userRole === "ADMIN" ? <ProjectDetails /> : <Navigate to="/login" />}
           />
-          
         </Routes>
       </div>
     </div>

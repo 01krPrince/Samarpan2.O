@@ -8,10 +8,11 @@ const AdminSidebar = () => {
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
 
-  const handleLogout = () => {
+  const handleClick = () => {
     localStorage.clear();
-    navigate("/");
-  };
+    navigate('/');
+    console.log("Logged out");
+  }
 
   useEffect(() => {
     const handleResize = () => {
@@ -64,7 +65,7 @@ const AdminSidebar = () => {
 
           <button
             className="flex items-center space-x-3 p-2 hover:bg-gray-300 rounded w-full text-left"
-            onClick={handleLogout}
+            onClick={handleClick}
           >
             <LogOut size={20} />
             {!isMobile && <span>Logout</span>}
