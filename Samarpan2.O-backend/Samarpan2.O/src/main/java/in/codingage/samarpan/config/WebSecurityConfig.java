@@ -26,7 +26,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) // replaces EnableGlobalMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
     @Autowired
@@ -54,11 +54,10 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(List.of("*"));
-        configuration.setAllowedOriginPatterns(List.of("*")); // ✅ Allows all domains dynamically
+        configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true); // ✅ Allows credentials (cookies, authorization headers)
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -80,19 +79,17 @@ public class WebSecurityConfig {
                                 "/api/tob/public/cafe/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/api/subject/getAllSubjects"
                         ).permitAll()
-                        .requestMatchers("/api/v1/Batch/getAllBatch").hasAuthority("ADMIN") // ✅ Explicitly allow ADMIN
+                        .requestMatchers("/api/v1/Batch/getAllBatch").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
-                );
-
-
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+                )
+                .authenticationProvider(authenticationProvider()) // ✅ correctly placed
+                .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class); // ✅ filter added
 
         return http.build();
     }
-
-
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {

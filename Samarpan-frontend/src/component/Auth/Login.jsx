@@ -9,12 +9,12 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const userRole = localStorage.getItem("userRole");
-  //   if (userRole) {
-  //     navigate(userRole === "ADMIN" ? "/landingpage" : "/dashboard");
-  //   }
-  // }, [navigate]);
+  useEffect(() => {
+    const userRole = localStorage.getItem("userRole");
+    if (userRole) {
+      navigate(userRole === "ADMIN" ? "/landingpage" : "/dashboard");
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,7 +40,6 @@ const Login = () => {
       if (response.ok) {
         console.log("Login Response:", data);
         
-        // Check for different role structures
         let role = data.user.roles ? data.user.roles[0] : data.user.role;
         
         if (!role) {
@@ -51,7 +50,7 @@ const Login = () => {
         
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("userRole", role.toUpperCase()); // Make role uppercase for consistency
+        localStorage.setItem("userRole", role.toUpperCase());
       
         console.log("Navigating to:", role.toUpperCase() === "ADMIN" ? "/landingpage" : "/dashboard");
       

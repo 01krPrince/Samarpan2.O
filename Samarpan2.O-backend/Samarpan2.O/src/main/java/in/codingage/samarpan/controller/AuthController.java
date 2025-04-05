@@ -73,8 +73,7 @@ public class AuthController {
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
-
-        User user = new User(signUpRequest.getEmail(), signUpRequest.getEmail(),
+        User user = new User(signUpRequest.getName(), signUpRequest.getEmail(), signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()), signUpRequest.getContact(), signUpRequest.getInstituteName(), false, false);
 
 
@@ -103,8 +102,7 @@ public class AuthController {
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
-
-        User user = new User(signUpRequest.getEmail(), signUpRequest.getEmail(),
+        User user = new User(signUpRequest.getName(), signUpRequest.getEmail(), signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()), signUpRequest.getContact(), signUpRequest.getInstituteName(), false, false);
 
 

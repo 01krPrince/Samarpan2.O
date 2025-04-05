@@ -31,6 +31,7 @@ const SignUp = () => {
         },
         body: JSON.stringify({
           instituteName: "codingage",
+          name: name,
           email: username,
           contact: contact,
           password: password,

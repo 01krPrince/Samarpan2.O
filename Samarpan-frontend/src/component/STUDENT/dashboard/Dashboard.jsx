@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { PlusCircle  } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -22,16 +22,23 @@ export default function Dashboard() {
   const [categories, setCategories] = useState(["All"]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
- useEffect(() => {
+  useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/subject/getAllSubjects");
-        if (!response.ok) throw new Error("Failed to fetch categories");
+        const token = localStorage.getItem("token"); // Or sessionStorage.getItem("token")
+
+        const response = await fetch("http://localhost:8080/api/subject/getAllSubjects", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         
+        if (!response.ok) throw new Error("Failed to fetch subjects");
+
         const data = await response.json();
         setCategories(["All", ...data.map((subject) => subject.subjectName)]);
       } catch (err) {
-        setError(err.message); 
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -60,9 +67,8 @@ export default function Dashboard() {
                 {categories.map((category) => (
                   <button
                     key={category}
-                    className={`md:px-4 px-3 md:py-2 py-1 text-sm border rounded-lg transition min-w-fit ${
-                      selectedCategory === category ? "bg-gray-800 text-white" : "hover:bg-gray-200 bg-white"
-                    }`}
+                    className={`md:px-4 px-3 md:py-2 py-1 text-sm border rounded-lg transition min-w-fit ${selectedCategory === category ? "bg-gray-800 text-white" : "hover:bg-gray-200 bg-white"
+                      }`}
                     onClick={() => setSelectedCategory(category)}
                   >
                     {category}
@@ -70,7 +76,7 @@ export default function Dashboard() {
                 ))}
               </div>
             </div>
-          )}         
+          )}
           <div className="grid md:grid-cols-3 grid-cols-1 gap-4 ">
             {filteredProjects.length > 0 ? (
               filteredProjects.map((project, index) => (
@@ -85,15 +91,15 @@ export default function Dashboard() {
               <p className="text-gray-500 text-center">No projects found in this category.</p>
             )}
 
-          
+
             <div onClick={() => navigate("/submit-project")} className="p-4 flex flex-col items-center justify-center border-dashed border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
               <PlusCircle size={32} className="text-gray-500" />
               <p className="text-sm text-gray-500 mt-2">Add New Project</p>
-              
+
             </div>
           </div>
         </main>
       </div>
     </div>
-  ); 
+  );
 }

@@ -13,6 +13,7 @@ import in.codingage.samarpan.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,6 +92,7 @@ public class ProjectServiceImpl implements ProjectService {
         project.setDeployedLink(projectCreateRequest.getDeployedLink());
         project.setGithubLink(projectCreateRequest.getGithubLink());
         project.setImageUrls(projectCreateRequest.getImageUrls());
+        project.setSubmissionDate(LocalDateTime.now());
 
         try {
             return projectRepository.save(project);

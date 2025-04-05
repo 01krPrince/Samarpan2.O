@@ -11,14 +11,31 @@ const Landing = () => {
   );
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/projects/all")
-      .then(res => res.json())
-      .then(data => {
+    const token = localStorage.getItem("token");
+  
+    fetch("http://localhost:8080/api/projects/all", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          if (res.status === 401) {
+            console.warn("Unauthorized. Redirecting to login...");
+            navigate("/login"); // redirect if not logged in
+          }
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
         console.log("Fetched Data:", data);
         setProjects(data);
       })
-      .catch(error => console.error('Error fetching data:', error));
-  }, [])
+      .catch((error) => console.error("Error fetching data:", error.message));
+  }, [navigate]);
+
+  
   return (
     <>
       <div className="pt-0 w-full min-h-auto px-4 mt-14 xl:mt-20 md:mt-16 bg-gray-100">

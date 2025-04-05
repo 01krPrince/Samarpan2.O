@@ -1,30 +1,59 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const CreateSubject = () => {
   const [subjectName, setSubjectName] = useState('');
   const [mentorName, setMentorName] = useState('');
+  const [subjects, setSubjects] = useState([]);
 
-  const [subjects, setSubjects] = useState([
-    { id: 1, name: 'Web Development', mentor: 'John Doe' },
-    { id: 2, name: 'Data Structures', mentor: 'Jane Smith' },
-  ]);
+  const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3NDM3NDcyNDYsImV4cCI6MTc1MTUyMzI0Nn0.m8mj7PdKBjNOeG2PWKnRfwRoAynS4XMoac5p0VsnPbHiNkLqcmBhie5hyjGKrp13_wd1x3QVTHyVL0ftt47Hxg';
 
-  const handleAddSubject = (e) => {
+  useEffect(() => {
+    fetch('http://localhost:8080/api/subject/getAllSubjects', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': '*/*',
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log("All Subjects :  ",response);
+        setSubjects(data);
+      })
+      .catch(error => {
+        console.error('Error fetching subjects:', error);
+      });
+  }, []);
+
+  const handleAddSubject = async (e) => {
     e.preventDefault();
+
     if (!subjectName || !mentorName) {
       alert('Please fill in both fields.');
       return;
     }
 
-    const newSubject = {
-      id: subjects.length + 1,
-      name: subjectName,
-      mentor: mentorName,
-    };
+    try {
+      const response = await fetch(`http://localhost:8080/api/subject/createsubject?subjectName=${encodeURIComponent(subjectName)}&mentorName=${encodeURIComponent(mentorName)}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': '*/*',
+        },
+      });
 
-    setSubjects([...subjects, newSubject]);
-    setSubjectName('');
-    setMentorName('');
+      if (response.ok) {
+        console.log("Subject creation :  ",response);
+        const newSubject = await response.json();
+        setSubjects([...subjects, newSubject]);
+        setSubjectName('');
+        setMentorName('');
+      } else {
+        alert('Failed to create subject');
+      }
+    } catch (error) {
+      console.error('Error creating subject:', error);
+    }
   };
 
   const handleMenuClick = (subjectId) => {

@@ -11,7 +11,6 @@ import java.util.Optional;
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/v1/branch")
-@PreAuthorize("hasRole('ADMIN')")
 public class BranchController {
     private final BranchService branchService;
 
@@ -19,16 +18,19 @@ public class BranchController {
         this.branchService = branchService;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("createBranch")
     public Branch createBranch(@RequestParam String branchName) {
         return branchService.createBranch(branchName);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("getAllBranches")
     public List<Branch> getAllBranches() {
         return branchService.getAllBranches();
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("branchById")
     public Optional<Branch> findById(@RequestParam String branchId) {
         return branchService.findById(branchId);

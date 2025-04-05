@@ -5,6 +5,7 @@ import in.codingage.samarpan.model.Subject;
 import in.codingage.samarpan.repository.SubjectRepository;
 import in.codingage.samarpan.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Subject createSubject(String subjectName) {
+        System.out.println(subjectName);
         if (subjectRepository.findBySubjectName(subjectName) != null) {
             throw new IllegalArgumentException("Subject with name " + subjectName + " already exists.");
         }
@@ -46,6 +48,7 @@ public class SubjectServiceImpl implements SubjectService {
         subjectRepository.delete(subject);
         return subject;
     }
+
 
     @Override
     public List<Subject> getAllSubjects() {

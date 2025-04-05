@@ -13,6 +13,8 @@ public class SignupRequest {
     @Size(max = 50)
     private String instituteName;
 
+    private String name;
+
     @Size(max = 50)
     @Email
     private String email;

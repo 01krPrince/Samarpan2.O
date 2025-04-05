@@ -34,8 +34,8 @@ public class User {
     private boolean accountNonExpired;
     private boolean forceLogOut;
 
-
-    public User(String username, String email, String password, String contact, String instituteName, boolean activated, boolean accountNonExpired) {
+    public User(String name, String username, String email, String password, String contact, String instituteName, boolean activated, boolean accountNonExpired) {
+        this.name = name;
         this.username = username;
         this.email = email;
         this.password = password;

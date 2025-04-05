@@ -26,7 +26,7 @@
 //     setSubmitted(true);
 //   };
 
-  
+
 //   return (
 //     <div className="flex items-center justify-center min-h-screen bg-gray-100 md:pt-[10vh] pt-[6vh]">
 //       <div className="  rounded-lg p-6 md:p-10 w-full max-w-2xl">
@@ -143,6 +143,7 @@
 import { useState, useEffect } from "react";
 import { CloudUpload, Check } from "lucide-react";
 
+
 export default function SubmitProject() {
   const [formData, setFormData] = useState({
     studentName: "John Doe",
@@ -150,14 +151,34 @@ export default function SubmitProject() {
     deployedLink: "",
     githubLink: "",
     description: "",
-    subject: "", // New field for subject
+    subject: "",
     thumbnail: null,
   });
 
   const [submitted, setSubmitted] = useState(false);
   const [subjects, setSubjects] = useState([]);
+  const [userData, setUserData] = useState(null);
+  const [currentTime, setCurrentTime] = useState(new Date().toLocaleString());
 
-  // Fetch subjects from API
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date().toLocaleString());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // useEffect(() => {
+  //   const storedUser = localStorage.getItem("user");
+  //   if (storedUser) {
+  //     try {
+  //       setUserData(JSON.parse(storedUser));
+  //     } catch (e) {
+  //       console.error("Invalid JSON in localStorage 'user'", e);
+  //     }
+  //   }
+  // }, []);
+
   useEffect(() => {
     fetch("http://localhost:8080/api/subject/getAllSubjects")
       .then((response) => response.json())
@@ -185,19 +206,17 @@ export default function SubmitProject() {
         <p className="text-gray-600 mb-6">Fill in the details below to submit your project for review.</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Student Name */}
           <div>
-            <label className="block text-sm mb-2 font-medium text-black">Student Name</label>
+            <label className="block text-sm mb-2 font-medium text-black">Student </label>
             <input
               type="text"
               name="studentName"
-              value={formData.studentName}
+              value={userData?.name || "Student"}
               disabled
               className="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-600"
             />
           </div>
 
-          {/* Project Name */}
           <div>
             <label className="block text-sm mb-2 font-medium text-black">Project Name</label>
             <input
@@ -210,7 +229,6 @@ export default function SubmitProject() {
             />
           </div>
 
-          {/* Subject Dropdown */}
           <div>
             <label className="block text-sm mb-2 font-medium text-black">Subject</label>
             <select
@@ -228,7 +246,6 @@ export default function SubmitProject() {
             </select>
           </div>
 
-          {/* Deployed Project Link */}
           <div>
             <label className="block text-sm mb-2 font-medium text-black">Deployed Project Link</label>
             <input
@@ -241,7 +258,6 @@ export default function SubmitProject() {
             />
           </div>
 
-          {/* GitHub Link */}
           <div>
             <label className="block text-sm mb-2 font-medium text-black">GitHub Link</label>
             <input
@@ -254,21 +270,20 @@ export default function SubmitProject() {
             />
           </div>
 
-          {/* Project Thumbnail Upload */}
           <div>
             <label className="block text-sm mb-2 font-medium text-black">Project Thumbnail</label>
-            <div className="border-dashed border-2 border-gray-300 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-50">
+            <div className="border-dashed border-2 border-gray-300 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-50 hover:cursor-pointer">
               <input type="file" onChange={handleFileChange} className="hidden" id="thumbnail" />
               <label htmlFor="thumbnail" className="block">
                 <CloudUpload className="mx-auto text-gray-500" size={32} />
-                <p className="text-sm text-gray-500 mt-2">Drag and drop your thumbnail here or</p>
+                <p className="text-sm text-gray-500 mt-2">Drag and drop your thumbnail here</p>
+                <div className="text-xs text-gray-700 ">OR</div>
                 <span className="text-blue-600 cursor-pointer">Browse Files</span>
               </label>
             </div>
             {formData.thumbnail && <p className="text-sm text-gray-700 mt-2">{formData.thumbnail.name}</p>}
           </div>
 
-          {/* Project Description */}
           <div>
             <label className="block text-sm mb-2 font-medium text-black">Project Description</label>
             <textarea
@@ -280,12 +295,11 @@ export default function SubmitProject() {
             ></textarea>
           </div>
 
-          {/* Timestamp */}
-          <p className="text-sm text-gray-500">
-            Submission timestamp: <strong>March 15, 2025 14:30</strong>
-          </p>
+          {/* <p className="text-sm text-gray-500">
+            Submission timestamp: <strong>{currentTime}</strong>
+          </p> */}
 
-          {/* Submit Button */}
+
           <button
             type="submit"
             className="w-full flex items-center justify-center bg-gray-800 text-white px-4 py-2 rounded-lg transition hover:bg-gray-700"
@@ -294,7 +308,6 @@ export default function SubmitProject() {
           </button>
         </form>
 
-        {/* Success Message */}
         {submitted && (
           <div className="mt-4 flex items-center justify-between bg-green-100 text-green-700 p-3 rounded-lg">
             <Check size={20} />
