@@ -16,5 +16,5 @@ public class Subject {
     @Id
     private String id;
     private String subjectName;
-    private String newSubjectName;
+    
 }

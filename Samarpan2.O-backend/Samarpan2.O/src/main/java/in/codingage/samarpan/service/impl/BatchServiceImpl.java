@@ -5,6 +5,7 @@ import in.codingage.samarpan.model.Batch;
 import in.codingage.samarpan.model.Branch;
 import in.codingage.samarpan.repository.BatchRepository;
 import in.codingage.samarpan.service.BatchService;
+import in.codingage.samarpan.service.BranchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,15 @@ import java.util.List;
 public class BatchServiceImpl implements BatchService {
     @Autowired
     private BatchRepository batchRepository;
-    private BranchServiceImpl branchService;
+    private BranchService branchService;
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @Autowired
+    public BatchServiceImpl(BatchRepository batchRepository, BranchService branchService) {
+        this.batchRepository = batchRepository;
+        this.branchService = branchService;
+    }
+
+
     @Override
     public Batch createBatch(String batchName, Branch branch) {
         if (batchName == null || batchName.trim().isEmpty()) {
@@ -37,7 +44,6 @@ public class BatchServiceImpl implements BatchService {
         return batchRepository.save(batch);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public void updateBatch(String batchName, String newBatchName) {
         if (batchName == null || batchName.trim().isEmpty() || newBatchName == null || newBatchName.trim().isEmpty()) {
@@ -57,7 +63,6 @@ public class BatchServiceImpl implements BatchService {
         batchRepository.save(batch);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public Batch deleteBatch(String batchName) {
         if (batchName == null || batchName.trim().isEmpty()) {
@@ -71,7 +76,6 @@ public class BatchServiceImpl implements BatchService {
         return batch;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public List<Batch> getAllBatch() {
         System.out.println("Hello");
