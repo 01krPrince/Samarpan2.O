@@ -96,7 +96,7 @@ const CreateBatch = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
+    <div className="mt-16 min-h-screen bg-gray-100 flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-5xl flex flex-col lg:flex-row gap-6">
         {/* Right Panel - Form (Appears first on mobile) */}
         <div className="w-full lg:w-2/3 bg-white p-6 rounded-xl shadow-md border border-gray-200 order-1 lg:order-2">

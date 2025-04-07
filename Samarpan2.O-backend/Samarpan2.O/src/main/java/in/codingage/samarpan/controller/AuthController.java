@@ -2,10 +2,8 @@ package in.codingage.samarpan.controller;
 
 import in.codingage.samarpan.exception.ApplicationException;
 import in.codingage.samarpan.model.User;
-import in.codingage.samarpan.model.auth.LoginRequest;
-import in.codingage.samarpan.model.auth.LoginResponse;
-import in.codingage.samarpan.model.auth.MessageResponse;
-import in.codingage.samarpan.model.auth.SignupRequest;
+import in.codingage.samarpan.model.auth.*;
+import in.codingage.samarpan.repository.BatchRepository;
 import in.codingage.samarpan.repository.UserRepository;
 import in.codingage.samarpan.security.jwt.JwtUtils;
 import in.codingage.samarpan.security.services.impl.UserDetailsImpl;
@@ -35,6 +33,9 @@ public class AuthController {
     UserRepository userRepository;
 
     @Autowired
+    BatchRepository batchRepository;
+
+    @Autowired
     PasswordEncoder encoder;
 
     @Autowired
@@ -62,7 +63,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup/student")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequestStudent signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getContact())) {
             return ResponseEntity.badRequest()
                     .body(new MessageResponse("Error: This contact number is is already registered!"));
@@ -73,13 +74,18 @@ public class AuthController {
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
+        if (signUpRequest.getBatch() == null || signUpRequest.getBatch().getBatchName() == null) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: Invalid or missing batch information!"));
+        }
+
         User user = new User(signUpRequest.getName(), signUpRequest.getEmail(), signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()), signUpRequest.getContact(), signUpRequest.getInstituteName(), false, false);
-
 
         Set<String> roles = new HashSet<>();
         roles.add("STUDENT");
         user.setRoles(roles);
+        user.setBatch(signUpRequest.getBatch());
         User savedUser = userRepository.save(user);
 
         savedUser.setAccountNonExpired(true);

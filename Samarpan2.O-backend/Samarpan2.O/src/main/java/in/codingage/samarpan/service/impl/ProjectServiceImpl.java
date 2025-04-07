@@ -186,4 +186,10 @@ public class ProjectServiceImpl implements ProjectService {
         String studentId = userRepository.findByUsername(remoteUser).get().getId();
         return projectRepository.findAllByStudentId(studentId);
     }
+
+    @Override
+    public List<Project> getProjectByStudentId(String studentId) {
+        System.out.println(projectRepository.findAllByStudentId(studentId));
+        return projectRepository.findAllByStudentId(studentId);
+    }
 }

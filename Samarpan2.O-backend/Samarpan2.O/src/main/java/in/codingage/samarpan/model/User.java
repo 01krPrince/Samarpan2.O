@@ -28,7 +28,7 @@ public class User {
     private String instituteName;
     private String name;
     private String phone;
-    private String batch;
+    private Batch batch;
     private Set<String> roles = Collections.singleton("STUDENT");
     private boolean activated;
     private boolean accountNonExpired;

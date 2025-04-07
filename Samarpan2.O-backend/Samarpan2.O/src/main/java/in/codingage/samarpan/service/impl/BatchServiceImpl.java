@@ -7,8 +7,10 @@ import in.codingage.samarpan.repository.BatchRepository;
 import in.codingage.samarpan.service.BatchService;
 import in.codingage.samarpan.service.BranchService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+
 import java.util.List;
 
 @Service
@@ -76,9 +78,11 @@ public class BatchServiceImpl implements BatchService {
         return batch;
     }
 
-    @Override
-    public List<Batch> getAllBatch() {
+    @GetMapping("/getAllBatch")
+    public ResponseEntity<List<Batch>> getAllBatch() {
         System.out.println("Hello");
-        return batchRepository.findAll();
+        List<Batch> batches = batchRepository.findAll();
+        return ResponseEntity.ok(batches);
     }
+
 }

@@ -4,7 +4,6 @@ import in.codingage.samarpan.model.Branch;
 import in.codingage.samarpan.repository.BranchRepository;
 import in.codingage.samarpan.service.BranchService;
 import in.codingage.samarpan.exception.ResourceNotFoundException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

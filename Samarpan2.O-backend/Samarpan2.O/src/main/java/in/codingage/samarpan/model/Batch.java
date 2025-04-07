@@ -17,5 +17,4 @@ public class Batch {
     private String id;
     private String batchName;
     private Branch branch;  // KANKARBAGH, BORING_ROAD
-
 }

@@ -1,6 +1,5 @@
 package in.codingage.samarpan.model.updateRequest;
 
-import in.codingage.samarpan.model.User;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

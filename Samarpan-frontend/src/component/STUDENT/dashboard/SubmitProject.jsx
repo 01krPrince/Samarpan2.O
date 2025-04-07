@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { CloudUpload, Check } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function SubmitProject() {
   const [formData, setFormData] = useState({
@@ -16,6 +17,9 @@ export default function SubmitProject() {
   const [subjects, setSubjects] = useState([]);
   const [userData, setUserData] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleString());
+  const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -25,21 +29,25 @@ export default function SubmitProject() {
     return () => clearInterval(interval);
   }, []);
 
-  // useEffect(() => {
-  //   const storedUser = localStorage.getItem("user");
-  //   if (storedUser) {
-  //     try {
-  //       setUserData(JSON.parse(storedUser));
-  //     } catch (e) {
-  //       console.error("Invalid JSON in localStorage 'user'", e);
-  //     }
-  //   }
-  // }, []);
-
   useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUserData(parsedUser);
+      console.log("User data from localStorage:", parsedUser);
+    } else if (token) {
+      setUserData({ token });
+      console.log("Token found in localStorage:", token);
+    } else {
+      console.warn("No user data or token found in localStorage");
+    }
     fetch("http://localhost:8080/api/subject/getAllSubjects")
       .then((response) => response.json())
-      .then((data) => setSubjects(data))
+      .then((data) => {
+        setSubjects(data);
+        console.log("Subjects fetched:", data); // Debug subjects
+      })
       .catch((error) => console.error("Error fetching subjects:", error));
   }, []);
 
@@ -51,27 +59,122 @@ export default function SubmitProject() {
     setFormData({ ...formData, thumbnail: e.target.files[0] });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError(null);
+
+    if (!formData.thumbnail) {
+      setError("Please upload a thumbnail!");
+      return;
+    }
+
+    if (!formData.subject) {
+      setError("Please select a subject!");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("Authentication token is missing. Please log in again.");
+      navigate("/");
+      return;
+    }
+
+    try {
+      // Uploading to Cloudinary
+      const data = new FormData();
+      data.append("file", formData.thumbnail);
+      data.append("upload_preset", "samarpan_unsigned");
+      data.append("folder", "Samarpan-projects-preview");
+
+      const cloudinaryRes = await fetch("https://api.cloudinary.com/v1_1/dickevacs/image/upload", {
+        method: "POST",
+        body: data,
+      });
+
+      const cloudinaryData = await cloudinaryRes.json();
+
+      if (!cloudinaryRes.ok) {
+        console.error("Cloudinary error:", cloudinaryData);
+        setError("Image upload failed: " + cloudinaryData.error?.message);
+        return;
+      }
+
+      const thumbnailUrl = cloudinaryData.secure_url;
+
+      // Find subject by name and get its ID
+      const selectedSubject = subjects.find((sub) => sub.subjectName === formData.subject);
+      if (!selectedSubject) {
+        setError("Invalid subject selected!");
+        return;
+      }
+
+      const completeProjectData = {
+        projectName: formData.projectName || "",
+        githubLink: formData.githubLink || "",
+        deployedLink: formData.deployedLink || "",
+        imageUrls: thumbnailUrl || "",
+        batch: userData?.batch?.batchName?.toString() || "N/A",
+        batchId: userData?.batch?.id?.toString() || "",
+        subject: formData.subject || "",
+        subjectId: selectedSubject.id.toString(), // Guaranteed to be a valid ID
+      };
+
+      console.log("Submitting project data:", completeProjectData);
+      console.log("Authorization token:", token);
+
+      const response = await fetch("http://localhost:8080/api/projects/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(completeProjectData),
+      });
+
+      let result;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        result = await response.json();
+      } else {
+        result = await response.text();
+      }
+
+      if (!response.ok) {
+        console.error("Server response:", result);
+        if (response.status === 401) {
+          setError("Unauthorized: Invalid or expired token. Please log in again.");
+          localStorage.removeItem("token");
+          navigate("/");
+        } else {
+          setError("Failed to submit project: " + (result.message || result || "Unknown error"));
+        }
+        return;
+      }
+
+      console.log("Project submitted:", result);
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Upload failed:", err);
+      setError("Something went wrong while submitting the project: " + err.message);
+    }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 md:pt-[10vh] pt-[6vh]">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 md:pt-[0vh] pt-[10vh]">
       <div className="rounded-lg p-6 md:p-10 w-full max-w-2xl">
         <h2 className="text-2xl font-semibold text-gray-800">Submit Your Project</h2>
         <p className="text-gray-600 mb-6">Fill in the details below to submit your project for review.</p>
 
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm mb-2 font-medium text-black">Student </label>
-            <input
-              type="text"
-              name="studentName"
-              value={userData?.name || "Student"}
-              disabled
-              className="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-600"
-            />
+          <div className="right text-sm text-gray-700">
+            {userData?.name || "Guest"} | {userData?.batch?.batchName || "N/A"}
           </div>
 
           <div>
@@ -93,10 +196,11 @@ export default function SubmitProject() {
               value={formData.subject}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border rounded-lg"
+              required // Make subject selection mandatory
             >
               <option value="">Select a Subject</option>
-              {subjects.map((subject, index) => (
-                <option key={index} value={subject.subjectName} >
+              {subjects.map((subject) => (
+                <option key={subject.id} value={subject.subjectName}>
                   {subject.subjectName}
                 </option>
               ))}
@@ -151,11 +255,6 @@ export default function SubmitProject() {
               className="w-full px-3 py-2 border rounded-lg h-24"
             ></textarea>
           </div>
-
-          {/* <p className="text-sm text-gray-500">
-            Submission timestamp: <strong>{currentTime}</strong>
-          </p> */}
-
 
           <button
             type="submit"

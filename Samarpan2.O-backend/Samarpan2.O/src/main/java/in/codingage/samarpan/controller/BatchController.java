@@ -4,6 +4,7 @@ import in.codingage.samarpan.model.Batch;
 import in.codingage.samarpan.model.Branch;
 import in.codingage.samarpan.service.BatchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +13,6 @@ import java.util.List;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api/v1/Batch")
-@PreAuthorize("hasRole('ADMIN')")
 public class BatchController {
 
     @Autowired
@@ -36,9 +36,8 @@ public class BatchController {
         return  batchService.deleteBatch(batchName);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/getAllBatch")
-    public List<Batch> getAllBatch(){
+    public ResponseEntity<List<Batch>> getAllBatch(){
         return batchService.getAllBatch();
     }
 

@@ -2,7 +2,7 @@ package in.codingage.samarpan.service;
 
 import in.codingage.samarpan.model.Batch;
 import in.codingage.samarpan.model.Branch;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -15,5 +15,5 @@ public interface BatchService {
     Batch deleteBatch(String batchName);
 
 
-    List<Batch> getAllBatch();
+    ResponseEntity<List<Batch>> getAllBatch();
 }

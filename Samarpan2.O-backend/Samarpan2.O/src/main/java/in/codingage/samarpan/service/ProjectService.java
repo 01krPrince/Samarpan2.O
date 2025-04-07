@@ -14,4 +14,6 @@ public interface ProjectService {
     boolean deleteProject(String projectId);
 
     List<Project> getAllProjectsForStudent(String remoteUser);
+
+    List<Project> getProjectByStudentId(String studentId);
 }

@@ -1,5 +1,6 @@
 package in.codingage.samarpan.model.auth;
 
+import in.codingage.samarpan.model.Batch;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -8,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SignupRequest {
+public class SignupRequestStudent {
     @NotBlank
     @Size(max = 50)
     private String instituteName;
@@ -22,6 +23,8 @@ public class SignupRequest {
     @NotBlank
     private String contact;
 
+    private Batch batch;
+    
     @NotBlank
     @Size(min = 6, max = 40)
     private String password;

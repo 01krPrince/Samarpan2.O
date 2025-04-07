@@ -1,6 +1,5 @@
 package in.codingage.samarpan.model.createRequest;
 
-import in.codingage.samarpan.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

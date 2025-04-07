@@ -29,24 +29,26 @@ public class ProjectController {
         return projectService.getProjectById(projectId);
     }
 
-
     @PostMapping("/create")
     public Project createProject(@RequestBody ProjectCreateRequest projectCreateRequest, HttpServletRequest request) {
         String remoteUser = request.getRemoteUser();
         return projectService.createProject(projectCreateRequest, remoteUser);
     }
 
-
     @PutMapping("/update")
     public Project updateProject(  @RequestBody ProjectUpdateRequest projectUpdateRequest) {
         return projectService.updateProject( projectUpdateRequest);
     }
 
-
-    @DeleteMapping("/delete ")
+    @DeleteMapping("/delete")
     public String deleteProject(@RequestParam String projectId) {
         projectService.deleteProject(projectId);
         return "Project with ID " + projectId + " deleted successfully.";
+    }
+
+    @GetMapping("/getProjectByStudentId")
+    public List<Project> getProjectByStudentId(@RequestParam String studentId){
+        return projectService.getProjectByStudentId(studentId);
     }
 
 

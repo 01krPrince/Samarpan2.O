@@ -5,7 +5,6 @@ import in.codingage.samarpan.model.Subject;
 import in.codingage.samarpan.repository.SubjectRepository;
 import in.codingage.samarpan.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

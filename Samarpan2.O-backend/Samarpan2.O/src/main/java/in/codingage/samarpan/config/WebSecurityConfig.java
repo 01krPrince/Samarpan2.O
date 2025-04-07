@@ -80,7 +80,8 @@ public class WebSecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**",
-                                "/api/subject/getAllSubjects"
+                                "/api/subject/getAllSubjects",
+                                "/api/v1/Batch/getAllBatch"
                         ).permitAll()
                         .requestMatchers("/api/v1/Batch/getAllBatch").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
