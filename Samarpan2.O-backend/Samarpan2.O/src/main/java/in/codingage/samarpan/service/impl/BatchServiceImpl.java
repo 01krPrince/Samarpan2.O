@@ -2,7 +2,6 @@ package in.codingage.samarpan.service.impl;
 
 import in.codingage.samarpan.exception.ResourceNotFoundException;
 import in.codingage.samarpan.model.Batch;
-import in.codingage.samarpan.model.Branch;
 import in.codingage.samarpan.repository.BatchRepository;
 import in.codingage.samarpan.service.BatchService;
 import in.codingage.samarpan.service.BranchService;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -25,14 +25,13 @@ public class BatchServiceImpl implements BatchService {
         this.branchService = branchService;
     }
 
-
     @Override
-    public Batch createBatch(String batchName, Branch branch) {
+    public Batch createBatch(String batchName, String branchId) {
         if (batchName == null || batchName.trim().isEmpty()) {
             throw new IllegalArgumentException("Batch name cannot be null or empty.");
         }
 
-        if (!branchService.findById(branch.getId()).isPresent()) {
+        if (branchService.findById(branchId).isEmpty()) {
             throw new IllegalArgumentException("Branch name cannot be invalid, null or empty.");
         }
 
@@ -42,7 +41,7 @@ public class BatchServiceImpl implements BatchService {
 
         Batch batch = new Batch();
         batch.setBatchName(batchName);
-        batch.setBranch(branch);
+        batch.setBranchId(branchId);
         return batchRepository.save(batch);
     }
 
@@ -78,11 +77,16 @@ public class BatchServiceImpl implements BatchService {
         return batch;
     }
 
-    @GetMapping("/getAllBatch")
+    @Override
     public ResponseEntity<List<Batch>> getAllBatch() {
         System.out.println("Hello");
         List<Batch> batches = batchRepository.findAll();
         return ResponseEntity.ok(batches);
+    }
+
+    @Override
+    public List<Batch> findAllByBranchId(@RequestParam String branchId){
+        return batchRepository.findAllByBranchId(branchId);
     }
 
 }

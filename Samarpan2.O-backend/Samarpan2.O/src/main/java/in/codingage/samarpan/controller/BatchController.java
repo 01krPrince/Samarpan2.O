@@ -20,8 +20,9 @@ public class BatchController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/createBatch")
-    public Batch createBatch(@RequestParam String batchName, @RequestBody Branch branch){
-        return batchService.createBatch(batchName,branch);
+    public Batch createBatch(@RequestParam String batchName, @RequestParam String branchId){
+        System.out.println(batchName+branchId);
+        return batchService.createBatch(batchName,branchId);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -41,4 +42,8 @@ public class BatchController {
         return batchService.getAllBatch();
     }
 
+    @GetMapping("/findAllByBranchId")
+    public List<Batch> findAllByBranchId(@RequestParam String branchId){
+        return batchService.findAllByBranchId(branchId);
+    }
 }

@@ -80,7 +80,7 @@ public class AuthController {
         }
 
         User user = new User(signUpRequest.getName(), signUpRequest.getEmail(), signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()), signUpRequest.getContact(), signUpRequest.getInstituteName(), false, false);
+                encoder.encode(signUpRequest.getPassword()), signUpRequest.getContact(), false, false);
 
         Set<String> roles = new HashSet<>();
         roles.add("STUDENT");
@@ -109,7 +109,7 @@ public class AuthController {
         }
 
         User user = new User(signUpRequest.getName(), signUpRequest.getEmail(), signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()), signUpRequest.getContact(), signUpRequest.getInstituteName(), false, false);
+                encoder.encode(signUpRequest.getPassword()), signUpRequest.getContact(), false, false);
 
 
         Set<String> roles = new HashSet<>();

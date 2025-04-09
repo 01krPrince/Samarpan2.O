@@ -24,7 +24,7 @@ public class BranchController {
         return branchService.createBranch(branchName);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("getAllBranches")
     public List<Branch> getAllBranches() {
         return branchService.getAllBranches();

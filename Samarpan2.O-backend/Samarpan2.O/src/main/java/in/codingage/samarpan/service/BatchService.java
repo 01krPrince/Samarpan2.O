@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface BatchService {
 
-    Batch createBatch(String batchName, Branch branch);
+    Batch createBatch(String batchName, String branchId);
 
     void updateBatch(String batchName, String newBatchName);
 
@@ -16,4 +16,6 @@ public interface BatchService {
 
 
     ResponseEntity<List<Batch>> getAllBatch();
+
+    List<Batch> findAllByBranchId(String branchId);
 }

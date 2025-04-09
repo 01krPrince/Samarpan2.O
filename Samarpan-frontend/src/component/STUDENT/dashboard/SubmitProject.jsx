@@ -21,6 +21,11 @@ export default function SubmitProject() {
 
   const navigate = useNavigate();
 
+  const getSubjectIdByName = (subjectName) => {
+    const subject = subjects.find((subj) => subj.subjectName === subjectName);
+    return subject ? subject.id : null;
+  };  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(new Date().toLocaleString());
@@ -35,18 +40,14 @@ export default function SubmitProject() {
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setUserData(parsedUser);
-      console.log("User data from localStorage:", parsedUser);
     } else if (token) {
       setUserData({ token });
-      console.log("Token found in localStorage:", token);
     } else {
-      console.warn("No user data or token found in localStorage");
     }
     fetch("http://localhost:8080/api/subject/getAllSubjects")
       .then((response) => response.json())
       .then((data) => {
         setSubjects(data);
-        console.log("Subjects fetched:", data); // Debug subjects
       })
       .catch((error) => console.error("Error fetching subjects:", error));
   }, []);
@@ -80,8 +81,13 @@ export default function SubmitProject() {
       return;
     }
 
+    const batchId = userData?.batch?.id;
+    if (!batchId) {
+      setError("Batch information is missing or invalid.");
+      return;
+    }
+
     try {
-      // Uploading to Cloudinary
       const data = new FormData();
       data.append("file", formData.thumbnail);
       data.append("upload_preset", "samarpan_unsigned");
@@ -95,33 +101,33 @@ export default function SubmitProject() {
       const cloudinaryData = await cloudinaryRes.json();
 
       if (!cloudinaryRes.ok) {
-        console.error("Cloudinary error:", cloudinaryData);
         setError("Image upload failed: " + cloudinaryData.error?.message);
         return;
       }
 
       const thumbnailUrl = cloudinaryData.secure_url;
 
-      // Find subject by name and get its ID
       const selectedSubject = subjects.find((sub) => sub.subjectName === formData.subject);
       if (!selectedSubject) {
-        setError("Invalid subject selected!");
+        setError("Invalid subject selected! Please choose a valid subject.");
         return;
       }
 
+      const subjectId = selectedSubject.id;
+      
       const completeProjectData = {
         projectName: formData.projectName || "",
         githubLink: formData.githubLink || "",
         deployedLink: formData.deployedLink || "",
         imageUrls: thumbnailUrl || "",
-        batch: userData?.batch?.batchName?.toString() || "N/A",
-        batchId: userData?.batch?.id?.toString() || "",
+        description: formData.description,
+        batch: userData?.batch?.batchName || "N/A",
+        batchId: batchId.toString(),
         subject: formData.subject || "",
-        subjectId: selectedSubject.id.toString(), // Guaranteed to be a valid ID
+        subjectId: getSubjectIdByName(formData.subject),
+        branch: userData?.batch?.branch || "N/A",
+        branchId: userData?.batch?.branchId || "N/A",
       };
-
-      console.log("Submitting project data:", completeProjectData);
-      console.log("Authorization token:", token);
 
       const response = await fetch("http://localhost:8080/api/projects/create", {
         method: "POST",
@@ -141,7 +147,6 @@ export default function SubmitProject() {
       }
 
       if (!response.ok) {
-        console.error("Server response:", result);
         if (response.status === 401) {
           setError("Unauthorized: Invalid or expired token. Please log in again.");
           localStorage.removeItem("token");
@@ -152,10 +157,8 @@ export default function SubmitProject() {
         return;
       }
 
-      console.log("Project submitted:", result);
       setSubmitted(true);
     } catch (err) {
-      console.error("Upload failed:", err);
       setError("Something went wrong while submitting the project: " + err.message);
     }
   };
@@ -196,7 +199,7 @@ export default function SubmitProject() {
               value={formData.subject}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border rounded-lg"
-              required // Make subject selection mandatory
+              required
             >
               <option value="">Select a Subject</option>
               {subjects.map((subject) => (

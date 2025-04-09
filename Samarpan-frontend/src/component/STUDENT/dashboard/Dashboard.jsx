@@ -24,6 +24,7 @@ export default function Dashboard() {
         if (!response.ok) throw new Error("Failed to fetch subjects");
 
         const data = await response.json();
+        console.log(data);
         setCategories(["All", ...data.map((subject) => subject.subjectName)]);
       } catch (err) {
         setError(err.message);
@@ -36,7 +37,7 @@ export default function Dashboard() {
         const user = JSON.parse(localStorage.getItem("user"));
         const studentId = user?.id;
         console.log("Student ID:", studentId);
-    
+
         const response = await fetch(
           `http://localhost:8080/api/projects/getProjectByStudentId?studentId=${studentId}`,
           {
@@ -45,21 +46,24 @@ export default function Dashboard() {
             },
           }
         );
-    
+        
+
         if (!response.ok) throw new Error("Failed to fetch projects");
-    
+
         const data = await response.json();
         console.log("Fetched data from backend:", data);
-    
-        setProjects(Array.isArray(data) ? data : data.data);
+
+        const projectData = Array.isArray(data) ? data : data.data || [];
+        const sortedProjects = projectData.sort((a, b) =>
+          a.subject.localeCompare(b.subject)
+        );
+        setProjects(sortedProjects);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-    
-    
 
     fetchCategories();
     fetchProjects();
@@ -68,7 +72,7 @@ export default function Dashboard() {
   const filteredProjects =
     selectedCategory === "All"
       ? projects
-      : projects.filter((p) => p.category === selectedCategory);
+      : projects.filter((p) => p.subject === selectedCategory);
 
   return (
     <div className="bg-gray-100">
@@ -86,11 +90,10 @@ export default function Dashboard() {
                   {categories.map((category) => (
                     <button
                       key={category}
-                      className={`md:px-4 px-3 md:py-2 py-1 text-sm border rounded-lg transition min-w-fit ${
-                        selectedCategory === category
-                          ? "bg-gray-800 text-white"
-                          : "hover:bg-gray-200 bg-white"
-                      }`}
+                      className={`md:px-4 px-3 md:py-2 py-1 text-sm border rounded-lg transition min-w-fit ${selectedCategory === category
+                        ? "bg-gray-800 text-white"
+                        : "hover:bg-gray-200 bg-white"
+                        }`}
                       onClick={() => setSelectedCategory(category)}
                     >
                       {category}
@@ -98,56 +101,54 @@ export default function Dashboard() {
                   ))}
                 </div>
               </div>
-
               <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
-  {filteredProjects.length > 0 ? (
-    filteredProjects.map((project, index) => (
-      <div key={index} className="md:p-4 p-2 bg-white shadow rounded-lg">
-        <img
-          src={project.imageUrls}
-          alt={project.projectName}
-          className="w-full h-40 object-cover rounded mb-2"
-        />
-        <h3 className="md:text-lg text-sm font-semibold">{project.projectName}</h3>
-        <p className="text-xs text-gray-500 mb-2">{project.subject}</p>
-        <p className="text-xs text-gray-500 mb-1">
-          Submission: {new Date(project.submissionDate).toLocaleDateString()}
-        </p>
-        <div className="flex gap-2 mt-2">
-          <a
-            href={project.githubLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 text-xs underline"
-          >
-            GitHub
-          </a>
-          <a
-            href={project.deployedLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-green-500 text-xs underline"
-          >
-            Live Demo
-          </a>
-        </div>
-      </div>
-    ))
-  ) : (
-    <p className="text-gray-500 text-center">
-      No projects found in this category.
-    </p>
-  )}
+                {filteredProjects.length > 0 ? (
+                  filteredProjects.map((project, index) => (
+                    <div key={index} className="md:p-4 p-2 bg-white shadow rounded-lg">
+                      <img
+                        src={project.imageUrls}
+                        alt={project.projectName}
+                        className="w-full h-40 object-cover rounded mb-2"
+                      />
+                      <h3 className="md:text-lg text-sm font-semibold">{project.projectName}</h3>
+                      <p className="text-xs text-gray-500 mb-2">{project.subject}</p>
+                      <p className="text-xs text-gray-500 mb-1">
+                        Submission: {new Date(project.submissionDate).toLocaleDateString()}
+                      </p>
+                      <div className="flex gap-2 mt-2">
+                        <a
+                          href={project.githubLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 text-xs underline"
+                        >
+                          GitHub
+                        </a>
+                        <a
+                          href={project.deployedLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-green-500 text-xs underline"
+                        >
+                          Live Demo
+                        </a>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500 text-center">
+                    No projects found in this category.
+                  </p>
+                )}
 
-  <div
-    onClick={() => navigate("/submit-project")}
-    className="p-4 flex flex-col items-center justify-center border-dashed border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50"
-  >
-    <PlusCircle size={32} className="text-gray-500" />
-    <p className="text-sm text-gray-500 mt-2">Add New Project</p>
-  </div>
-</div>
-
+                <div
+                  onClick={() => navigate("/submit-project")}
+                  className="p-4 flex flex-col items-center justify-center border-dashed border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50"
+                >
+                  <PlusCircle size={32} className="text-gray-500" />
+                  <p className="text-sm text-gray-500 mt-2">Add New Project</p>
+                </div>
+              </div>
             </>
           )}
         </main>

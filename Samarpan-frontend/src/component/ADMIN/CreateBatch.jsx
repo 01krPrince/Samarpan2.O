@@ -61,7 +61,7 @@ const CreateBatch = () => {
       const selectedBranch = branches.find((b) => b.id === selectedBranchId);
 
       const response = await fetch(
-        `http://localhost:8080/api/v1/Batch/createBatch?batchName=${encodeURIComponent(batchName)}`,
+        `http://localhost:8080/api/v1/Batch/createBatch?batchName=${encodeURIComponent(batchName)}&branchId=${encodeURIComponent(selectedBranchId)}`,
         {
           method: 'POST',
           headers: {
@@ -69,12 +69,10 @@ const CreateBatch = () => {
             'Content-Type': 'application/json',
             'Accept': '*/*',
           },
-          body: JSON.stringify({
-            id: selectedBranchId,
-            branchName: selectedBranch?.branchName || '',
-          }),
         }
       );
+      
+      
 
       if (!response.ok) {
         const errorText = await response.text();

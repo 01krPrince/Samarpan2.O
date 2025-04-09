@@ -14,8 +14,11 @@ public class ProjectCreateRequest {
     private String githubLink;
     private String deployedLink;
     private String imageUrls;
+    private String description;
     private String batch;
     private String batchId;
     private String subject;
     private String subjectId;
+    private String branch;
+    private String branchId;
 }

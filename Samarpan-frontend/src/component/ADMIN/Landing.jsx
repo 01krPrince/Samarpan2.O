@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
@@ -7,13 +7,16 @@ const Landing = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredProjects = projects.filter(project =>
-    project.student.name.toLowerCase().includes(searchTerm.toLowerCase())
+    project?.studentName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-  
-    fetch("http://localhost:8080/api/projects/all", {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const adminId = user?.id;
+    console.log("Admin ID:", adminId);
+
+    fetch(`http://localhost:8080/api/projects/all?adminId=${adminId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -22,7 +25,7 @@ const Landing = () => {
         if (!res.ok) {
           if (res.status === 401) {
             console.warn("Unauthorized. Redirecting to login...");
-            navigate("/login"); // redirect if not logged in
+            navigate("/login");
           }
           throw new Error(`HTTP error! Status: ${res.status}`);
         }
@@ -35,12 +38,10 @@ const Landing = () => {
       .catch((error) => console.error("Error fetching data:", error.message));
   }, [navigate]);
 
-  
   return (
     <>
       <div className="pt-0 w-full min-h-auto px-4 mt-14 xl:mt-20 md:mt-16 bg-gray-100">
-
-        <div className="w-full max-w-full mx-auto py-2 border-black rounded">
+        <div className="w-full max-w-full mx-auto py-2">
           <input
             type="text"
             placeholder="Search by student name"
@@ -50,46 +51,59 @@ const Landing = () => {
           />
         </div>
 
-
-        <div className="p-4 h-[80vh] flex flex-wrap gap-2 xl:justify-evenly ">
+        <div className="p-4 h-auto flex flex-wrap gap-4">
           {filteredProjects.length > 0 ? (
             filteredProjects.map((project, index) => (
               <div
                 key={index}
-                className=" w-[260px] sm:w-[200px] md:w-[280px]   lg:w-[280px] xl:w-[400px] h-auto bg-white rounded-lg shadow-md shadow-black overflow-hidden mt-2"
+                className="w-[320px] sm:w-[280px] bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition-shadow duration-200"
               >
+                <img
+                  src={project.imageUrls || 'path/to/fallback-image.jpg'}
+                  alt={project.projectName || 'Project Image'}
+                  className="w-full h-40 object-cover rounded mb-2"
+                  onError={(e) => {
+                    e.target.src = 'path/to/fallback-image.jpg';
+                  }}
+                />
 
-                <div className="w-full h-48">
-                  <img
-                    src={project.imageUrls}
-                    alt={project.projectName}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-
-                <div className=" p-4">
-                  <h2 className="text-xl font-bold"><span className='font-light'>Project Name:</span> {project.projectName}</h2>
-                  <h3 className="text-lg font-semibold"><span className='font-light'>Student:</span> {project.student.name}</h3>
-                  <div className="flex items-center mt-2">
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <span key={i}>
-                        {i < project.rating ? '⭐' : '☆'}
-                      </span>
-                    ))}
+                <div className="p-4 relative">
+                  <div
+                    className={`absolute top-4 right-4 text-gray-700 text-xs font-semibold px-2 py-1 rounded-full ${project.markAsCheck ? 'bg-green-200' : 'bg-red-200'
+                      }`}
+                  >
+                    {project.markAsCheck ? "Checked" : "Unchecked"}
                   </div>
-                  <button className='w-16 bg-slate-400 rounded ' onClick={() => navigate(`/project/${project.projectId}`)}>Details</button>
+
+
+                  <h2 className="text-lg font-semibold text-black">{project.projectName}</h2>
+                  <p className="text-sm text-gray-600 mt-1">{project.studentName}</p>
+
+                  <div className="mt-4 flex gap-2">
+                    <button
+                      className="flex-1 bg-gray-100 hover:bg-gray-200 text-black text-sm font-semibold py-2 px-3 rounded"
+                      onClick={() => navigate(`/project/${project.projectId}`)}
+                    >
+                      View Details
+                    </button>
+                    <button
+                      className="flex-1 bg-gray-900 hover:bg-black text-white text-sm font-semibold py-2 px-3 rounded"
+                    >
+                      Check
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-500">No projects found</p>
+            <p className="text-center text-gray-500 w-full">No projects found</p>
           )}
         </div>
       </div>
     </>
   );
 
-}
 
-export default Landing
+};
+
+export default Landing;

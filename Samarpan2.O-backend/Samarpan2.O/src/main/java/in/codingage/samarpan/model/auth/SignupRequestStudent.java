@@ -10,10 +10,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SignupRequestStudent {
-    @NotBlank
-    @Size(max = 50)
-    private String instituteName;
 
+    @Size(max = 50)
+    @NotBlank
     private String name;
 
     @Size(max = 50)
