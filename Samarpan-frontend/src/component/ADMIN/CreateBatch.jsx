@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Skeleton from '@mui/material/Skeleton';
 
 const CreateBatch = () => {
   const [batches, setBatches] = useState([]);
@@ -6,10 +7,12 @@ const CreateBatch = () => {
   const [selectedBranchId, setSelectedBranchId] = useState('');
   const [batchName, setBatchName] = useState('');
   const [submitButton, setSubmitButton] = useState(true);
+  const [loadingBranches, setLoadingBranches] = useState(true);
+  const [loadingBatches, setLoadingBatches] = useState(true);
 
-  // Fetch all batches
   const fetchBatches = async () => {
     try {
+      setLoadingBatches(true);
       const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:8080/api/v1/Batch/getAllBatch', {
         method: 'GET',
@@ -24,12 +27,14 @@ const CreateBatch = () => {
       setBatches(data);
     } catch (error) {
       console.error('Error fetching batches:', error);
+    } finally {
+      setLoadingBatches(false);
     }
   };
 
-  // Fetch all branches
   const fetchBranches = async () => {
     try {
+      setLoadingBranches(true);
       const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:8080/api/v1/branch/getAllBranches', {
         method: 'GET',
@@ -44,6 +49,8 @@ const CreateBatch = () => {
       setBranches(data);
     } catch (error) {
       console.error('Error fetching branches:', error);
+    } finally {
+      setLoadingBranches(false);
     }
   };
 
@@ -58,7 +65,6 @@ const CreateBatch = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const selectedBranch = branches.find((b) => b.id === selectedBranchId);
 
       const response = await fetch(
         `http://localhost:8080/api/v1/Batch/createBatch?batchName=${encodeURIComponent(batchName)}&branchId=${encodeURIComponent(selectedBranchId)}`,
@@ -71,8 +77,6 @@ const CreateBatch = () => {
           },
         }
       );
-      
-      
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -82,7 +86,6 @@ const CreateBatch = () => {
       const result = await response.json();
       console.log('Batch created:', result);
 
-      // Reset form and refresh list
       setBatchName('');
       setSelectedBranchId('');
       fetchBatches();
@@ -96,31 +99,34 @@ const CreateBatch = () => {
   return (
     <div className="mt-16 min-h-screen bg-gray-100 flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-5xl flex flex-col lg:flex-row gap-6">
-        {/* Right Panel - Form (Appears first on mobile) */}
         <div className="w-full lg:w-2/3 bg-white p-6 rounded-xl shadow-md border border-gray-200 order-1 lg:order-2">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">Add New Batch</h2>
           <form onSubmit={handleSubmit}>
-            {/* Branch Radio Buttons */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">Branch</label>
               <div className="flex flex-wrap gap-4">
-                {branches.map((b) => (
-                  <label key={b.id} className="flex items-center">
-                    <input
-                      type="radio"
-                      name="branch"
-                      value={b.id}
-                      checked={selectedBranchId === b.id}
-                      onChange={(e) => setSelectedBranchId(e.target.value)}
-                      className="mr-2 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
-                    />
-                    <span className="text-gray-700">{b.branchName}</span>
-                  </label>
-                ))}
+                {loadingBranches ? (
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <Skeleton key={i} variant="rounded" width={120} height={30} />
+                  ))
+                ) : (
+                  branches.map((b) => (
+                    <label key={b.id} className="flex items-center">
+                      <input
+                        type="radio"
+                        name="branch"
+                        value={b.id}
+                        checked={selectedBranchId === b.id}
+                        onChange={(e) => setSelectedBranchId(e.target.value)}
+                        className="mr-2 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                      />
+                      <span className="text-gray-700">{b.branchName}</span>
+                    </label>
+                  ))
+                )}
               </div>
             </div>
 
-            {/* Batch Name Input */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">Batch Name</label>
               <input
@@ -133,13 +139,12 @@ const CreateBatch = () => {
               />
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={!selectedBranchId || !batchName || !submitButton}
               className={`w-full py-3 font-semibold rounded-xl transition-all duration-300 mb-4 ${
                 !selectedBranchId || !batchName || !submitButton
-                  ? 'bg-gray-400 text-white cursor-not-allowed'
+                  ? 'bg-gray-700 text-white cursor-not-allowed'
                   : 'bg-gray-800 hover:bg-gray-900 text-white cursor-pointer'
               }`}
             >
@@ -148,11 +153,16 @@ const CreateBatch = () => {
           </form>
         </div>
 
-        {/* Sidebar - List of batches (Appears second on mobile) */}
         <div className="w-full lg:w-1/3 bg-white p-6 rounded-xl shadow-md border border-gray-200 order-2 lg:order-1">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">Batches</h2>
           <div className="max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-            {batches.length > 0 ? (
+            {loadingBatches ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="mb-3">
+                  <Skeleton variant="rounded" height={56} />
+                </div>
+              ))
+            ) : batches.length > 0 ? (
               [...batches].reverse().map((batch) => (
                 <div
                   key={batch.id}

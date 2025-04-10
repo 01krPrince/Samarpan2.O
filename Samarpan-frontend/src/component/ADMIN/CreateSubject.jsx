@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import Skeleton from '@mui/material/Skeleton';
 
 const CreateSubject = () => {
   const [subjectName, setSubjectName] = useState('');
   const [subjects, setSubjects] = useState([]);
-  const [submitButton, setSubmitButton] = useState(true); // Added for loading state
+  const [submitButton, setSubmitButton] = useState(true);
+  const [loadingSubjects, setLoadingSubjects] = useState(true);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
+    setLoadingSubjects(true);
     fetch('http://localhost:8080/api/subject/getAllSubjects', {
       method: 'GET',
       headers: {
@@ -16,11 +19,13 @@ const CreateSubject = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log('All Subjects: ', data);
         setSubjects(data);
       })
       .catch((error) => {
         console.error('Error fetching subjects:', error);
+      })
+      .finally(() => {
+        setLoadingSubjects(false);
       });
   }, []);
 
@@ -32,7 +37,7 @@ const CreateSubject = () => {
       return;
     }
 
-    setSubmitButton(false); // Disable button and show loading state
+    setSubmitButton(false);
     try {
       const response = await fetch(
         `http://localhost:8080/api/subject/createsubject?subjectName=${encodeURIComponent(subjectName)}`,
@@ -55,7 +60,7 @@ const CreateSubject = () => {
     } catch (error) {
       console.error('Error creating subject:', error);
     } finally {
-      setSubmitButton(true); // Re-enable button after request completes
+      setSubmitButton(true);
     }
   };
 
@@ -66,7 +71,6 @@ const CreateSubject = () => {
   return (
     <div className="mt-16 min-h-screen bg-gray-100 flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-5xl flex flex-col lg:flex-row gap-6">
-        {/* Form Section */}
         <div className="w-full lg:w-1/2 bg-white p-6 rounded-xl shadow-md border border-gray-200">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">Add New Subject</h2>
           <form onSubmit={handleAddSubject}>
@@ -86,7 +90,7 @@ const CreateSubject = () => {
               disabled={!subjectName || !submitButton}
               className={`w-full py-3 font-semibold rounded-xl transition-all duration-300 mb-4 ${
                 !subjectName || !submitButton
-                  ? 'bg-gray-400 text-white cursor-not-allowed'
+                  ? 'bg-gray-700 text-white cursor-not-allowed'
                   : 'bg-gray-800 hover:bg-gray-900 text-white cursor-pointer'
               }`}
             >
@@ -95,22 +99,25 @@ const CreateSubject = () => {
           </form>
         </div>
 
-        {/* Subjects List Section */}
         <div className="w-full lg:w-1/2 bg-white p-6 rounded-xl shadow-md border border-gray-200">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">Existing Subjects</h2>
           <div className="max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-            {subjects.length > 0 ? (
-              [...subjects]
-                .reverse()
-                .map((subject) => (
-                  <div
-                    key={subject.id}
-                    className="bg-gray-50 w-full py-3 px-4 mb-3 rounded-xl shadow-sm hover:bg-gray-100 transition-all duration-200 cursor-pointer"
-                    onClick={() => handleMenuClick(subject.id)}
-                  >
-                    <p className="text-gray-700 text-base font-medium">{subject.subjectName}</p>
-                  </div>
-                ))
+            {loadingSubjects ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="mb-3">
+                  <Skeleton variant="rounded" height={48} />
+                </div>
+              ))
+            ) : subjects.length > 0 ? (
+              [...subjects].reverse().map((subject) => (
+                <div
+                  key={subject.id}
+                  className="bg-gray-50 w-full py-3 px-4 mb-3 rounded-xl shadow-sm hover:bg-gray-100 transition-all duration-200 cursor-pointer"
+                  onClick={() => handleMenuClick(subject.id)}
+                >
+                  <p className="text-gray-700 text-base font-medium">{subject.subjectName}</p>
+                </div>
+              ))
             ) : (
               <p className="text-gray-500 text-center py-4">No subjects available.</p>
             )}

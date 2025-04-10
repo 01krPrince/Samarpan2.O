@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,12 +15,13 @@ import lombok.Setter;
 public class ProjectUpdateRequest {
     @NotBlank
     private String projectId;
+    private String studentId;
     private String projectName;
     private String githubLink;
     private String deployedLink;
     private String imageUrls;
-    private String batch;
-    private String batchId;
+    private List<String> technologiesUsed;
+    private String description;
     private String subject;
     private String subjectId;
 }

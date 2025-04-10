@@ -11,6 +11,9 @@ import Landing from "./component/ADMIN/Landing";
 import AdminSidebar from "./component/ADMIN/AdminSidebar";
 import StudentSidebar from "./component/STUDENT/navbar/StudentSidebar";
 import ViewAll from "./component/ADMIN/ViewAll";
+import UpdateProject from "./component/STUDENT/dashboard/UpdateProject";
+import ViewDetails from "./component/STUDENT/dashboard/viewProjectStudent";
+import StudentProfile from "./component/STUDENT/dashboard/StudentProfile";
 
 function App() {
   const [userRole, setUserRole] = useState(null);
@@ -38,7 +41,7 @@ function App() {
     };
 
     fetchUserRole();
-  }, [location.pathname]); // Trigger re-evaluation on route changes
+  }, [location.pathname]);
 
   const hideSidebarRoutes = ["/login", "/signup"];
   const shouldShowSidebar = !hideSidebarRoutes.includes(location.pathname) && userRole;
@@ -64,6 +67,23 @@ function App() {
             element={userRole === "STUDENT" ? <SubmitProject /> : <Navigate to="/login" />}
           />
 
+          <Route
+            path="/update-project"
+            element={userRole === "STUDENT" ? <UpdateProject /> : <Navigate to="/login" />}
+          />
+
+          <Route
+            path="/view-project"
+            element={userRole === "STUDENT" ? <ViewDetails /> : <Navigate to="/login" />}
+          />
+
+          <Route
+            path="/profile"
+            element={userRole === "STUDENT" || userRole === "ADMIN" ? <StudentProfile /> : <Navigate to="/login" />}
+          />
+
+
+
           {/* Admin Routes */}
           <Route
             path="/landingpage"
@@ -82,7 +102,7 @@ function App() {
             element={userRole === "ADMIN" ? <ViewAll /> : <Navigate to="/login" />}
           />
           <Route
-            path="/admin/project/:id"
+            path="/admin/review-project"
             element={userRole === "ADMIN" ? <ProjectDetails /> : <Navigate to="/login" />}
           />
         </Routes>

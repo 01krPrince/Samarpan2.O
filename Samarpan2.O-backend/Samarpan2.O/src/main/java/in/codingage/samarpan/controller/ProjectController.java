@@ -40,8 +40,8 @@ public class ProjectController {
     }
 
     @PutMapping("/update")
-    public Project updateProject(  @RequestBody ProjectUpdateRequest projectUpdateRequest) {
-        return projectService.updateProject( projectUpdateRequest);
+    public Project updateProject(@RequestBody ProjectUpdateRequest projectUpdateRequest) {
+        return projectService.updateProject(projectUpdateRequest);
     }
 
     @DeleteMapping("/delete")
@@ -55,10 +55,10 @@ public class ProjectController {
         return projectService.getProjectByStudentId(studentId);
     }
 
-//    @PutMapping("/reviewProject")
-//    public Optional<Project> reviewProject(@RequestBody Project project, @RequestParam Set<Remarks> remarks, @RequestParam String comment) {
-//        return projectService.reviewProject(project, remarks, comment);
-//    }
+    @PutMapping("/reviewProject")
+    public Optional<Project> reviewProject(@RequestBody Project project, @RequestParam Set<Remarks> remarks, @RequestParam String comment) {
+        return projectService.reviewProject(project, remarks, comment);
+    }
 
 
 }

@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -22,6 +23,7 @@ public class Project {
     private String githubLink;
     private String deployedLink;
     private String imageUrls;
+    private List<String> technologiesUsed;
     private String description;
     private String batch;
     private String batchId;

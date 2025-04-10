@@ -12,7 +12,7 @@ const AdminSidebar = () => {
     localStorage.clear();
     navigate('/');
     console.log("Logged out");
-  }
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -40,6 +40,14 @@ const AdminSidebar = () => {
           />
 
           <NavItem
+            to="/admin/view-all"
+            icon={<Folder size={20} />}
+            text="Projects"
+            active={location.pathname === "/admin/view-all"}
+            isOpen={!isMobile}
+          />
+
+          <NavItem
             to="/admin/create-batch"
             icon={<Users size={20} />}
             text="Batches"
@@ -55,14 +63,6 @@ const AdminSidebar = () => {
             isOpen={!isMobile}
           />
 
-          <NavItem
-            to="/admin/view-all"
-            icon={<Folder size={20} />}
-            text="Projects"
-            active={location.pathname === "/admin/view-all"}
-            isOpen={!isMobile}
-          />
-
           <button
             className="flex items-center space-x-3 p-2 hover:bg-gray-300 rounded w-full text-left"
             onClick={handleClick}
@@ -73,7 +73,11 @@ const AdminSidebar = () => {
         </div>
       </div>
 
-      <div className={`flex-1 flex flex-col transition-all duration-300 ${isMobile ? "ml-14" : "ml-64"}`}>
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 ${
+          isMobile ? "ml-14" : "ml-64"
+        }`}
+      >
         <Header />
       </div>
     </div>
@@ -97,8 +101,10 @@ const NavItem = ({ to, icon, text, active, isOpen }) => {
   return (
     <Link
       to={to}
-      className={`flex items-center space-x-3 p-2 rounded transition ${
-        active ? "bg-gray-200" : "hover:bg-gray-300"
+      className={`flex items-center space-x-3 p-2 rounded transition-all duration-200 ${
+        active
+          ? "bg-blue-100 text-gray-600 font-semibold border-l-4 border-gray-800"
+          : "hover:bg-gray-100"
       }`}
     >
       {icon}

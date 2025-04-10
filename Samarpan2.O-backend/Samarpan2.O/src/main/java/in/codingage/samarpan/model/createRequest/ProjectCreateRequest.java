@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,6 +16,7 @@ public class ProjectCreateRequest {
     private String githubLink;
     private String deployedLink;
     private String imageUrls;
+    private List<String> technologiesUsed;
     private String description;
     private String batch;
     private String batchId;

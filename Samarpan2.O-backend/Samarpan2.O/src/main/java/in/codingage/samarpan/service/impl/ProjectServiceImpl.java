@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -87,8 +88,6 @@ public class ProjectServiceImpl implements ProjectService {
             throw new IllegalArgumentException("Branch ID cannot be null or empty");
         }
 
-        System.out.println("Branch id "+projectCreateRequest.getBranchId());
-
         String studentId = userRepository.findByUsername(remoteUser).get().getId();
         String studentName = userRepository.findByUsername(remoteUser).get().getName();
         Project project = new Project();
@@ -105,6 +104,7 @@ public class ProjectServiceImpl implements ProjectService {
         project.setSubmissionDate(LocalDateTime.now());
         project.setDescription(projectCreateRequest.getDescription());
         project.setBranchId(projectCreateRequest.getBranchId());
+        project.setTechnologiesUsed(projectCreateRequest.getTechnologiesUsed());
 
         Optional<Branch> b = branchService.findById(projectCreateRequest.getBranchId());
         if (b.isPresent()){
@@ -124,15 +124,18 @@ public class ProjectServiceImpl implements ProjectService {
             throw new IllegalArgumentException("Project update request cannot be null");
         }
 
+        System.out.println("Sub Id ----   "+projectUpdateRequest.getStudentId());
+
         if (projectUpdateRequest.getProjectId() == null || projectUpdateRequest.getProjectId().trim().isEmpty()) {
             throw new IllegalArgumentException("Project ID cannot be null or empty");
         }
 
-        if (projectUpdateRequest.getBatchId() == null || projectUpdateRequest.getBatchId().trim().isEmpty()) {
-            throw new IllegalArgumentException("BatchId ID cannot be null or empty");
-        } else {
-            batchRepository.findById(projectUpdateRequest.getBatchId()).orElseThrow(() -> new ApplicationException("BATCH", "DOES_NOT_EXIST"));
-        }
+//        if (projectUpdateRequest.getSubjectId() == null || projectUpdateRequest.getSubjectId().trim().isEmpty()) {
+//            throw new IllegalArgumentException("Subject ID cannot be null or empty");
+//        } else {
+//            subjectRepository.findById(projectUpdateRequest.getSubjectId())
+//                    .orElseThrow(() -> new ApplicationException("SUBJECT", "DOES_NOT_EXIST"));
+//        }
 
         if (projectUpdateRequest.getSubjectId() == null || projectUpdateRequest.getSubjectId().trim().isEmpty()) {
             throw new IllegalArgumentException("Subject ID cannot be null or empty");
@@ -143,15 +146,18 @@ public class ProjectServiceImpl implements ProjectService {
 
         Project existingProject = getProjectById(projectUpdateRequest.getProjectId());
 
+        // ✅ Validate student ownership
+        if (!existingProject.getStudentId().equals(projectUpdateRequest.getStudentId())) {
+            throw new ApplicationException("PROJECT", "STUDENT_ID_MISMATCH");
+        }
+
         if (projectUpdateRequest.getProjectName() != null && !projectUpdateRequest.getProjectName().trim().isEmpty()) {
-            // Check if the new name conflicts with other projects
             Optional<Project> projectWithSameName = projectRepository.findByProjectName(projectUpdateRequest.getProjectName().trim());
             if (projectWithSameName.isPresent() && !projectWithSameName.get().getProjectId().equals(existingProject.getProjectId())) {
                 throw new IllegalArgumentException("A project with this name already exists");
             }
             existingProject.setProjectName(projectUpdateRequest.getProjectName().trim());
         }
-
 
         if (projectUpdateRequest.getGithubLink() != null && !projectUpdateRequest.getGithubLink().trim().isEmpty()) {
             existingProject.setGithubLink(projectUpdateRequest.getGithubLink().trim());
@@ -165,12 +171,21 @@ public class ProjectServiceImpl implements ProjectService {
             existingProject.setImageUrls(projectUpdateRequest.getImageUrls().trim());
         }
 
-        if (projectUpdateRequest.getBatch() != null && !projectUpdateRequest.getBatch().trim().isEmpty()) {
-            existingProject.setBatch(projectUpdateRequest.getBatch().trim());
-        }
-
         if (projectUpdateRequest.getSubject() != null && !projectUpdateRequest.getSubject().trim().isEmpty()) {
             existingProject.setSubject(projectUpdateRequest.getSubject().trim());
+        }
+
+        if (projectUpdateRequest.getTechnologiesUsed() != null && !projectUpdateRequest.getTechnologiesUsed().isEmpty()) {
+            List<String> cleanedTechList = projectUpdateRequest.getTechnologiesUsed().stream()
+                    .filter(tech -> tech != null && !tech.trim().isEmpty())
+                    .map(String::trim)
+                    .collect(Collectors.toList());
+
+            existingProject.setTechnologiesUsed(cleanedTechList);
+        }
+
+        if (projectUpdateRequest.getDescription() != null && !projectUpdateRequest.getDescription().trim().isEmpty()) {
+            existingProject.setDescription(projectUpdateRequest.getDescription().trim());
         }
 
         try {
@@ -221,13 +236,13 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.findAllByStudentId(studentId);
     }
 
-//    @Override
-//    public Optional<Project> reviewProject(Project project, Set<Remarks> remarks, String comment) {
-//        project.setMarkAsCheck(true);
-//        project.setRemarks(remarks);
-//        project.setComment(comment);
-//        return Optional.of(projectRepository.save(project));
-//    }
+    @Override
+    public Optional<Project> reviewProject(Project project, Set<Remarks> remarks, String comment) {
+        project.setMarkAsCheck(true);
+        project.setRemarks(remarks);
+        project.setComment(comment);
+        return Optional.of(projectRepository.save(project));
+    }
 
 
 }
