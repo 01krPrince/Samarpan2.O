@@ -41,7 +41,7 @@ export default function SubmitProject() {
       studentName: parsedUser.name || "John Doe",
     }));
 
-    fetch("http://localhost:8080/api/subject/getAllSubjects")
+    fetch("https://samarpan2-o.onrender.com/api/subject/getAllSubjects")
       .then((response) => response.json())
       .then((data) => setSubjects(data))
       .catch((err) => console.error("Error fetching subjects:", err));
@@ -150,7 +150,7 @@ export default function SubmitProject() {
         branchId: userData?.batch?.branchId || "N/A",
       };
 
-      const response = await fetch("http://localhost:8080/api/projects/create", {
+      const response = await fetch("https://samarpan2-o.onrender.com/api/projects/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -26,20 +26,20 @@ const ViewAll = () => {
         setLoading(true);
         const token = localStorage.getItem("token");
 
-        const batchesResponse = await fetch("http://localhost:8080/api/v1/Batch/getAllBatch");
+        const batchesResponse = await fetch("https://samarpan2-o.onrender.com/api/v1/Batch/getAllBatch");
         if (!batchesResponse.ok) throw new Error("Failed to fetch batches");
         const batchesData = await batchesResponse.json();
         setBatches(batchesData);
         setAllBatches(batchesData);
 
-        const branchesResponse = await fetch("http://localhost:8080/api/v1/branch/getAllBranches", {
+        const branchesResponse = await fetch("https://samarpan2-o.onrender.com/api/v1/branch/getAllBranches", {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (!branchesResponse.ok) throw new Error("Failed to fetch branches");
         const branchesData = await branchesResponse.json();
         setBranches(branchesData);
 
-        const subjectsResponse = await fetch("http://localhost:8080/api/subject/getAllSubjects", {
+        const subjectsResponse = await fetch("https://samarpan2-o.onrender.com/api/subject/getAllSubjects", {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (!subjectsResponse.ok) throw new Error("Failed to fetch subjects");
@@ -49,7 +49,7 @@ const ViewAll = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         const adminId = user?.id;
 
-        const projectsResponse = await fetch(`http://localhost:8080/api/projects/all?adminId=${adminId}`, {
+        const projectsResponse = await fetch(`https://samarpan2-o.onrender.com/api/projects/all?adminId=${adminId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (!projectsResponse.ok) {

@@ -17,7 +17,7 @@ const Landing = () => {
     const adminId = user?.id;
     console.log("Admin ID:", adminId);
 
-    fetch(`http://localhost:8080/api/projects/all?adminId=${adminId}`, {
+    fetch(`https://samarpan2-o.onrender.com/api/projects/all?adminId=${adminId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -10,7 +10,7 @@ const CreateSubject = () => {
 
   useEffect(() => {
     setLoadingSubjects(true);
-    fetch('http://localhost:8080/api/subject/getAllSubjects', {
+    fetch('https://samarpan2-o.onrender.com/api/subject/getAllSubjects', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -40,7 +40,7 @@ const CreateSubject = () => {
     setSubmitButton(false);
     try {
       const response = await fetch(
-        `http://localhost:8080/api/subject/createsubject?subjectName=${encodeURIComponent(subjectName)}`,
+        `https://samarpan2-o.onrender.com/api/subject/createsubject?subjectName=${encodeURIComponent(subjectName)}`,
         {
           method: 'POST',
           headers: {

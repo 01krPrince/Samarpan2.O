@@ -33,7 +33,7 @@ const SignUp = () => {
     const fetchBranches = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/v1/branch/getAllBranches",
+          "https://samarpan2-o.onrender.com/api/v1/branch/getAllBranches",
           {
             headers: { accept: "*/*" },
           }
@@ -55,7 +55,7 @@ const SignUp = () => {
       const fetchBatches = async () => {
         try {
           const response = await fetch(
-            `http://localhost:8080/api/v1/Batch/findAllByBranchId?branchId=${selectedBranchId}`,
+            `https://samarpan2-o.onrender.com/api/v1/Batch/findAllByBranchId?branchId=${selectedBranchId}`,
             {
               headers: {
                 accept: "*/*",
@@ -114,7 +114,7 @@ const SignUp = () => {
     };
   
     try {
-      const response = await fetch("http://localhost:8080/api/auth/signup/student", {
+      const response = await fetch("https://samarpan2-o.onrender.com/api/auth/signup/student", {
         method: "POST",
         headers: {
           "Accept": "application/json",

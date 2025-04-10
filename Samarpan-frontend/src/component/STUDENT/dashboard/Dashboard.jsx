@@ -16,7 +16,7 @@ export default function Dashboard() {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await fetch("http://localhost:8080/api/subject/getAllSubjects", {
+        const response = await fetch("https://samarpan2-o.onrender.com/api/subject/getAllSubjects", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -36,7 +36,7 @@ export default function Dashboard() {
         const studentId = user?.id;
 
         const response = await fetch(
-          `http://localhost:8080/api/projects/getProjectByStudentId?studentId=${studentId}`,
+          `https://samarpan2-o.onrender.com/api/projects/getProjectByStudentId?studentId=${studentId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

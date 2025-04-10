@@ -24,7 +24,7 @@ const ProjectDetails = () => {
     setSelectedRemark(project.remarks)
     setComment(project.comment)
     setRemark(project.remarks)
-    fetch('http://localhost:8080/api/remarks/all', {
+    fetch('https://samarpan2-o.onrender.com/api/remarks/all', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -43,7 +43,7 @@ const ProjectDetails = () => {
       return;
     }
 
-    fetch(`http://localhost:8080/api/projects/reviewProject?remarks=${selectedRemark}&comment=${encodeURIComponent(comment)}`, {
+    fetch(`https://samarpan2-o.onrender.com/api/projects/reviewProject?remarks=${selectedRemark}&comment=${encodeURIComponent(comment)}`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`,

@@ -59,7 +59,7 @@ export default function UpdateProject() {
       setError("No project data available to update.");
     }
 
-    fetch("http://localhost:8080/api/subject/getAllSubjects")
+    fetch("https://samarpan2-o.onrender.com/api/subject/getAllSubjects")
       .then((response) => response.json())
       .then((data) => setSubjects(data))
       .catch((err) => console.error("Error fetching subjects:", err));
@@ -158,7 +158,7 @@ export default function UpdateProject() {
         subjectId: subjectId,
       };
 
-      const response = await fetch("http://localhost:8080/api/projects/update", {
+      const response = await fetch("https://samarpan2-o.onrender.com/api/projects/update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -14,7 +14,7 @@ const CreateBatch = () => {
     try {
       setLoadingBatches(true);
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:8080/api/v1/Batch/getAllBatch', {
+      const response = await fetch('https://samarpan2-o.onrender.com/api/v1/Batch/getAllBatch', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -36,7 +36,7 @@ const CreateBatch = () => {
     try {
       setLoadingBranches(true);
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:8080/api/v1/branch/getAllBranches', {
+      const response = await fetch('https://samarpan2-o.onrender.com/api/v1/branch/getAllBranches', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -67,7 +67,7 @@ const CreateBatch = () => {
       const token = localStorage.getItem('token');
 
       const response = await fetch(
-        `http://localhost:8080/api/v1/Batch/createBatch?batchName=${encodeURIComponent(batchName)}&branchId=${encodeURIComponent(selectedBranchId)}`,
+        `https://samarpan2-o.onrender.com/api/v1/Batch/createBatch?batchName=${encodeURIComponent(batchName)}&branchId=${encodeURIComponent(selectedBranchId)}`,
         {
           method: 'POST',
           headers: {
