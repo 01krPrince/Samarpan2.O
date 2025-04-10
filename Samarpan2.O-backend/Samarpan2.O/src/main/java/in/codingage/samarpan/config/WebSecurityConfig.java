@@ -82,7 +82,8 @@ public class WebSecurityConfig {
                                 "/v3/api-docs/**",
                                 "/api/subject/getAllSubjects",
                                 "/api/v1/Batch/getAllBatch",
-                                "/api/v1/branch/getAllBranches"
+                                "/api/v1/branch/getAllBranches",
+                                "https://samarpan2-o.netlify.app/"
                         ).permitAll()
                         .requestMatchers("/api/v1/Batch/getAllBatch").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
