@@ -91,7 +91,7 @@ const CreateSubject = () => {
               className={`w-full py-3 font-semibold rounded-xl transition-all duration-300 mb-4 ${
                 !subjectName || !submitButton
                   ? 'bg-gray-700 text-white cursor-not-allowed'
-                  : 'bg-gray-800 hover:bg-gray-900 text-white cursor-pointer'
+                  : 'bg-gray-700 hover:bg-gray-600 text-white cursor-pointer'
               }`}
             >
               {submitButton ? '+ Add Subject' : 'Submitting...'}

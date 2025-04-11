@@ -201,7 +201,7 @@ const ProjectDetails = () => {
       </div>
 
 
-      <div className='py-1 px-3 max-h-auto max-w-auto bg-gray-300 flex'></div>
+      <div className='py-1 px-3 max-h-auto max-w-auto bg-gray-300 flex mt-5'></div>
 
       <div className="text-gray-500 text-sm mt-6 flex justify-between">
         <span>© 2025 ProjectReview. All rights reserved.</span>

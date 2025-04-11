@@ -18,7 +18,7 @@ const ViewAll = () => {
   const [sortCheckedOnTop, setSortCheckedOnTop] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -77,12 +77,15 @@ const ViewAll = () => {
     if (branch) {
       filteredProjects = filteredProjects.filter(project => project.branch === branch);
     }
+
     if (batch) {
       filteredProjects = filteredProjects.filter(project => project.batch === batch);
     }
+
     if (subject) {
       filteredProjects = filteredProjects.filter(project => project.subject === subject);
     }
+
     if (searchQuery) {
       filteredProjects = filteredProjects.filter(project =>
         (project.projectName?.toLowerCase().includes(searchQuery.toLowerCase()) || '') ||
@@ -103,8 +106,8 @@ const ViewAll = () => {
 
   const filterByBranch = (selectedBranch) => {
     if (selectedBranch) {
-      const filteredBatches = allBatches.filter(b => b.branchName === selectedBranch);
-      setBatches(filteredBatches);
+      const filtered = allBatches.filter(b => b.branchName === selectedBranch);
+      setBatches(filtered);
       setBatch('');
     } else {
       setBatches(allBatches);
@@ -243,13 +246,8 @@ const ViewAll = () => {
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-500 w-full">No projects found</p>
+            <p className="text-center w-full text-gray-500">No projects found.</p>
           )}
-        </div>
-
-        {/* Footer */}
-        <div className="mt-12 py-4 text-center text-gray-500 text-sm bg-white border border-gray-200 rounded-xl">
-          © 2025 Project Management System. All rights reserved.
         </div>
       </div>
     </div>

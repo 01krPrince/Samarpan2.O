@@ -86,7 +86,7 @@ const Login = () => {
               <FaEnvelope className="text-gray-500 mr-2" />
               <input
                 type="email"
-                placeholder="admin@example.com"
+                placeholder="cagers@example.com"
                 className="w-full outline-none"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -112,7 +112,7 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full bg-gray-900 text-white py-2 rounded-md flex justify-center items-center text-lg font-medium cursor-pointer"
+            className="w-full bg-gray-900 text-white py-2 rounded-md flex justify-center items-center text-lg font-medium cursor-pointer hover:bg-gray-800"
             disabled={loading}
           >
             {loading ? "Logging in..." : (

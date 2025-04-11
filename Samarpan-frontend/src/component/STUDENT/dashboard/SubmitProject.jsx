@@ -15,7 +15,7 @@ export default function SubmitProject() {
   });
 
   const [submitted, setSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // New loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [subjects, setSubjects] = useState([]);
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
@@ -174,7 +174,7 @@ export default function SubmitProject() {
       }
 
       setSubmitted(true);
-      setIsSubmitting(false); // Submission complete
+      setIsSubmitting(false);
       setTimeout(() => {
         navigate('/dashboard');
       }, 2000);

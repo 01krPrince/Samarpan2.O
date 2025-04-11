@@ -145,7 +145,7 @@ const CreateBatch = () => {
               className={`w-full py-3 font-semibold rounded-xl transition-all duration-300 mb-4 ${
                 !selectedBranchId || !batchName || !submitButton
                   ? 'bg-gray-700 text-white cursor-not-allowed'
-                  : 'bg-gray-800 hover:bg-gray-900 text-white cursor-pointer'
+                  : 'bg-gray-700 hover:bg-gray-800 text-white cursor-pointer'
               }`}
             >
               {submitButton ? '+ Add Batch' : 'Submitting...'}
