@@ -83,7 +83,8 @@ public class WebSecurityConfig {
                                 "/api/subject/getAllSubjects",
                                 "/api/v1/Batch/getAllBatch",
                                 "/api/v1/branch/getAllBranches",
-                                "https://samarpan2-o.netlify.app/"
+                                "https://samarpan2-o.netlify.app/",
+                                "/ping"
                         ).permitAll()
                         .requestMatchers("/api/v1/Batch/getAllBatch").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
