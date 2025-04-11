@@ -87,11 +87,6 @@ export default function UpdateProject() {
       return;
     }
 
-    if (thumbnailPreview) {
-      console.log("Old image exists. Can remove it from here.");
-      // Email not responding to get confirmation to check the API Secret of Cloudnary......
-    }
-
     setError(null);
     setFormData({ ...formData, thumbnail: file });
     setThumbnailPreview(URL.createObjectURL(file));
@@ -103,7 +98,7 @@ export default function UpdateProject() {
   };
 
   const handleSubmit = async (e) => {
-    setLoadUpdate(true)
+    setLoadUpdate(true);
     e.preventDefault();
     setError(null);
 
@@ -183,16 +178,25 @@ export default function UpdateProject() {
     } catch (err) {
       setError("Something went wrong: " + err.message);
     }
-    setLoadUpdate(false)
+
+    setLoadUpdate(false);
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 pt-[10vh]">
       <div className="bg-white shadow-md rounded-lg p-6 md:p-10 w-full max-w-2xl">
-        <h2 className="text-2xl font-semibold text-gray-800">[ <u>{formData.projectName}</u> ]</h2>
+        <h2 className="text-2xl font-semibold text-gray-800">
+          [ <u>{formData.projectName}</u> ]
+        </h2>
         <p className="text-gray-600 mb-6">Edit your existing project details below.</p>
 
         {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">{error}</div>}
+
+        {submitted && (
+          <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg flex items-center gap-2">
+            <Check /> Project updated successfully!
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="text-sm text-gray-700">
@@ -221,7 +225,7 @@ export default function UpdateProject() {
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
               required
             >
-              <option value="">Select Subject</option>
+              <option value="" disabled>Select Subject</option>
               {subjects.map((subject) => (
                 <option key={subject.id} value={subject.subjectName}>
                   {subject.subjectName}
@@ -258,7 +262,6 @@ export default function UpdateProject() {
             <label className="block text-sm font-medium text-gray-700">Technologies Used</label>
             <input
               type="text"
-              name="technologiesUsed"
               value={technologiesUsedList}
               onChange={(e) => setTechnologiesUsedList(e.target.value)}
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
@@ -266,6 +269,19 @@ export default function UpdateProject() {
               required
             />
             <p className="text-xs text-gray-500 mt-1">Separate with commas</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Description ({descLimit}/300)</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
+              placeholder="Describe your project"
+              rows={4}
+              required
+            ></textarea>
           </div>
 
           <div>
@@ -281,46 +297,22 @@ export default function UpdateProject() {
                   <p className="text-xs text-gray-600">Current Thumbnail:</p>
                   <img
                     src={thumbnailPreview}
-                    alt="Preview"
-                    className="w-40 h-auto mx-auto rounded-lg shadow"
+                    alt="Project Thumbnail"
+                    className="w-full h-48 object-cover rounded-lg mt-2"
                   />
                 </div>
               )}
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Project Description</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border rounded-lg h-24 focus:outline-none focus:ring-2 focus:ring-gray-800"
-              placeholder="Describe your project (max 300 characters)..."
-              required
-            ></textarea>
-            <div className="text-xs text-gray-500 text-right">{descLimit}/300</div>
-          </div>
-
           <button
             type="submit"
-            className={`px-4 py-1.5 text-white text-sm font-medium rounded-md focus:outline-none focus:ring-2 ${loadUpdate
-                ? "bg-gray-500 hover:bg-gray-500 focus:ring-gray-500"
-                : "bg-gray-800 hover:bg-gray-900 focus:ring-gray-800"
-              }`}
+            className="w-full bg-gray-800 text-white py-2 px-4 rounded-lg hover:bg-gray-900 transition-colors cursor-pointer"
+            disabled={loadUpdate}
           >
-            {loadUpdate ? "Saving..." : "Save Changes"}
+            {loadUpdate ? "Updating..." : "Update Project"}
           </button>
-
-
         </form>
-
-        {submitted && (
-          <div className="mt-4 bg-green-100 text-green-700 p-3 rounded-lg flex items-center gap-2">
-            <Check size={20} />
-            <span>Project updated successfully!</span>
-          </div>
-        )}
       </div>
     </div>
   );

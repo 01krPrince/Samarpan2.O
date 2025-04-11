@@ -15,7 +15,6 @@ export default function Dashboard() {
     const fetchCategories = async () => {
       try {
         const token = localStorage.getItem("token");
-
         const response = await fetch("https://samarpan2-o.onrender.com/api/subject/getAllSubjects", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -65,22 +64,20 @@ export default function Dashboard() {
       : projects.filter((p) => p.subject === selectedCategory);
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-      <div className="md:ml-[10px] ml-[60px] p-4 pt-[10vh]">
-        <main className="px-3">
-          <h2 className="md:text-2xl text-xl font-semibold mb-4">Projects Overview</h2>
+    <div className="bg-gray-100 min-h-screen max-w-[100vw]">
+      <div className="ml-16 md:ml-[10px] p-4 pt-[10vh]">
+        <main className="px-2 sm:px-4">
+          <h2 className="text-xl sm:text-2xl font-semibold mb-4">Projects Overview</h2>
 
           {loading ? (
             <>
-              {/* Skeleton Buttons */}
-              <div className="flex gap-2 mb-4">
+              <div className="flex gap-2 mb-4 overflow-x-auto">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Skeleton key={i} variant="rounded" width={90} height={32} />
                 ))}
               </div>
 
-              {/* Skeleton Cards */}
-              <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="bg-white p-4 rounded-lg shadow-md">
                     <Skeleton variant="rectangular" width="100%" height={180} />
@@ -95,16 +92,17 @@ export default function Dashboard() {
             <p className="text-red-500 text-center">Error: {error}</p>
           ) : (
             <>
-              {/* Category Filter Buttons */}
+              {/* Category Buttons */}
               <div className="overflow-x-auto max-w-full">
                 <div className="flex gap-2 mb-4">
                   {categories.map((category) => (
                     <button
                       key={category}
-                      className={`md:px-4 px-3 md:py-2 py-1 text-sm border rounded-lg transition min-w-fit ${selectedCategory === category
+                      className={`px-3 py-1.5 text-sm border rounded-lg transition min-w-fit whitespace-nowrap cursor-pointer ${
+                        selectedCategory === category
                           ? "bg-gray-800 text-white"
                           : "hover:bg-gray-200 bg-white"
-                        }`}
+                      }`}
                       onClick={() => setSelectedCategory(category)}
                     >
                       {category}
@@ -113,32 +111,35 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Project Cards */}
-              <div className="grid md:grid-cols-1 lg:grid-cols-2 grid-cols-1 gap-6">
+              {/* Projects Grid */}
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {/* Add New Project Card */}
                 <div
                   onClick={() => navigate("/submit-project")}
-                  className="p-6 flex flex-col items-center justify-center border-dashed border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50"
+                  className="p-6 flex flex-col items-center justify-center border-dashed border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition"
                 >
                   <PlusCircle size={36} className="text-gray-500" />
                   <p className="text-base text-gray-500 mt-2">Add New Project</p>
                 </div>
 
+                {/* Project Cards */}
                 {filteredProjects.length > 0 ? (
                   filteredProjects.map((project, index) => (
                     <div
                       key={index}
-                      className="p-6 bg-white shadow-md rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 ease-in-out relative"
+                      className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition-all border cursor-pointer"
                       onClick={() => navigate("/view-project", { state: { project } })}
                     >
-                      <div className="overflow-hidden rounded-md relative">
+                      <div className="relative rounded overflow-hidden">
                         <img
                           src={project.imageUrls}
                           alt={project.projectName}
-                          className="w-full h-40 md:h-48 lg:h-52 object-cover transition-transform duration-300 hover:scale-105"
+                          className="w-full h-40 sm:h-44 md:h-48 object-cover transition-transform duration-300 hover:scale-105"
                         />
                         <span
-                          className={`absolute top-2 right-2 px-2 py-1 text-xs font-medium text-white rounded-full shadow-sm ${project.markAsCheck ? "bg-green-500" : "bg-red-500"
-                            }`}
+                          className={`absolute top-2 right-2 px-2 py-1 text-xs font-medium text-white rounded-full shadow-sm ${
+                            project.markAsCheck ? "bg-green-500" : "bg-red-500"
+                          }`}
                         >
                           {project.markAsCheck ? "Checked" : "Pending"}
                         </span>
@@ -146,22 +147,22 @@ export default function Dashboard() {
 
                       <div className="mt-4 space-y-2">
                         <div className="flex justify-between items-start">
-                          <h3 className="text-xl font-semibold text-gray-900 truncate">
+                          <h3 className="text-lg font-semibold text-gray-900 truncate">
                             {project.projectName}
                           </h3>
-                          <p className="text-sm text-gray-500 italic">
+                          <p className="text-xs text-gray-500 italic">
                             {new Date(project.submissionDate).toLocaleDateString()}
                           </p>
                         </div>
 
-                        <p className="text-base text-gray-700 font-medium">{project.subject}</p>
+                        <p className="text-sm text-gray-700 font-medium">{project.subject}</p>
 
-                        <div className="flex flex-wrap justify-around gap-3 mt-3">
+                        <div className="flex flex-wrap justify-start gap-4 mt-3">
                           <a
                             href={project.githubLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-700 text-sm font-medium hover:text-blue-900"
+                            className="text-blue-600 text-sm font-medium hover:underline"
                           >
                             GitHub Repo
                           </a>
@@ -169,7 +170,7 @@ export default function Dashboard() {
                             href={project.deployedLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-green-700 text-sm font-medium hover:text-green-900"
+                            className="text-green-600 text-sm font-medium hover:underline"
                           >
                             Live Demo
                           </a>
@@ -183,8 +184,6 @@ export default function Dashboard() {
                   </p>
                 )}
               </div>
-
-
             </>
           )}
         </main>

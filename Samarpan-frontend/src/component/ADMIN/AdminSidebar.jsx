@@ -87,7 +87,7 @@ const AdminSidebar = () => {
 const Header = () => {
   return (
     <header className="w-full flex justify-between bg-white text-black md:p-4 p-2 shadow-sm fixed top-0 left-0 z-10">
-      <h1 className="text-lg font-bold">Project Track</h1>
+      <h1 className="text-lg font-bold">Samarpan</h1>
       <div className="flex items-center">
         <div className="ml-3 hidden md:block">
           <h1 className="text-sm font-semibold">Admin</h1>

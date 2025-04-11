@@ -71,6 +71,7 @@ const CreateSubject = () => {
   return (
     <div className="mt-16 min-h-screen bg-gray-100 flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-5xl flex flex-col lg:flex-row gap-6">
+        {/* Add Subject Form */}
         <div className="w-full lg:w-1/2 bg-white p-6 rounded-xl shadow-md border border-gray-200">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">Add New Subject</h2>
           <form onSubmit={handleAddSubject}>
@@ -99,6 +100,7 @@ const CreateSubject = () => {
           </form>
         </div>
 
+        {/* Existing Subjects */}
         <div className="w-full lg:w-1/2 bg-white p-6 rounded-xl shadow-md border border-gray-200">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">Existing Subjects</h2>
           <div className="max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">

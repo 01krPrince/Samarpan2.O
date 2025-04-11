@@ -10,6 +10,7 @@ import {
 const ViewDetails = () => {
   const location = useLocation();
   const project = location.state?.project;
+  console.log("Project is : ---  ", project)
   const navigate = useNavigate();
 
   if (!project) {
@@ -21,8 +22,7 @@ const ViewDetails = () => {
   }
 
   return (
-    <div className="mt-20 max-w-[95%] sm:max-w-[90%] md:max-w-[600px] xl:max-w-[800px] mx-auto p-4 sm:p-6 bg-white rounded-lg shadow-md">
-      {/* Header */}
+    <div className="mt-20 max-w-[95%] sm:max-w-[98%] md:max-w-[700px] xl:max-w-[900px] p-4 sm:p-6 bg-white rounded-lg shadow-md">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div>
           <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">{project.projectName}</h2>
@@ -51,14 +51,13 @@ const ViewDetails = () => {
 
           <button
             onClick={() => navigate(`/update-project`, { state: { project } })}
-            className="px-4 py-1.5 bg-gray-800 text-white text-sm font-semibold rounded-md hover:bg-gray-900 shadow-sm"
+            className="px-4 py-1.5 bg-gray-800 text-white text-sm font-semibold rounded-md hover:bg-gray-900 shadow-sm cursor-pointer"
           >
             Edit
           </button>
         </div>
       </div>
 
-      {/* Meta Info */}
       <div className="text-gray-600 text-sm space-y-1 mb-6">
         <div>
           📍 <span className="font-medium">Branch:</span> {project.branch} &nbsp;|&nbsp;
@@ -71,16 +70,15 @@ const ViewDetails = () => {
 
       {/* Image */}
       {project.imageUrls && (
-        <div className="relative mt-6 mb-6 group overflow-hidden rounded-md border">
+        <div className="relative mt-4 mb-6 group overflow-hidden rounded-md border cursor-pointer">
           <img
             src={project.imageUrls}
             alt="Project Preview"
-            className="w-full h-64 object-cover sm:h-72 transition-all duration-300 group-hover:scale-105"
+            className="w-full h-60 object-cover sm:h-72 transition-all duration-300 group-hover:h-auto"
           />
         </div>
       )}
 
-      {/* Description and Links */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
         <div>
           <h3 className="font-semibold text-gray-700 mb-2">Project Description</h3>
@@ -124,28 +122,33 @@ const ViewDetails = () => {
         </div>
       </div>
 
-      {/* Review */}
-      {project.review && (
-        <div className="bg-gray-50 p-4 rounded-md mb-6">
-          <h3 className="font-semibold text-gray-700 mb-2">Review History</h3>
-          <div className="flex items-start space-x-3">
-            <span className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"></span>
-            <div>
-              <p className="font-semibold text-gray-900">
-                {project.review.reviewerName}{' '}
-                <span className="text-gray-500">{project.review.reviewerRole}</span>
+      <div className="bg-gradient-to-br from-white to-gray-50 p-4 sm:p-6 rounded-2xl mb-8 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
+        <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-5 tracking-tight">Reviewed By</h3>
+
+        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-4 sm:space-y-0">
+          {/* Avatar */}
+          <div className="relative w-12 h-12 flex-shrink-0 self-start sm:self-auto">
+            <div className="w-full h-full bg-indigo-100 rounded-full flex items-center justify-center ring-2 ring-indigo-200 transition-transform duration-200 hover:scale-105">
+              <span className="text-indigo-600 text-lg font-semibold">P</span>
+            </div>
+          </div>
+
+          {/* Info Block */}
+          <div className="flex-1">
+            <p className="text-gray-800 font-semibold text-base tracking-wide">Project Mentor</p>
+            <div className="mt-3 space-y-2 bg-gray-100 p-3 sm:p-4 rounded-lg">
+              <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
+                <span className="font-medium text-gray-900">Remarks:</span> {project.remarks?.[0] ?? 'No remarks'}
               </p>
-              <p className="text-gray-600 mt-1">{project.review.comment}</p>
-              <p className="text-gray-500 text-sm mt-1">
-                {new Date(project.review.date).toLocaleDateString()}
+              <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
+                <span className="font-medium text-gray-900">Comment:</span> {project.comment ?? 'No comments'}
               </p>
             </div>
           </div>
         </div>
-      )}
+      </div>
 
-      {/* Footer */}
-      <div className="text-gray-500 text-sm mt-6 flex flex-col sm:flex-row justify-between gap-2 sm:items-center">
+      <div className="mt-32 text-gray-500 text-sm mt-6 flex flex-col sm:flex-row justify-between gap-2 sm:items-center">
         <span>© 2025 ProjectReview. All rights reserved.</span>
         <div className="flex space-x-4">
           <span className="hover:underline cursor-pointer">Privacy Policy</span>

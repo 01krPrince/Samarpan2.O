@@ -60,6 +60,7 @@ const ViewAll = () => {
           throw new Error("Failed to fetch projects");
         }
         const projectsData = await projectsResponse.json();
+        console.log(projectsData)
         setProjects(projectsData);
       } catch (err) {
         setError(err.message);
@@ -104,9 +105,9 @@ const ViewAll = () => {
     );
   };
 
-  const filterByBranch = (selectedBranch) => {
-    if (selectedBranch) {
-      const filtered = allBatches.filter(b => b.branchName === selectedBranch);
+  const filterByBranch = (selectedBranchId) => {
+    if (selectedBranchId) {
+      const filtered = allBatches.filter(b => b.branchId === selectedBranchId);
       setBatches(filtered);
       setBatch('');
     } else {
@@ -116,9 +117,9 @@ const ViewAll = () => {
   };
 
   const handleBranchChange = (e) => {
-    const selectedBranch = e.target.value;
-    setBranch(selectedBranch);
-    filterByBranch(selectedBranch);
+    const selectedBranchId = e.target.value;
+    setBranch(selectedBranchId);
+    filterByBranch(selectedBranchId);
   };
 
   const handleReset = () => {
@@ -141,21 +142,22 @@ const ViewAll = () => {
   const filteredProjects = getFilteredProjects();
 
   return (
-    <div className="mt-10 min-h-screen bg-gray-100 flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
+    <div className="mt-16 min-h-screen bg-gray-100 flex flex-col items-center py-4 px-2 sm:px-4 lg:px-8 w-full">
       <div className="w-full max-w-7xl">
-        {/* Filters */}
         <div className="flex flex-col sm:flex-row flex-wrap items-center gap-4 mb-8">
-          <select className="w-full md:w-[45%] lg:w-[22%] p-3 bg-white border border-gray-200 rounded-xl shadow-sm"
+          <select
+            className="w-full md:w-[45%] lg:w-[22%] p-3 bg-white border border-gray-200 rounded-xl shadow-sm"
             value={branch}
             onChange={handleBranchChange}
           >
             <option value="">Select Branch</option>
             {branches.map(b => (
-              <option key={b.id} value={b.branchName}>{b.branchName}</option>
+              <option key={b.id} value={b.id}>{b.branchName}</option>
             ))}
           </select>
 
-          <select className="w-full md:w-[45%] lg:w-[22%] p-3 bg-white border border-gray-200 rounded-xl shadow-sm"
+          <select
+            className="w-full md:w-[45%] lg:w-[22%] p-3 bg-white border border-gray-200 rounded-xl shadow-sm"
             value={batch}
             onChange={(e) => setBatch(e.target.value)}
           >
@@ -165,7 +167,8 @@ const ViewAll = () => {
             ))}
           </select>
 
-          <select className="w-full md:w-[45%] lg:w-[22%] p-3 bg-white border border-gray-200 rounded-xl shadow-sm"
+          <select
+            className="w-full md:w-[45%] lg:w-[22%] p-3 bg-white border border-gray-200 rounded-xl shadow-sm"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
           >
@@ -189,7 +192,6 @@ const ViewAll = () => {
           </div>
         </div>
 
-        {/* Sorting & Reset */}
         <div className="flex items-center mb-6">
           <span className="mr-4 text-sm font-medium text-gray-700">
             {sortCheckedOnTop ? 'Checked' : 'Unchecked'}
@@ -203,7 +205,6 @@ const ViewAll = () => {
           </button>
         </div>
 
-        {/* Cards or Skeletons */}
         <div className="p-4 flex flex-wrap gap-4">
           {loading ? (
             Array.from({ length: 6 }).map((_, index) => (
@@ -224,7 +225,7 @@ const ViewAll = () => {
                   <img
                     src={typeof project.imageUrls === 'string' ? project.imageUrls : 'https://via.placeholder.com/280x160'}
                     alt={project.projectName}
-                    className="w-full h-full object-cover hover:scale-105"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
                   />
                 </div>
                 <div className="p-4 relative">

@@ -311,7 +311,7 @@ export default function SubmitProject() {
 
           <button
             type="submit"
-            className={`px-4 py-1.5 text-white text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800 ${
+            className={`px-4 py-1.5 text-white text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800 cursor-pointer ${
               isSubmitting ? "bg-gray-600 cursor-not-allowed" : "bg-gray-800 hover:bg-gray-900"
             }`}
             disabled={isSubmitting}
