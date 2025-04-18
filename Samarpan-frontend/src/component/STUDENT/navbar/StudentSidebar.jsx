@@ -77,6 +77,14 @@ const StudentSidebar = () => {
             isOpen={isSidebarOpen && !isMobile}
             onClick={handleNavClick}
           />
+          <NavItem
+            to="/batchmates"
+            icon={<Home size={20} />}
+            text="Batchmates"
+            active={location.pathname === "/batchmates"}
+            isOpen={isSidebarOpen && !isMobile}
+            onClick={handleNavClick}
+          />
           <button
             className="flex items-center space-x-3 p-2 hover:bg-gray-200 rounded w-full text-left"
             onClick={() => {

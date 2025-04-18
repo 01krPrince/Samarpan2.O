@@ -141,7 +141,7 @@ export default function Dashboard() {
                             project.markAsCheck ? "bg-green-500" : "bg-red-500"
                           }`}
                         >
-                          {project.markAsCheck ? "Checked" : "Pending"}
+                          {project.markAsCheck ? "Checked" : "Un-Checked"}
                         </span>
                       </div>
 

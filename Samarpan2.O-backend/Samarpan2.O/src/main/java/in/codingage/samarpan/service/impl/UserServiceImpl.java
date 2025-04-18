@@ -7,6 +7,7 @@ import in.codingage.samarpan.repository.UserRepository;
 import in.codingage.samarpan.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,5 +106,13 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("No users found for batch: " + batchId);
         }
         return users;
+    }
+
+    public Optional<User> findById(String studentId) {
+        return userRepository.findById(studentId);
+    }
+
+    public Optional<User> findByUsername(String remoteUser) {
+        return userRepository.findByUsername(remoteUser);
     }
 }

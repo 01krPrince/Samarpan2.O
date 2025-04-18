@@ -14,4 +14,6 @@ public interface ProjectRepository extends MongoRepository<Project, String> {
 
 
     List<Project> findAllByStudentId(String studentId);
+
+    List<Project> findAllByBatchId(String batchId);
 }

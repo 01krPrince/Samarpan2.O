@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Skeleton from '@mui/material/Skeleton';
+import Footer from './Footer';
 
 const CreateBatch = () => {
   const [batches, setBatches] = useState([]);
@@ -178,6 +179,7 @@ const CreateBatch = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

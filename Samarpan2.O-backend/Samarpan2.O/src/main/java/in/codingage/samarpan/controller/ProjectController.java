@@ -55,6 +55,11 @@ public class ProjectController {
         return projectService.getProjectByStudentId(studentId);
     }
 
+    @GetMapping("/getProjectByBatchId")
+    public List<Project> getProjectsByBatchId(@RequestParam String batchId, @RequestParam String studentId){
+        return projectService.getProjectsByBatchId(batchId,studentId);
+    }
+
     @PutMapping("/reviewProject")
     public Optional<Project> reviewProject(@RequestBody Project project, @RequestParam Set<Remarks> remarks, @RequestParam String comment) {
         return projectService.reviewProject(project, remarks, comment);

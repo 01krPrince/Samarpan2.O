@@ -21,4 +21,6 @@ public interface ProjectService {
     List<Project> getProjectByStudentId(String studentId);
 
     Optional<Project> reviewProject(Project project, Set<Remarks> remarks, String comment);
+
+    List<Project> getProjectsByBatchId(String batchId, String studentId);
 }

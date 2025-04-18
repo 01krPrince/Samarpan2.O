@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BatchServiceImpl implements BatchService {
@@ -89,4 +90,7 @@ public class BatchServiceImpl implements BatchService {
         return batchRepository.findAllByBranchId(branchId);
     }
 
+    public Optional<Batch> findById(String batchId) {
+        return batchRepository.findById(batchId);
+    }
 }

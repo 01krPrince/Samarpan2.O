@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import Footer from './Footer';
 
-const Landing = () => {
+const Batchmates = () => {
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,9 +14,17 @@ const Landing = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
-    const adminId = user?.id;
+    const studentId = user?.id;
+    const batchId = user?.batch?.id;
 
-    fetch(`https://samarpan2-o.onrender.com/api/projects/all?adminId=${adminId}`, {
+    // Ensure studentId and batchId are valid before fetching
+    if (!studentId || !batchId) {
+      console.error("Student ID or Batch ID is missing");
+      setLoading(false);
+      return;
+    }
+
+    fetch(`http://localhost:8080/api/projects/getProjectByBatchId?batchId=${batchId}&studentId=${studentId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -32,7 +39,7 @@ const Landing = () => {
         return res.json();
       })
       .then((data) => {
-        setProjects(data);
+        setProjects(data); // Set the fetched projects array
         setLoading(false);
       })
       .catch((error) => {
@@ -42,10 +49,10 @@ const Landing = () => {
   }, [navigate]);
 
   const renderSkeleton = () => {
-    return Array.from({ length: 8 }).map((_, i) => (
+    return Array.from({ length: 4 }).map((_, i) => ( // Updated to 4 to match 4-card layout
       <div
         key={i}
-        className="w-full bg-white rounded-xl overflow-hidden shadow p-4 animate-pulse"
+        className="w-full sm:w-[280px] bg-white rounded-xl overflow-hidden shadow p-4 animate-pulse"
       >
         <div className="w-full h-40 bg-gray-300 mb-3 rounded"></div>
         <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
@@ -58,7 +65,7 @@ const Landing = () => {
 
   return (
     <div className="mt-16 min-h-screen bg-gray-100 flex flex-col items-center py-4 px-2 sm:px-4 lg:px-8 w-full">
-      <div className="w-full max-w-6xl mx-auto mb-4">
+      <div className="w-full max-w-6xl mx-auto mb-4"> {/* Changed max-w-4xl to max-w-6xl */}
         <input
           type="text"
           placeholder="Search by student name"
@@ -68,7 +75,7 @@ const Landing = () => {
         />
       </div>
 
-      <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center px-2">
+      <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center px-2"> {/* Changed lg:grid-cols-3 to lg:grid-cols-4 */}
         {loading ? (
           renderSkeleton()
         ) : filteredProjects.length > 0 ? (
@@ -77,25 +84,24 @@ const Landing = () => {
               key={index}
               className="w-full bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition-shadow duration-200"
             >
-              <div className="relative">
-                <img
-                  src={project.imageUrls}
-                  alt={project.projectName}
-                  className="w-full h-40 object-cover rounded-t hover:scale-105"
-                  onError={(e) => {
-                    e.target.src = 'path/to/fallback-image.jpg';
-                  }}
-                />
+              <img
+                src={project.imageUrls}
+                alt={project.projectName}
+                className="w-full h-40 object-cover rounded-t hover:scale-105"
+                onError={(e) => {
+                  e.target.src = 'path/to/fallback-image.jpg';
+                }}
+              />
+
+              <div className="p-4 relative">
                 <div
-                  className={`absolute top-2 right-2 text-gray-700 text-xs font-semibold px-2 py-1 rounded-full ${
+                  className={`absolute top-4 right-4 text-gray-700 text-xs font-semibold px-2 py-1 rounded-full ${
                     project.markAsCheck ? 'bg-green-200' : 'bg-red-200'
                   }`}
                 >
                   {project.markAsCheck ? "Checked" : "Unchecked"}
                 </div>
-              </div>
 
-              <div className="p-4">
                 <h2 className="text-base sm:text-lg font-semibold text-black">{project.projectName}</h2>
                 <p className="text-sm text-gray-600 mt-1">{project.studentName} | {project.batch}</p>
 
@@ -121,10 +127,8 @@ const Landing = () => {
           <p className="text-center text-gray-500 col-span-full">No projects found</p>
         )}
       </div>
-      <Footer />
     </div>
   );
-  
 };
 
-export default Landing;
+export default Batchmates;

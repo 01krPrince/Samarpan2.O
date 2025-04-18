@@ -13,6 +13,7 @@ const ViewAll = () => {
   const [allBatches, setAllBatches] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [branch, setBranch] = useState('');
+  const [branchName, setBranchName] = useState('');
   const [batch, setBatch] = useState('');
   const [subject, setSubject] = useState('');
   const [sortCheckedOnTop, setSortCheckedOnTop] = useState(false);
@@ -60,7 +61,6 @@ const ViewAll = () => {
           throw new Error("Failed to fetch projects");
         }
         const projectsData = await projectsResponse.json();
-        console.log(projectsData)
         setProjects(projectsData);
       } catch (err) {
         setError(err.message);
@@ -72,11 +72,40 @@ const ViewAll = () => {
     fetchInitialData();
   }, [navigate]);
 
+  const filterByBranch = (selectedBranchId) => {
+    if (selectedBranchId) {
+      const filtered = allBatches.filter(b => b.branchId === selectedBranchId);
+      setBatches(filtered);
+      setBatch('');
+    } else {
+      setBatches(allBatches);
+      setBatch('');
+    }
+  };
+
+  const handleBranchChange = (e) => {
+    const selectedBranchId = e.target.value;
+    const selectedBranch = branches.find(b => b.id === selectedBranchId);
+    setBranch(selectedBranchId);
+    setBranchName(selectedBranch?.branchName || '');
+    filterByBranch(selectedBranchId);
+  };
+
+  const handleReset = () => {
+    setBranch('');
+    setBranchName('');
+    setBatch('');
+    setSubject('');
+    setSearchQuery('');
+    setSortCheckedOnTop(false);
+    setBatches(allBatches);
+  };
+
   const getFilteredProjects = () => {
     let filteredProjects = [...projects];
 
-    if (branch) {
-      filteredProjects = filteredProjects.filter(project => project.branch === branch);
+    if (branchName) {
+      filteredProjects = filteredProjects.filter(project => project.branch === branchName);
     }
 
     if (batch) {
@@ -103,32 +132,6 @@ const ViewAll = () => {
         ? (a.markAsCheck === true ? -1 : 1)
         : (a.markAsCheck === false ? -1 : 1)
     );
-  };
-
-  const filterByBranch = (selectedBranchId) => {
-    if (selectedBranchId) {
-      const filtered = allBatches.filter(b => b.branchId === selectedBranchId);
-      setBatches(filtered);
-      setBatch('');
-    } else {
-      setBatches(allBatches);
-      setBatch('');
-    }
-  };
-
-  const handleBranchChange = (e) => {
-    const selectedBranchId = e.target.value;
-    setBranch(selectedBranchId);
-    filterByBranch(selectedBranchId);
-  };
-
-  const handleReset = () => {
-    setBranch('');
-    setBatch('');
-    setSubject('');
-    setSearchQuery('');
-    setSortCheckedOnTop(false);
-    setBatches(allBatches);
   };
 
   const formatDate = (dateString) => {
@@ -214,40 +217,41 @@ const ViewAll = () => {
                   <Skeleton width="80%" height={24} />
                   <Skeleton width="60%" height={20} />
                   <Skeleton width="40%" height={18} />
-                  <Skeleton variant="rounded" width="100%" height={36} style={{ marginTop: 12 }} />
+                  <Skeleton variant="rounded" width="100%" height={36} />
                 </div>
               </div>
             ))
-          ) : filteredProjects.length > 0 ? (
-            filteredProjects.map((project) => (
-              <div key={project.projectId} className="w-[320px] sm:w-[280px] bg-white rounded-xl overflow-hidden shadow hover:shadow-lg">
-                <div className="w-full h-40 bg-gray-200">
-                  <img
-                    src={typeof project.imageUrls === 'string' ? project.imageUrls : 'https://via.placeholder.com/280x160'}
-                    alt={project.projectName}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
-                  />
-                </div>
-                <div className="p-4 relative">
-                  <div className={`absolute top-4 right-4 text-xs font-semibold px-2 py-1 rounded-full ${project.markAsCheck ? 'bg-green-200' : 'bg-red-200'}`}>
-                    {project.markAsCheck ? "Checked" : "Unchecked"}
-                  </div>
-                  <h2 className="text-lg font-semibold text-black">{project.projectName}</h2>
-                  <p className="text-sm text-gray-600 mt-1">{project.studentName}</p>
-                  <p className="text-sm text-gray-500 mt-1">Submitted: {formatDate(project.submissionDate)}</p>
-                  <div className="mt-4 flex gap-2">
-                    <button
-                      className="flex-1 bg-gray-900 hover:bg-black text-white text-sm font-semibold py-2 px-3 rounded"
-                      onClick={() => navigate('/admin/review-project', { state: { project } })}
-                    >
-                      View Details
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))
+          ) : filteredProjects.length === 0 ? (
+            <p className="text-gray-600 text-center w-full">No projects found.</p>
           ) : (
-            <p className="text-center w-full text-gray-500">No projects found.</p>
+            filteredProjects.map(project => (
+              <div key={project.projectId} className="w-[320px] sm:w-[280px] bg-white rounded-xl shadow-md p-4 relative cursor-pointer" 
+              onClick={() => navigate('/admin/review-project', { state: { project } })}
+              >  
+                {/* Checked/Unchecked Badge */}
+                <div
+                  className={`absolute top-4 right-4 text-gray-700 text-xs font-semibold px-2 py-1 rounded-full z-10 ${
+                    project.markAsCheck ? 'bg-green-200' : 'bg-red-200'
+                  }`}
+                >
+                  {project.markAsCheck ? "Checked" : "Unchecked"}
+                </div>
+            
+                <img
+                  src={project.imageUrls}
+                  alt={project.projectName}
+                  className="rounded-md w-full h-40 object-cover hover:scale-105"
+                />
+            
+                <h3 className="mt-2 text-lg font-semibold">{project.projectName}</h3>
+                <p className="text-sm text-gray-500">Student: {project.studentName}</p>
+                <p className="text-sm text-gray-500">Branch: {project.branch}</p>
+                <p className="text-sm text-gray-500">Batch: {project.batch}</p>
+                <p className="text-sm text-gray-500">Subject: {project.subject}</p>
+                <p className="text-xs text-gray-400">Submitted: {formatDate(project.submissionDate)}</p>
+              </div>
+            ))
+            
           )}
         </div>
       </div>

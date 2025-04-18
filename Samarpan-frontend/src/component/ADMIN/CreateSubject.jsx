@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Skeleton from '@mui/material/Skeleton';
+import Footer from './Footer';
 
 const CreateSubject = () => {
   const [subjectName, setSubjectName] = useState('');
@@ -126,6 +127,7 @@ const CreateSubject = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

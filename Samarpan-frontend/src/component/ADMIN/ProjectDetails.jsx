@@ -6,6 +6,7 @@ import {
   FaExternalLinkAlt,
   FaDownload,
 } from 'react-icons/fa';
+import Footer from './Footer';
 
 const ProjectDetails = () => {
   const location = useLocation();
@@ -202,9 +203,9 @@ const ProjectDetails = () => {
           {isReviewed ? 'Update Remarks' : 'Mark as Checked'}
         </button>
       </div>
-
+            <hr className='mt-10'/>
       {/* Footer */}
-      <div className="text-gray-500 text-sm mt-6 flex flex-col sm:flex-row justify-between items-center">
+      <div className="mt-5 text-gray-500 text-sm mt-6 flex flex-col sm:flex-row justify-between items-center">
         <span className="mb-2 sm:mb-0">© 2025 ProjectReview. All rights reserved.</span>
         <div className="flex space-x-2">
           <span className="hover:underline cursor-pointer">Privacy Policy</span>

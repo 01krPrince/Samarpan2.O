@@ -10,8 +10,10 @@ import in.codingage.samarpan.security.services.impl.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,7 +58,7 @@ public class AuthController {
         List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
                 .collect(Collectors.toList());
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new ApplicationException("USER", "DOES_NOT_EXIST"));
-
+        System.out.println();
         LoginResponse loginResponse = new LoginResponse(jwt, user, false);
 
         return ResponseEntity.ok(loginResponse);
@@ -124,4 +126,36 @@ public class AuthController {
 
         return ResponseEntity.ok("User registered successfully!");
     }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/reset-password/admin")
+    public ResponseEntity<?> resetAdminPassword(@RequestParam String username, @RequestParam String newPassword) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ApplicationException("USER", "DOES_NOT_EXIST"));
+
+        user.setPassword(encoder.encode(newPassword));
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new MessageResponse("Password has been reset to : " + newPassword));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestParam String email, @RequestParam String phoneNumber, @RequestParam String newPassword) {
+        User user = userRepository.findByEmail(email);
+
+        if (user == null) {
+            return ResponseEntity.badRequest().body(new MessageResponse("User with this email does not exist."));
+        }
+
+        if (!user.getPhone().equals(phoneNumber)) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Phone number does not match our records."));
+        }
+
+        user.setPassword(encoder.encode(newPassword));
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new MessageResponse("Password has been reset successfully."));
+    }
+
+
 }
