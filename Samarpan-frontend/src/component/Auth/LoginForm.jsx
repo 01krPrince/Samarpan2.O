@@ -1,12 +1,5 @@
-// LoginForm.jsx
 import React from "react";
-import {
-  FaGoogle,
-  FaShieldAlt,
-  FaLock,
-  FaEnvelope,
-  FaSignInAlt,
-} from "react-icons/fa";
+import { FaGoogle, FaShieldAlt, FaLock, FaEnvelope, FaSignInAlt } from "react-icons/fa";
 
 const LoginForm = ({
   username,
@@ -17,7 +10,6 @@ const LoginForm = ({
   loading,
   error,
   setView,
-  setError,
   navigate,
 }) => {
   return (
@@ -38,10 +30,11 @@ const LoginForm = ({
             <input
               type="email"
               placeholder="cagers@example.com"
-              className="w-full outline-none"
+              className="w-full outline-none focus:ring-2 focus:ring-gray-900"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
         </div>
@@ -53,22 +46,23 @@ const LoginForm = ({
             <input
               type="password"
               placeholder="********"
-              className="w-full outline-none"
+              className="w-full outline-none focus:ring-2 focus:ring-gray-900"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
         </div>
 
         <button
           type="submit"
-          className="w-full bg-gray-900 text-white py-2 rounded-md flex justify-center items-center text-lg font-medium cursor-pointer hover:bg-gray-800"
+          className={`w-full bg-gray-900 text-white py-2 rounded-md flex justify-center items-center text-lg font-medium ${
+            loading ? "cursor-not-allowed opacity-70" : "cursor-pointer hover:bg-gray-800"
+          }`}
           disabled={loading}
         >
-          {loading ? (
-            "Logging in..."
-          ) : (
+          {loading ? "Logging in..." : (
             <>
               <FaSignInAlt className="mr-2" /> Login
             </>
@@ -82,7 +76,10 @@ const LoginForm = ({
         <hr className="flex-grow border-gray-300" />
       </div>
 
-      <button className="w-full border border-gray-400 py-2 rounded-md flex justify-center items-center text-lg font-extrabold text-gray-700">
+      <button
+        className="w-full border border-gray-400 py-2 rounded-md flex justify-center items-center text-lg font-extrabold text-gray-700 hover:bg-gray-100"
+        disabled={loading}
+      >
         <FaGoogle className="mr-2 text-gray-600" /> Google
       </button>
 
@@ -92,22 +89,22 @@ const LoginForm = ({
       </div>
 
       <div className="mt-4 text-center">
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            setView("forget");
-            setError("");
-          }}
-          className="text-gray-600 hover:underline"
+        <button
+          type="button"
+          onClick={() => setView("forget")}
+          className="text-gray-600 hover:underline focus:outline-none cursor-pointer"
+          disabled={loading}
         >
           Forgot Password?
-        </a>
+        </button>
       </div>
 
       <button
         onClick={() => navigate("/signup")}
-        className="mt-2 w-full border border-gray-900 text-gray-900 py-2 rounded-md flex justify-center items-center text-sm font-medium cursor-pointer hover:bg-gray-900 hover:text-white transition"
+        className={`mt-2 w-full border border-gray-900 text-gray-900 py-2 rounded-md flex justify-center items-center text-sm font-medium ${
+          loading ? "cursor-not-allowed opacity-70" : "cursor-pointer hover:bg-gray-900 hover:text-white transition"
+        }`}
+        disabled={loading}
       >
         Don't have an account? Sign Up
       </button>

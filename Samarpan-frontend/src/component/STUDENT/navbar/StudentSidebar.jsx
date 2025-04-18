@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Home, LogOut, Send, Menu } from "lucide-react";
-import profileImage from "../../../assets/generic-profile-icon.png";
+import { Home, LogOut, Send, Menu, Users } from "lucide-react";
 
 const StudentSidebar = () => {
   const navigate = useNavigate();
@@ -79,7 +78,7 @@ const StudentSidebar = () => {
           />
           <NavItem
             to="/batchmates"
-            icon={<Home size={20} />}
+            icon={<Users size={20} />}
             text="Batchmates"
             active={location.pathname === "/batchmates"}
             isOpen={isSidebarOpen && !isMobile}
@@ -128,7 +127,7 @@ const Header = ({ userData, onToggleSidebar }) => {
         onClick={() => navigate("/profile")}
       >
         <img
-          src={profileImage}
+          src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
           alt="profile"
           className="w-10 h-10 rounded-full object-cover"
         />

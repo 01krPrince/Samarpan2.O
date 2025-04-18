@@ -185,7 +185,7 @@ export default function SubmitProject() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 pt-[10vh] -ml-8">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 pt-[10vh] -mt-[4vh] -ml-8">
       <div className="bg-white shadow-md rounded-lg p-6 md:p-10 w-full max-w-2xl">
         <h2 className="text-2xl font-semibold text-gray-800">Submit Your Project</h2>
         <p className="text-gray-600 mb-6">Fill in the details to submit your project for review.</p>
