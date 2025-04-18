@@ -14,7 +14,7 @@ import ViewAll from "./component/ADMIN/ViewAll";
 import UpdateProject from "./component/STUDENT/dashboard/UpdateProject";
 import ViewDetails from "./component/STUDENT/dashboard/viewProjectStudent";
 import StudentProfile from "./component/STUDENT/dashboard/StudentProfile";
-import Batchmates from "./component/STUDENT/dashboard/batchmates";
+import Batchmates from "./component/STUDENT/dashboard/Batchmates";
 
 function App() {
   const [userRole, setUserRole] = useState(null);
