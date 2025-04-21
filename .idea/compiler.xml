@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="samarpan" />
         <module name="Samarpan2.O" />
       </profile>
     </annotationProcessing>
@@ -18,6 +19,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Samarpan2.O" options="-parameters" />
       <module name="Samarpan2.O (1)" options="-parameters" />
+      <module name="samarpan" options="-parameters" />
     </option>
   </component>
 </project>
