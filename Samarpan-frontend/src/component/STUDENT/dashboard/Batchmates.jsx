@@ -69,12 +69,13 @@ const Batchmates = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col items-center py-8 px-4 -ml-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col items-center py-8 px-4 -ml-8 sm:px-6 lg:px-8 mt-10">
       {/* Header Section */}
       <div className="w-full max-w-7xl mx-auto mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
           Batchmates' Projects
         </h1>
+
         <div className="relative">
           <input
             type="text"
@@ -131,11 +132,10 @@ const Batchmates = () => {
                   }}
                 />
                 <span
-                  className={`absolute top-4 right-4 text-xs font-medium px-3 py-1 rounded-full ${
-                    project.markAsCheck
+                  className={`absolute top-4 right-4 text-xs font-medium px-3 py-1 rounded-full ${project.markAsCheck
                       ? 'bg-green-100 text-green-800'
                       : 'bg-red-100 text-red-800'
-                  }`}
+                    }`}
                 >
                   {project.markAsCheck ? 'Checked' : 'Unchecked'}
                 </span>
