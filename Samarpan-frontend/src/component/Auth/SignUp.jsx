@@ -49,7 +49,6 @@ const SignUp = () => {
     fetchBranches();
   }, []);
 
-  // Fetch batches when a branch is selected
   useEffect(() => {
     if (selectedBranchId) {
       const fetchBatches = async () => {
@@ -59,9 +58,7 @@ const SignUp = () => {
             {
               headers: {
                 accept: "*/*",
-                Authorization:
-                  "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdHVkZW50QGdtYWlsLmNvbSIsImlhdCI6MTc0NDE3MDY1NSwiZXhwIjoxNzUxOTQ2NjU1fQ.NdDM9E2xGZNnPYWNUHuBCtx-EK1sTvLFERXAjgJ8Q0pY9lxogZu4SA4pdSxykHG_xH2WOswcvaFDCcncGdn_fA",
-              },
+                },
             }
           );
           if (!response.ok) throw new Error("Failed to fetch batches");
@@ -128,11 +125,20 @@ const SignUp = () => {
       // Try to parse the JSON response
       try {
         const responseJson = JSON.parse(responseText);
-        console.log("Sign up successful:", responseJson);
+        if(responseJson.message != null) {
+          console.log("Sign up successful:", responseJson);
         setSuccessMessage("User registered successfully! You will be redirected to login.");
         setTimeout(() => {
           navigate("/login");
         }, 3000); // Redirect after 3 seconds
+        }
+        else {
+          console.log("Sign up successful")
+          
+        setTimeout(() => {
+          setSuccessMessage("User registered failed! Email is already in use.");
+        }, 3000); // Redirect after 3 seconds
+        }
       } catch (e) {
         // Check if response is an error message
         console.log("Response Text:", responseText);

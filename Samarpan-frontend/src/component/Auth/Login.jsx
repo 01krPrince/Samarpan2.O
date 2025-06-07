@@ -13,7 +13,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [view, setView] = useState("login"); // Optional for forgot password functionality
+  const [view, setView] = useState("login");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -156,7 +156,6 @@ const LoginPage = () => {
           >
             Forgot Password?
           </button>
-
         </div>
 
         <button

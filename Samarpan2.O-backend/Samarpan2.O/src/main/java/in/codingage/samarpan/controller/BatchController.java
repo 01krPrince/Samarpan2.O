@@ -43,6 +43,7 @@ public class BatchController {
     }
 
     @GetMapping("/findAllByBranchId")
+
     public List<Batch> findAllByBranchId(@RequestParam String branchId){
         return batchService.findAllByBranchId(branchId);
     }

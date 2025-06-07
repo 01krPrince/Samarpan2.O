@@ -8,6 +8,10 @@ import in.codingage.samarpan.model.updateRequest.ProjectUpdateRequest;
 import in.codingage.samarpan.repository.*;
 import in.codingage.samarpan.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -97,7 +101,6 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    // Helper method
     private boolean isNullOrEmpty(String str) {
         return str == null || str.trim().isEmpty();
     }
@@ -189,14 +192,19 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Project> getAllProjectsForStudent(String adminId) {
+    public Page<Project> getAllProjectsForStudent(String adminId, int page, int size) {
         Optional<User> userOptional = userService.findById(adminId);
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
             if (user.getRoles().contains("ADMIN")) {
-                return projectRepository.findAll();
+                Pageable pageable = PageRequest.of(
+                        page,
+                        size,
+                        Sort.by(Sort.Direction.DESC, "submissionDate")
+                );
+                return projectRepository.findAll(pageable);
             } else {
                 throw new RuntimeException("Access Denied: Not an Admin user");
             }
@@ -206,9 +214,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Project> getProjectByStudentId(String studentId) {
-        System.out.println(projectRepository.findAllByStudentId(studentId));
-        return projectRepository.findAllByStudentId(studentId);
+    public Page<Project> getProjectByStudentId(String studentId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "submissionDate"));
+        return projectRepository.findByStudentId(studentId, pageable);
     }
 
     @Override
@@ -220,16 +228,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Project> getProjectsByBatchId(String batchId, String studentId) {
+    public Page<Project> getProjectsByBatchId(String batchId, String studentId, int page, int size) {
         User student = userService.findById(studentId)
                 .orElseThrow(() -> new ApplicationException("USER", "DOES_NOT_EXIST"));
 
         Batch batch = batchService.findById(batchId)
                 .orElseThrow(() -> new ApplicationException("BATCH", "DOES_NOT_EXIST"));
 
-        return projectRepository.findAllByBatchId(batchId);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "submissionDate"));
+        return projectRepository.findByBatchId(batchId, pageable);
     }
-
-
-
 }
