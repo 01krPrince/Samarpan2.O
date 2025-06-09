@@ -8,6 +8,10 @@ const Landing = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const [page, setPage] = useState(0);
+  const [size] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+
   const filteredProjects = projects.filter(project =>
     project?.studentName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -17,7 +21,8 @@ const Landing = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const adminId = user?.id;
 
-    fetch(`https://samarpan2-o.onrender.com/api/projects/all?adminId=${adminId}`, {
+    setLoading(true);
+    fetch(`https://samarpan2-o.onrender.com/api/projects/all?adminId=${adminId}&page=${page}&size=${size}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -32,17 +37,18 @@ const Landing = () => {
         return res.json();
       })
       .then((data) => {
-        setProjects(data);
+        setProjects(data.content);
+        setTotalPages(data.totalPages);
         setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching data:", error.message);
         setLoading(false);
       });
-  }, [navigate]);
+  }, [navigate, page, size]);
 
   const renderSkeleton = () => {
-    return Array.from({ length: 8 }).map((_, i) => (
+    return Array.from({ length: size }).map((_, i) => (
       <div
         key={i}
         className="w-full bg-white rounded-xl overflow-hidden shadow p-4 animate-pulse"
@@ -121,10 +127,28 @@ const Landing = () => {
           <p className="text-center text-gray-500 col-span-full">No projects found</p>
         )}
       </div>
+
+      <div className="flex justify-center mt-6 gap-4">
+        <button
+          onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
+          disabled={page === 0}
+          className="bg-gray-800 text-white px-4 py-2 rounded disabled:opacity-50 cursor-pointer"
+        >
+          Previous
+        </button>
+        <span className="text-sm mt-2">Page {page + 1} of {totalPages}</span>
+        <button
+          onClick={() => setPage((prev) => Math.min(prev + 1, totalPages - 1))}
+          disabled={page >= totalPages - 1}
+          className="bg-gray-800 text-white px-4 py-2 rounded disabled:opacity-50 cursor-pointer"
+        >
+          Next
+        </button>
+      </div>
+
       <Footer />
     </div>
   );
-  
 };
 
 export default Landing;
