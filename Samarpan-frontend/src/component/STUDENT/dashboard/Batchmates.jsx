@@ -8,6 +8,10 @@ const Batchmates = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [page, setPage] = useState(0);
+  const [size] = useState(8);
+  const [totalPages, setTotalPages] = useState(0);
+
   const filteredProjects = projects.filter((project) =>
     project?.studentName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -25,8 +29,11 @@ const Batchmates = () => {
       return;
     }
 
+    setLoading(true);
+    setError(null);
+
     fetch(
-      `https://samarpan2-o.onrender.com/api/projects/getProjectByBatchId?batchId=${batchId}&studentId=${studentId}`,
+      `https://samarpan2-o.onrender.com/api/projects/getProjectByBatchId?batchId=${batchId}&studentId=${studentId}&page=${page}&size=${size}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -43,7 +50,8 @@ const Batchmates = () => {
         return res.json();
       })
       .then((data) => {
-        setProjects(data);
+        setProjects(data.content || []);
+        setTotalPages(data.totalPages || 0);
         setLoading(false);
       })
       .catch((error) => {
@@ -51,10 +59,10 @@ const Batchmates = () => {
         setError('Failed to load projects. Please try again later.');
         setLoading(false);
       });
-  }, [navigate]);
+  }, [navigate, page, size]);
 
   const renderSkeleton = () => {
-    return Array.from({ length: 4 }).map((_, i) => (
+    return Array.from({ length: size }).map((_, i) => (
       <div
         key={i}
         className="w-full bg-white rounded-2xl shadow-sm p-6 animate-pulse"
@@ -73,7 +81,7 @@ const Batchmates = () => {
       {/* Header Section */}
       <div className="w-full max-w-7xl mx-auto mb-8">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-          Batchmates' Projects
+          Batchmates&apos; Projects
         </h1>
 
         <div className="relative">
@@ -132,10 +140,11 @@ const Batchmates = () => {
                   }}
                 />
                 <span
-                  className={`absolute top-4 right-4 text-xs font-medium px-3 py-1 rounded-full ${project.markAsCheck
+                  className={`absolute top-4 right-4 text-xs font-medium px-3 py-1 rounded-full ${
+                    project.markAsCheck
                       ? 'bg-green-100 text-green-800'
                       : 'bg-red-100 text-red-800'
-                    }`}
+                  }`}
                 >
                   {project.markAsCheck ? 'Checked' : 'Unchecked'}
                 </span>
@@ -174,6 +183,29 @@ const Batchmates = () => {
             No projects found matching your search.
           </p>
         )}
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-center mt-8 gap-4">
+        <button
+          onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
+          disabled={page === 0}
+          className="bg-indigo-600 text-white px-4 py-2 rounded disabled:opacity-50 cursor-pointer"
+          aria-label="Previous Page"
+        >
+          Previous
+        </button>
+        <span className="text-sm mt-2 text-gray-700">
+          Page {page + 1} of {totalPages}
+        </span>
+        <button
+          onClick={() => setPage((prev) => Math.min(prev + 1, totalPages - 1))}
+          disabled={page >= totalPages - 1}
+          className="bg-indigo-600 text-white px-4 py-2 rounded disabled:opacity-50 cursor-pointer"
+          aria-label="Next Page"
+        >
+          Next
+        </button>
       </div>
     </div>
   );
