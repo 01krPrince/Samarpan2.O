@@ -44,7 +44,9 @@ export default function Dashboard() {
         if (!response.ok) throw new Error("Failed to fetch projects");
 
         const data = await response.json();
-        const projectData = Array.isArray(data) ? data : data.data || [];
+        const projectData = data.content || [];
+        console.log("Fetched Projects:", projectData);
+
         const sortedProjects = projectData.sort((a, b) => a.subject.localeCompare(b.subject));
         setProjects(sortedProjects);
       } catch (err) {
