@@ -7,13 +7,13 @@ import {
   FaEnvelope,
   FaSignInAlt,
 } from "react-icons/fa";
+import codingAgeLogo from '../../assets/codingAge.png';
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [view, setView] = useState("login");
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -1,16 +1,15 @@
-// Footer.jsx
 import React from 'react';
 
 const Footer = () => {
   return (
     <footer className="mt-20 bg-gray-800 text-white py-6 w-full mb-0">
-      <div className="max-w-6xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center sm:text-left">
           {/* Column 1: General Info */}
           <div>
             <h3 className="text-lg font-semibold mb-2">Samarpan</h3>
             <p className="text-sm">
-              © 2025 Samarpan. All rights reserved. |{' '}
+              © 2025 Samarpan. All rights reserved by Coding Age. |{' '}
               <a href="/terms" className="underline hover:text-gray-300">Terms of Service</a> |{' '}
               <a href="/privacy" className="underline hover:text-gray-300">Privacy Policy</a> |{' '}
               <a href="/support" className="underline hover:text-gray-300">Support</a>

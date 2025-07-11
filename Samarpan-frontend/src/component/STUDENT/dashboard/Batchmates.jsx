@@ -77,17 +77,14 @@ const Batchmates = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col items-center py-8 px-4 -ml-8 sm:px-6 lg:px-8 mt-10">
-      {/* Header Section */}
-      <div className="w-full max-w-7xl mx-auto mb-8">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-          Batchmates&apos; Projects
-        </h1>
-
+    <div className="min-h-screen pb-16 px-16 bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col py-8 px-4 -ml-8 sm:px-6 lg:px-8 mt-10">
+       <h2 className="text-xl sm:text-2xl font-semibold mb-4 px-3">Batchmates&apos; Projects</h2>
+      <div className="w-full max-w-7xl mx-auto mb-8 px-5">
+    
         <div className="relative">
           <input
             type="text"
-            placeholder="Search by student name..."
+            placeholder="Search by student, batch & project name..."
             className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 transition duration-200"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -111,7 +108,7 @@ const Batchmates = () => {
       </div>
 
       {/* Projects Grid */}
-      <div className="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="w-full p-5 max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {loading ? (
           renderSkeleton()
         ) : error ? (

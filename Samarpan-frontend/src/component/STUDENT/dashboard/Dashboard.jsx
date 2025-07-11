@@ -66,9 +66,9 @@ export default function Dashboard() {
       : projects.filter((p) => p.subject === selectedCategory);
 
   return (
-    <div className="bg-gray-100 min-h-screen max-w-[100vw]">
-      <div className="ml-16 md:ml-[10px] p-4 pt-[10vh]">
-        <main className="px-2 sm:px-4">
+    <div className="bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen max-w-[100vw] px-5">
+      <div className="pt-[10vh]">
+        <main>
           <h2 className="text-xl sm:text-2xl font-semibold mb-4">Projects Overview</h2>
 
           {loading ? (
@@ -114,7 +114,7 @@ export default function Dashboard() {
               </div>
 
               {/* Projects Grid */}
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 {/* Add New Project Card */}
                 <div
                   onClick={() => navigate("/submit-project")}

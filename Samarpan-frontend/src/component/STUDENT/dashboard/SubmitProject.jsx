@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { CloudUpload, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Select from "react-select";
 
 export default function SubmitProject() {
   const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ export default function SubmitProject() {
   const [error, setError] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const [descLimit, setDescLimit] = useState(0);
-  const [technologiesUsedList, setTechnologiesUsedList] = useState("");
+  const [technologiesUsedList, setTechnologiesUsedList] = useState([]);
 
   const navigate = useNavigate();
 
@@ -91,31 +92,30 @@ export default function SubmitProject() {
       setIsSubmitting(false);
       return navigate("/");
     }
+
     if (!formData.thumbnail) {
       setError("Please upload a thumbnail.");
       setIsSubmitting(false);
       return;
     }
+
     if (!formData.subject) {
       setError("Please select a subject.");
       setIsSubmitting(false);
       return;
     }
-    if (!technologiesUsedList.trim()) {
+
+    if (!technologiesUsedList.length) {
       setError("Enter at least one technology used.");
       setIsSubmitting(false);
       return;
     }
+
     if (!batchId) {
       setError("Batch information is missing.");
       setIsSubmitting(false);
       return;
     }
-
-    const techArray = technologiesUsedList
-      .split(",")
-      .map((tech) => tech.trim())
-      .filter(Boolean);
 
     try {
       const imageData = new FormData();
@@ -141,7 +141,7 @@ export default function SubmitProject() {
 
       const completeProjectData = {
         ...formData,
-        technologiesUsed: techArray,
+        technologiesUsed: technologiesUsedList,
         imageUrls: thumbnailUrl,
         batch: userData?.batch?.batchName || "N/A",
         batchId: batchId.toString(),
@@ -176,7 +176,7 @@ export default function SubmitProject() {
       setSubmitted(true);
       setIsSubmitting(false);
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate("/dashboard");
       }, 2000);
     } catch (err) {
       setError("Something went wrong: " + err.message);
@@ -184,149 +184,216 @@ export default function SubmitProject() {
     }
   };
 
+  const skillOptions = [
+    { value: "HTML", label: "HTML" },
+    { value: "CSS", label: "CSS" },
+    { value: "SASS", label: "SASS" },
+    { value: "Tailwind CSS", label: "Tailwind CSS" },
+    { value: "Bootstrap", label: "Bootstrap" },
+    { value: "JavaScript", label: "JavaScript" },
+    { value: "TypeScript", label: "TypeScript" },
+    { value: "React", label: "React" },
+    { value: "Next.js", label: "Next.js" },
+    { value: "Vue.js", label: "Vue.js" },
+    { value: "Angular", label: "Angular" },
+    { value: "Node.js", label: "Node.js" },
+    { value: "Express", label: "Express" },
+    { value: "Java", label: "Java" },
+    { value: "Spring Boot", label: "Spring Boot" },
+    { value: "Python", label: "Python" },
+    { value: "Django", label: "Django" },
+    { value: "Flask", label: "Flask" },
+    { value: "PHP", label: "PHP" },
+    { value: "Laravel", label: "Laravel" },
+    { value: "Go", label: "Go" },
+    { value: "Ruby on Rails", label: "Ruby on Rails" },
+    { value: "Flutter", label: "Flutter" },
+    { value: "Dart", label: "Dart" },
+    { value: "React Native", label: "React Native" },
+    { value: "Kotlin", label: "Kotlin" },
+    { value: "Swift", label: "Swift" },
+    { value: "MongoDB", label: "MongoDB" },
+    { value: "MySQL", label: "MySQL" },
+    { value: "PostgreSQL", label: "PostgreSQL" },
+    { value: "SQLite", label: "SQLite" },
+    { value: "Redis", label: "Redis" },
+    { value: "Firebase", label: "Firebase" },
+    { value: "Docker", label: "Docker" },
+    { value: "Kubernetes", label: "Kubernetes" },
+    { value: "AWS", label: "AWS" },
+    { value: "Azure", label: "Azure" },
+    { value: "GCP", label: "GCP" },
+    { value: "Git", label: "Git" },
+    { value: "GitHub Actions", label: "GitHub Actions" },
+    { value: "CI/CD", label: "CI/CD" },
+    { value: "Nginx", label: "Nginx" },
+    { value: "Netlify", label: "Netlify" },
+    { value: "Cloudinary", label: "Cloudinary" },
+    { value: "Render", label: "Render" },
+    { value: "GraphQL", label: "GraphQL" },
+    { value: "REST API", label: "REST API" },
+    { value: "Swagger", label: "Swagger" },
+    { value: "gRPC", label: "gRPC" },
+    { value: "WebSockets", label: "WebSockets" },
+    { value: "Jest", label: "Jest" },
+    { value: "Mocha", label: "Mocha" },
+    { value: "Cypress", label: "Cypress" },
+    { value: "Figma", label: "Figma" },
+    { value: "Postman", label: "Postman" },
+    { value: "VS Code", label: "VS Code" },
+    { value: "Linux", label: "Linux" },
+  ];
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 pt-[10vh] -mt-[4vh] -ml-8">
-      <div className="bg-white shadow-md rounded-lg p-6 md:p-10 w-full max-w-2xl">
-        <h2 className="text-2xl font-semibold text-gray-800">Submit Your Project</h2>
-        <p className="text-gray-600 mb-6">Fill in the details to submit your project for review.</p>
+    <div className="pt-[10vh] items-center justify-center min-h-screen w-full bg-gray-100 pb-10 px-2">
+      <h2 className="text-lg md:text-2xl font-semibold text-gray-800 px-3">Submit Your Project</h2>
 
-        {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">{error}</div>}
+      <div className="pt-5 px-4 sm:px-6 md:px-10 w-full max-w-6xl mx-auto">
+        {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">{error}</div>}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="text-sm text-gray-700">
-            {formData.studentName} | {userData?.batch?.batchName || "N/A"}
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Project Name</label>
-            <input
-              type="text"
-              name="projectName"
-              value={formData.projectName}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-              placeholder="Enter project name"
-              required
-              disabled={isSubmitting} // Disable while submitting
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Subject</label>
-            <select
-              name="subject"
-              value={formData.subject}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-              required
-              disabled={isSubmitting}
-            >
-              <option value="">Select Subject</option>
-              {subjects.map((subject) => (
-                <option key={subject.id} value={subject.subjectName}>
-                  {subject.subjectName}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Deployed Link</label>
-            <input
-              type="url"
-              name="deployedLink"
-              value={formData.deployedLink}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-              placeholder="https://"
-              disabled={isSubmitting}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">GitHub Link</label>
-            <input
-              type="url"
-              name="githubLink"
-              value={formData.githubLink}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-              placeholder="https://github.com/"
-              disabled={isSubmitting}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Technologies Used</label>
-            <input
-              type="text"
-              name="technologiesUsed"
-              value={technologiesUsedList}
-              onChange={(e) => setTechnologiesUsedList(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-              placeholder="e.g., React, Node.js, MongoDB"
-              required
-              disabled={isSubmitting}
-            />
-            <p className="text-xs text-gray-500 mt-1">Separate with commas</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Project Thumbnail</label>
-            <div className="border-dashed border-2 p-4 text-center rounded-lg cursor-pointer hover:bg-gray-50">
+          <div className="md:grid md:grid-cols-2 md:gap-6">
+            <div>
+              <label className="block text-sm md:text-base font-medium text-gray-700">Project Name</label>
               <input
-                type="file"
-                onChange={handleFileChange}
-                className="hidden"
-                id="thumbnail"
+                type="text"
+                name="projectName"
+                value={formData.projectName}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 text-base"
+                placeholder="Enter project name"
+                required
                 disabled={isSubmitting}
               />
-              <label htmlFor="thumbnail" className="block">
-                <CloudUpload className="mx-auto text-gray-500" size={32} />
-                <p className="text-sm text-gray-500 mt-2">Drag or Browse Thumbnail</p>
-              </label>
-              {thumbnailPreview && (
-                <img
-                  src={thumbnailPreview}
-                  alt="Preview"
-                  className="mt-4 w-40 h-auto mx-auto rounded-lg shadow"
-                />
-              )}
+            </div>
+
+            <div>
+              <label className="block text-sm md:text-base font-medium text-gray-700">Subject</label>
+              <Select
+                options={subjects.map((subject) => ({
+                  value: subject.subjectName,
+                  label: subject.subjectName,
+                }))}
+                onChange={(selected) =>
+                  setFormData((prev) => ({ ...prev, subject: selected?.value || "" }))
+                }
+                isDisabled={isSubmitting}
+                placeholder="Select subject"
+                className="text-sm"
+              />
+            </div>
+          </div>
+
+          <div className="md:grid md:grid-cols-2 md:gap-6">
+            <div>
+              <label className="block text-sm md:text-base font-medium text-gray-700">Deployed Link</label>
+              <input
+                type="url"
+                name="deployedLink"
+                value={formData.deployedLink}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 text-base"
+                placeholder="https://"
+                disabled={isSubmitting}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm md:text-base font-medium text-gray-700">GitHub Link</label>
+              <input
+                type="url"
+                name="githubLink"
+                value={formData.githubLink}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 text-base"
+                placeholder="https://github.com/"
+                disabled={isSubmitting}
+              />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Project Description</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border rounded-lg h-24 focus:outline-none focus:ring-2 focus:ring-gray-800"
-              placeholder="Describe your project (max 300 characters)..."
-              required
-              disabled={isSubmitting}
-            ></textarea>
-            <div className="text-xs text-gray-500 text-right">{descLimit}/300</div>
+            <label className="block text-sm md:text-base font-medium text-gray-700">Technologies Used</label>
+            <Select
+              isMulti
+              name="technologiesUsed"
+              options={skillOptions}
+              className="text-sm"
+              classNamePrefix="react-select"
+              value={skillOptions.filter((opt) => technologiesUsedList.includes(opt.value))}
+              onChange={(selected) => {
+                const selectedValues = selected ? selected.map((s) => s.value) : [];
+                setTechnologiesUsedList(selectedValues);
+              }}
+              isDisabled={isSubmitting}
+              placeholder="Select technologies..."
+            />
+            <p className="text-xs text-gray-500 mt-1">Select technologies from the list</p>
           </div>
 
-          <button
-            type="submit"
-            className={`px-4 py-1.5 text-white text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800 cursor-pointer ${
-              isSubmitting ? "bg-gray-600 cursor-not-allowed" : "bg-gray-800 hover:bg-gray-900"
-            }`}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Submitting..." : "Submit"}
-          </button>
+          <div className="md:grid md:grid-cols-2 md:gap-6">
+            <div>
+              <label className="block text-sm md:text-base font-medium text-gray-700">Project Thumbnail</label>
+              <div className="border-dashed border-2 p-4 text-center rounded-lg cursor-pointer hover:bg-gray-50">
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  id="thumbnail"
+                  disabled={isSubmitting}
+                />
+                <label htmlFor="thumbnail" className="block cursor-pointer">
+                  <CloudUpload className="mx-auto text-gray-500" size={32} />
+                  <p className="text-sm text-gray-500 mt-2">Drag or Browse Thumbnail</p>
+                </label>
+                {thumbnailPreview && (
+                  <img
+                    src={thumbnailPreview}
+                    alt="Preview"
+                    className="mt-4 w-40 h-auto mx-auto rounded-lg shadow"
+                  />
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm md:text-base font-medium text-gray-700">Project Description</label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border rounded-lg h-40 focus:outline-none focus:ring-2 focus:ring-gray-800 text-base"
+                placeholder="Describe your project (max 300 characters)..."
+                required
+                disabled={isSubmitting}
+              ></textarea>
+              <div className="text-xs text-gray-500 text-right">{descLimit}/300</div>
+            </div>
+          </div>
+
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-6 w-full mb-10">
+            <button
+              type="submit"
+              className={`w-full md:w-auto px-4 py-2 cursor-pointer text-white text-base font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800 ${isSubmitting ? "bg-gray-600 cursor-not-allowed" : "bg-gray-800 hover:bg-gray-900"
+                }`}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Submit"}
+            </button>
+
+            {submitted && !isSubmitting && (
+              <div className="w-full md:w-[50%] bg-green-100 text-green-700 p-3 rounded-lg flex items-center gap-2 text-sm md:text-base">
+                <Check size={20} />
+                <span className="flex-1">Project submitted successfully! Redirecting...</span>
+              </div>
+            )}
+          </div>
         </form>
 
-        {submitted && !isSubmitting && (
-          <div className="mt-4 bg-green-100 text-green-700 p-3 rounded-lg flex items-center gap-2">
-            <Check size={20} />
-            <span>Project submitted successfully! Redirecting...</span>
-          </div>
-        )}
+
       </div>
     </div>
+
   );
 }

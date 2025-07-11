@@ -1,14 +1,37 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, LogOut, Send, Menu, Users } from "lucide-react";
+import Footer from "../footer/footer";
+
+const MOBILE_BREAKPOINT = 640;
+const TABLET_BREAKPOINT = 1024;
 
 const StudentSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
-  const [isTablet, setIsTablet] = useState(window.innerWidth >= 640 && window.innerWidth < 1024);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
+  const [isTablet, setIsTablet] = useState(
+    window.innerWidth >= MOBILE_BREAKPOINT && window.innerWidth < TABLET_BREAKPOINT
+  );
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= TABLET_BREAKPOINT);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= TABLET_BREAKPOINT);
   const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < MOBILE_BREAKPOINT);
+      setIsTablet(width >= MOBILE_BREAKPOINT && width < TABLET_BREAKPOINT);
+      setIsDesktop(width >= TABLET_BREAKPOINT);
+
+      // Sidebar open state
+      if (width >= TABLET_BREAKPOINT) setIsSidebarOpen(true);
+      else setIsSidebarOpen(false);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -21,110 +44,151 @@ const StudentSidebar = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth < 640;
-      const tablet = window.innerWidth >= 640 && window.innerWidth < 1024;
-      const desktop = window.innerWidth >= 1024;
-
-      setIsMobile(mobile);
-      setIsTablet(tablet);
-      setIsSidebarOpen(desktop);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   const handleLogout = () => {
-    localStorage.clear();
+    localStorage.removeItem("user");
     navigate("/");
-    console.log("Logged out");
   };
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   const handleNavClick = () => {
-    if (isMobile) {
-      setIsSidebarOpen(false);
-    }
+    if (isMobile || isTablet) setIsSidebarOpen(false);
   };
 
+  const showOverlay = (isMobile || isTablet) && isSidebarOpen;
+
   return (
-    <div className="flex h-screen overflow-hidden">
-      {/* Sidebar */}
-      <div
-        className={`fixed top-0 left-0 z-30 h-full bg-white shadow-md text-black transition-all duration-300 ease-in-out mt-10
-        ${isSidebarOpen ? (isMobile ? "w-16" : "w-64") : "w-16"} 
-        pt-4 sm:pt-[2vh] flex flex-col justify-between`}
-      >
-        <div className="space-y-4 px-2 py-4">
-          <NavItem
-            to="/dashboard"
-            icon={<Home size={20} />}
-            text="Dashboard"
-            active={location.pathname === "/dashboard"}
-            isOpen={isSidebarOpen && !isMobile}
-            onClick={handleNavClick}
+    <div className="flex flex-col min-h-screen bg-gray-50 overflow-hidden">
+      {/* Header */}
+      <Header
+        userData={userData}
+        onToggleSidebar={toggleSidebar}
+        isMobile={isMobile}
+        isTablet={isTablet}
+        isDesktop={isDesktop}
+      />
+
+      <div className="flex flex-1 pt-16 relative overflow-hidden">
+        {/* Overlay */}
+        {showOverlay && (
+          <div
+            className="fixed inset-0 bg-white z-20 transition-all duration-300"
+            style={{ backgroundColor: 'rgba(255, 255, 255, 0.4)' }}
+            onClick={() => setIsSidebarOpen(false)}
+            aria-label="Close sidebar overlay"
+            tabIndex={0}
+            role="button"
           />
-          <NavItem
-            to="/submit-project"
-            icon={<Send size={20} />}
-            text="Submit Project"
-            active={location.pathname === "/submit-project"}
-            isOpen={isSidebarOpen && !isMobile}
-            onClick={handleNavClick}
-          />
-          <NavItem
-            to="/batchmates"
-            icon={<Users size={20} />}
-            text="Batchmates"
-            active={location.pathname === "/batchmates"}
-            isOpen={isSidebarOpen && !isMobile}
-            onClick={handleNavClick}
-          />
-          <button
-            className="flex items-center space-x-3 p-2 hover:bg-gray-200 rounded w-full text-left"
-            onClick={() => {
-              handleLogout();
-              handleNavClick();
+
+        )}
+
+        {/* Sidebar */}
+        <aside
+          className={`
+            transition-all duration-300 ease-in-out bg-white shadow text-black flex flex-col justify-between
+            ${isMobile || isTablet
+              ? `fixed top-0 left-0 h-full pt-16 w-[70%] max-w-xs z-30 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+              }`
+              : `fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 z-30`
+            }
+          `}
+          aria-label="Sidebar Navigation"
+        >
+          <nav className="space-y-4 px-2 py-4">
+            <NavItem
+              to="/dashboard"
+              icon={<Home size={20} />}
+              text="Dashboard"
+              active={location.pathname === "/dashboard"}
+              isOpen={isSidebarOpen || isDesktop}
+              onClick={handleNavClick}
+            />
+            <NavItem
+              to="/submit-project"
+              icon={<Send size={20} />}
+              text="Submit Project"
+              active={location.pathname === "/submit-project"}
+              isOpen={isSidebarOpen || isDesktop}
+              onClick={handleNavClick}
+            />
+            <NavItem
+              to="/batchmates"
+              icon={<Users size={20} />}
+              text="Batchmates"
+              active={location.pathname === "/batchmates"}
+              isOpen={isSidebarOpen || isDesktop}
+              onClick={handleNavClick}
+            />
+            <NavItem
+              to="/about"
+              icon={<Users size={20} />}
+              text="About"
+              active={location.pathname === "/about"}
+              isOpen={isSidebarOpen || isDesktop}
+              onClick={handleNavClick}
+            />
+            <button
+              type="button"
+              className="flex items-center space-x-3 p-2 cursor-pointer hover:bg-gray-200 rounded w-full text-left"
+              onClick={() => {
+                handleLogout();
+                handleNavClick();
+              }}
+              aria-label="Logout"
+            >
+              <LogOut size={20} />
+              {(isSidebarOpen || isDesktop) && <span>Logout</span>}
+            </button>
+          </nav>
+        </aside>
+
+        {/* Main Content */}
+        <main
+          className={`flex-1 transition-all duration-300 ease-in-out ${isDesktop ? "ml-64" : ""
+            }`}
+        >
+          <div
+            className="pt-4 overflow-y-auto"
+            style={{
+              minHeight: "calc(100vh - 4rem - 3rem)",
+              paddingBottom: "3rem",
             }}
           >
-            <LogOut size={20} />
-            {isSidebarOpen && !isMobile && <span>Logout</span>}
-          </button>
-        </div>
+            {/* 👉 Your dynamic content goes here */}
+          </div>
+        </main>
       </div>
 
-      {/* Main Content */}
-      <div
-        className={`flex-1 flex flex-col transition-all duration-300 ease-in-out 
-        ${isSidebarOpen ? (isMobile ? "ml-16" : "ml-64") : "ml-16"}`}
-      >
-        <Header userData={userData} onToggleSidebar={toggleSidebar} />
+      <Footer />
 
-        <div className="p-4 mt-16 overflow-auto">
-          {/* Page content goes here */}
-        </div>
-      </div>
     </div>
   );
 };
 
-const Header = ({ userData, onToggleSidebar }) => {
+const Header = ({ userData, onToggleSidebar, isMobile, isTablet }) => {
   const navigate = useNavigate();
+  const showToggle = isMobile || isTablet;
+
   return (
-    <header className="w-full flex justify-between items-center bg-white text-black px-4 py-3 shadow fixed top-0 left-0 z-40">
+    <header className="fixed top-0 left-0 right-0 h-16 bg-white shadow flex justify-between items-center px-4 z-40">
       <div className="flex items-center space-x-4">
-        <button onClick={onToggleSidebar} className="block sm:block md:hidden">
-          <Menu size={24} />
-        </button>
+        {showToggle && (
+          <button
+            onClick={onToggleSidebar}
+            className="block"
+            aria-label="Toggle sidebar"
+          >
+            <Menu size={24} />
+          </button>
+        )}
         <h1 className="text-lg font-bold hidden sm:inline">Project Samarpan</h1>
       </div>
       <div
         className="flex items-center cursor-pointer"
         onClick={() => navigate("/profile")}
+        tabIndex={0}
+        aria-label="Profile"
+        role="button"
       >
         <img
           src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
@@ -142,18 +206,17 @@ const Header = ({ userData, onToggleSidebar }) => {
   );
 };
 
-const NavItem = ({ to, icon, text, active, isOpen, onClick }) => {
-  return (
-    <Link
-      to={to}
-      onClick={onClick}
-      className={`flex items-center space-x-3 p-2 rounded transition-all duration-200 
-        ${active ? "bg-gray-200 font-semibold" : "hover:bg-gray-100"}`}
-    >
-      {icon}
-      {isOpen && <span>{text}</span>}
-    </Link>
-  );
-};
+const NavItem = ({ to, icon, text, active, isOpen, onClick }) => (
+  <Link
+    to={to}
+    onClick={onClick}
+    className={`flex items-center space-x-3 p-2 rounded transition-all duration-200
+      ${active ? "bg-gray-200 font-semibold text-black border-l-4 border-red-500" : "hover:bg-gray-100 text-gray-700"}`}
+    aria-current={active ? "page" : undefined}
+  >
+    {icon}
+    {isOpen && <span>{text}</span>}
+  </Link>
+);
 
 export default StudentSidebar;

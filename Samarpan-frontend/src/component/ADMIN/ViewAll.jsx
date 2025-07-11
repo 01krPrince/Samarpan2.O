@@ -21,7 +21,6 @@ const ViewAll = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Pagination States
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(6);
   const [totalPages, setTotalPages] = useState(0);
@@ -58,7 +57,6 @@ const ViewAll = () => {
       const projectsResponse = await fetch(`https://samarpan2-o.onrender.com/api/projects/all?adminId=${adminId}&page=${0}&size=${1000}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      // console.log(projectsResponse)
       if (!projectsResponse.ok) {
         if (projectsResponse.status === 401) {
           navigate("/login");
@@ -204,7 +202,7 @@ setTotalPages(projectsData.totalPages || 0);
           <div className="w-full md:w-[45%] lg:w-[28%] relative">
             <input
               type="text"
-              placeholder="Search projects..."
+              placeholder="Search projects, students, batch..."
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setPage(0); }}
               className="w-full p-3 pl-10 bg-white border border-gray-200 rounded-xl shadow-sm"
