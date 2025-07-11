@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, LogOut, Send, Menu, Users } from "lucide-react";
-import Footer from "../footer/footer";
 
 const MOBILE_BREAKPOINT = 640;
 const TABLET_BREAKPOINT = 1024;
@@ -159,7 +158,11 @@ const StudentSidebar = () => {
         </main>
       </div>
 
-      <Footer />
+      {/* Footer */}
+        <footer className="fixed bottom-0 left-0 right-0 h-12 bg-white border-t flex items-center justify-center text-sm text-gray-500 z-40">
+            &copy; {new Date().getFullYear()} Project Samarpan. All rights reserved.
+        </footer>
+   
 
     </div>
   );
