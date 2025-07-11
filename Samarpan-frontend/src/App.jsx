@@ -16,7 +16,7 @@ import ViewDetails from "./component/STUDENT/dashboard/viewProjectStudent";
 import StudentProfile from "./component/STUDENT/dashboard/StudentProfile";
 import Batchmates from "./component/STUDENT/dashboard/Batchmates";
 import ForgetPassword from "./component/Auth/ForgetPassword";
-import About from "./component/STUDENT/dashboard/about";
+import About from "./component/STUDENT/dashboard/About";
 
 function App() {
   const [userRole, setUserRole] = useState(null);

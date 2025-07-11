@@ -140,7 +140,7 @@ export default function Dashboard() {
                         />
                         <span
                           className={`absolute top-2 right-2 px-2 py-1 text-xs font-medium text-white rounded-full shadow-sm ${
-                            project.markAsCheck ? "bg-green-500" : "bg-red-500"
+                            project.markAsCheck ? "bg-green-500" : "bg-red-400"
                           }`}
                         >
                           {project.markAsCheck ? "Checked" : "Un-Checked"}
