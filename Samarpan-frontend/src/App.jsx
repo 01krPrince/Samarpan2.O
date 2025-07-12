@@ -12,7 +12,7 @@ import AdminSidebar from "./component/ADMIN/AdminSidebar";
 import StudentSidebar from "./component/STUDENT/navbar/StudentSidebar";
 import ViewAll from "./component/ADMIN/ViewAll";
 import UpdateProject from "./component/STUDENT/dashboard/UpdateProject";
-import ViewDetails from "./component/STUDENT/dashboard/viewProjectStudent";
+import ViewDetails from "./component/STUDENT/dashboard/ViewProjectStudent";
 import StudentProfile from "./component/STUDENT/dashboard/StudentProfile";
 import Batchmates from "./component/STUDENT/dashboard/Batchmates";
 import ForgetPassword from "./component/Auth/ForgetPassword";

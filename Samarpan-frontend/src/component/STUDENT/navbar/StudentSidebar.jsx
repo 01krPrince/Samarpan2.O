@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, LogOut, Send, Menu, Users } from "lucide-react";
+import profilepic from "../../../assets/profilepic.png";
 
 const MOBILE_BREAKPOINT = 640;
 const TABLET_BREAKPOINT = 1024;
@@ -194,7 +195,7 @@ const Header = ({ userData, onToggleSidebar, isMobile, isTablet }) => {
         role="button"
       >
         <img
-          src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+          src={profilepic}
           alt="profile"
           className="w-10 h-10 rounded-full object-cover"
         />

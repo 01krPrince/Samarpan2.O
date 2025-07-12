@@ -49,6 +49,7 @@ export default function Dashboard() {
 
         const sortedProjects = projectData.sort((a, b) => a.subject.localeCompare(b.subject));
         setProjects(sortedProjects);
+        console.log("Sorted Projects:", sortedProjects);
       } catch (err) {
         setError(err.message);
       } finally {
