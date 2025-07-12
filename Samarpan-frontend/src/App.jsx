@@ -16,8 +16,7 @@ import StudentProfile from "./component/STUDENT/dashboard/StudentProfile";
 import Batchmates from "./component/STUDENT/dashboard/Batchmates";
 import ForgetPassword from "./component/Auth/ForgetPassword";
 import About from "./component/STUDENT/dashboard/About";
-import ViewDetails from "./component/STUDENT/dashboard/ViewProjectStudent";
-
+import ViewProjectStudent from "./component/STUDENT/dashboard/viewProjectStudent";
 
 function App() {
   const [userRole, setUserRole] = useState(null);
@@ -78,7 +77,7 @@ function App() {
 
           <Route
             path="/view-project"
-            element={userRole === "STUDENT" ? <ViewDetails /> : <Navigate to="/login" />}
+            element={userRole === "STUDENT" ? <ViewProjectStudent /> : <Navigate to="/login" />}
           />
 
           <Route

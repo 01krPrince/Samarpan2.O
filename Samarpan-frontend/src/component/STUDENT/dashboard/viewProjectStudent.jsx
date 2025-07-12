@@ -1,4 +1,3 @@
-import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   FaCheck,
@@ -11,10 +10,10 @@ import {
 
 const fallbackImage = "https://via.placeholder.com/600x400?text=No+Image+Available";
 
-const ViewProject = () => {
+const ViewProjectStudent = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  // For demo: fallback project if none is passed
+  
   const project =
     location.state?.project || {
       projectName: "Demo Project",
@@ -205,4 +204,4 @@ const ViewProject = () => {
   );
 };
 
-export default ViewProject;
+export default ViewProjectStudent;
