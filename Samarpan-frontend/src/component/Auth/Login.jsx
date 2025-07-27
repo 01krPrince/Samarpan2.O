@@ -123,11 +123,8 @@ export default function LoginForm({ setUserRole, openSignup }) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md w-full max-w-md border-r-4 border-red-500 p-8">
+    <div className="w-full max-w-md mx-auto">
       <h2 className="text-2xl font-bold text-center text-gray-900 mb-1">Sign In</h2>
-      <p className="text-center text-gray-500 mb-4">
-        Please <span className="text-red-500 font-semibold">sign in</span> to continue
-      </p>
 
       {error && <p className="text-red-500 text-center mb-4 font-medium">{error}</p>}
 
@@ -157,14 +154,14 @@ export default function LoginForm({ setUserRole, openSignup }) {
           }`}
           disabled={loading}
         >
-          {loading ? "Logging in..." : <><FaSignInAlt className="mr-2" /> Login</>}
+          {loading ? "Logging in..." : <> <FaSignInAlt className="mr-2" /> Login</>}
         </button>
       </form>
 
       <button
         onClick={openSignup}
         type="button"
-        className="mt-3 w-full text-red-600 hover:underline text-sm flex justify-center items-center"
+        className="mt-6 w-full text-red-600 hover:underline text-sm flex justify-center items-center"
         disabled={loading}
       >
         Don't have an account? Sign Up

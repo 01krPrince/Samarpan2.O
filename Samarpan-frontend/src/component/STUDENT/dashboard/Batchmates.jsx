@@ -77,7 +77,7 @@ const Batchmates = () => {
   };
 
   return (
-    <div className="min-h-screen pb-16 px-16 bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col py-8 px-4 -ml-8 sm:px-6 lg:px-8 mt-10">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col py-8 px-0 sm:px-6 lg:px-8 mt-10 pb-72">
        <h2 className="text-xl sm:text-2xl font-semibold mb-4 px-3">Batchmates&apos; Projects</h2>
       <div className="w-full max-w-7xl mx-auto mb-8 px-5">
     
@@ -107,7 +107,6 @@ const Batchmates = () => {
         </div>
       </div>
 
-      {/* Projects Grid */}
       <div className="w-full p-5 max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {loading ? (
           renderSkeleton()

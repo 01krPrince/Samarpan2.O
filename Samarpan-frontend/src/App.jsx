@@ -6,7 +6,7 @@ import SubmitProject from "./component/STUDENT/dashboard/SubmitProject";
 import UpdateProject from "./component/STUDENT/dashboard/UpdateProject";
 import ViewProjectStudent from "./component/STUDENT/dashboard/viewProjectStudent";
 import About from "./component/STUDENT/dashboard/About";
-import StudentProfile from "./component/STUDENT/dashboard/StudentProfile";
+import StudentProfile from "./component/STUDENT/dashboard/profile/ProfileTransition";
 import Batchmates from "./component/STUDENT/dashboard/Batchmates";
 
 import Landing from "./component/ADMIN/Landing";

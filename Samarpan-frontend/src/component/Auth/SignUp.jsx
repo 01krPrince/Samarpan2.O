@@ -22,7 +22,7 @@ const InputField = ({
   showPassword,
   toggleShowPassword,
 }) => (
-  <div className="mb-2 relative"> {/* Reduced from mb-4 to mb-2 */}
+  <div className="mb-3 relative">
     <label className="block text-gray-700 font-medium mb-1">
       {label} <span className="text-red-500">*</span>
     </label>
@@ -36,6 +36,7 @@ const InputField = ({
         className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-400"
         required
         autoComplete={autoComplete}
+        spellCheck="false"
       />
       {isPassword && (
         <button
@@ -52,7 +53,7 @@ const InputField = ({
   </div>
 );
 
-const SignUp = () => {
+const SignUp = ({ onClose }) => {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [contact, setContact] = useState("");
@@ -204,137 +205,136 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[80%] bg-grey-100 p-1">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white px-10 py-10 rounded-lg shadow-lg w-full max-w-5xl"
-        noValidate
-      >
-        <h2 className="text-3xl font-bold text-center mb-6">Sign Up</h2>
+    <div className="w-full max-w-3xl mx-auto">
+      <h2 className="text-3xl font-bold text-center mb-6">Sign Up</h2>
 
-        {error && <p className="text-red-600 text-center mb-4">{error}</p>}
-        {successMessage && <p className="text-green-600 text-center mb-4">{successMessage}</p>}
+      {error && <p className="text-red-600 text-center mb-4">{error}</p>}
+      {successMessage && <p className="text-green-600 text-center mb-4">{successMessage}</p>}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4"> {/* Reduced gap-y */}
-          <InputField
-            icon={<FaUser />}
-            label="Full Name"
-            value={name}
-            setValue={setName}
-            autoComplete="name"
-          />
-          <InputField
-            icon={<FaEnvelope />}
-            label="Email"
-            type="email"
-            value={username}
-            setValue={setUsername}
-            autoComplete="email"
-          />
-          <InputField
-            icon={<FaPhone />}
-            label="Contact Number"
-            value={contact}
-            setValue={setContact}
-            autoComplete="tel"
-          />
-          <InputField
-            icon={<FaLock />}
-            label="Password"
-            isPassword
-            showPassword={showPassword}
-            toggleShowPassword={() => setShowPassword((prev) => !prev)}
-            value={password}
-            setValue={setPassword}
-            autoComplete="new-password"
-          />
-          <InputField
-            icon={<FaLock />}
-            label="Confirm Password"
-            isPassword
-            showPassword={showConfirmPassword}
-            toggleShowPassword={() => setShowConfirmPassword((prev) => !prev)}
-            value={confirmPassword}
-            setValue={setConfirmPassword}
-            autoComplete="new-password"
-          />
-
-          <div>
-            <label
-              className="block text-gray-700 font-medium mb-1"
-              htmlFor="branch-select"
+      <form onSubmit={handleSubmit} noValidate className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+        <InputField
+          icon={<FaUser />}
+          label="Full Name"
+          value={name}
+          setValue={setName}
+          autoComplete="name"
+        />
+        <InputField
+          icon={<FaEnvelope />}
+          label="Email"
+          type="email"
+          value={username}
+          setValue={setUsername}
+          autoComplete="email"
+        />
+        <InputField
+          icon={<FaPhone />}
+          label="Contact Number"
+          value={contact}
+          setValue={setContact}
+          autoComplete="tel"
+        />
+        <InputField
+          icon={<FaLock />}
+          label="Password"
+          isPassword
+          showPassword={showPassword}
+          toggleShowPassword={() => setShowPassword((prev) => !prev)}
+          value={password}
+          setValue={setPassword}
+          autoComplete="new-password"
+        />
+        <InputField
+          icon={<FaLock />}
+          label="Confirm Password"
+          isPassword
+          showPassword={showConfirmPassword}
+          toggleShowPassword={() => setShowConfirmPassword((prev) => !prev)}
+          value={confirmPassword}
+          setValue={setConfirmPassword}
+          autoComplete="new-password"
+        />
+        <div className="flex flex-col mb-3">
+          <label htmlFor="branch-select" className="block text-gray-700 font-medium mb-1">
+            Branch <span className="text-red-500">*</span>
+          </label>
+          <div className="flex items-center border rounded-md p-2 bg-gray-50">
+            <FaList className="text-gray-500 mr-2 mt-1" />
+            <select
+              id="branch-select"
+              className="w-full outline-none bg-transparent"
+              value={selectedBranchId}
+              onChange={(e) => setSelectedBranchId(e.target.value)}
+              required
             >
-              Branch
-            </label>
-            <div className="flex items-center border rounded-md p-2 bg-gray-50">
-              <FaList className="text-gray-500 mr-2 mt-1" />
-              <select
-                id="branch-select"
-                className="w-full outline-none bg-transparent"
-                value={selectedBranchId}
-                onChange={(e) => setSelectedBranchId(e.target.value)}
-                required
-              >
-                <option value="">-- Select Branch --</option>
-                {branches.map((branch) => (
-                  <option key={branch.id} value={branch.id}>
-                    {branch.branchName}
-                  </option>
-                ))}
-              </select>
-            </div>
+              <option value="">-- Select Branch --</option>
+              {branches.map((branch) => (
+                <option key={branch.id} value={branch.id}>
+                  {branch.branchName}
+                </option>
+              ))}
+            </select>
           </div>
-
-          <div>
-            <label
-              className="block text-gray-700 font-medium mb-1"
-              htmlFor="batch-select"
+        </div>
+        <div className="flex flex-col mb-3">
+          <label htmlFor="batch-select" className="block text-gray-700 font-medium mb-1">
+            Batch <span className="text-red-500">*</span>
+          </label>
+          <div className="flex items-center border rounded-md p-2 bg-gray-50">
+            <FaList className="text-gray-500 mr-2 mt-1" />
+            <select
+              id="batch-select"
+              className="w-full outline-none bg-transparent"
+              value={selectedBatchId}
+              onChange={(e) => {
+                const selectedBatch = batches.find((b) => b.id === e.target.value);
+                setSelectedBatchId(e.target.value);
+                setSelectedBatchName(selectedBatch?.batchName || "");
+              }}
+              required
+              disabled={branches.length === 0 || !selectedBranchId}
             >
-              Batch
-            </label>
-            <div className="flex items-center border rounded-md p-2 bg-gray-50">
-              <FaList className="text-gray-500 mr-2 mt-1" />
-              <select
-                id="batch-select"
-                className="w-full outline-none bg-transparent"
-                value={selectedBatchId}
-                onChange={(e) => {
-                  const selectedBatch = batches.find(
-                    (b) => b.id === e.target.value
-                  );
-                  setSelectedBatchId(e.target.value);
-                  setSelectedBatchName(selectedBatch?.batchName || "");
-                }}
-                required
-                disabled={branches.length === 0 || !selectedBranchId}
-              >
-                <option value="">-- Select Batch --</option>
-                {batches.map((batch) => (
-                  <option key={batch.id} value={batch.id}>
-                    {batch.batchName}
-                  </option>
-                ))}
-              </select>
-            </div>
+              <option value="">-- Select Batch --</option>
+              {batches.map((batch) => (
+                <option key={batch.id} value={batch.id}>
+                  {batch.batchName}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
-        <button
-          type="submit"
-          className={`mt-10 w-full bg-gray-900 text-white py-3 rounded-lg flex justify-center items-center text-xl font-semibold transition hover:bg-gray-800 ${
-            loading ? "cursor-not-allowed opacity-70" : "cursor-pointer"
-          }`}
-          disabled={loading}
-        >
-          {loading ? (
-            "Signing Up..."
-          ) : (
-            <>
-              <FaUserPlus className="mr-3" /> Sign Up
-            </>
-          )}
-        </button>
+        {/* Submit button takes full width, so span both cols */}
+        <div className="md:col-span-2 mt-6">
+          <button
+            type="submit"
+            className={`w-full bg-gray-900 text-white py-3 rounded-lg flex justify-center items-center text-xl font-semibold transition hover:bg-gray-800 ${
+              loading ? "cursor-not-allowed opacity-70" : "cursor-pointer"
+            }`}
+            disabled={loading}
+          >
+            {loading ? (
+              "Signing Up..."
+            ) : (
+              <>
+                <FaUserPlus className="mr-3" /> Sign Up
+              </>
+            )}
+          </button>
+        </div>
       </form>
+
+      {/* Login redirect button */}
+      <div className="mt-6 text-center text-gray-600 text-sm">
+        Already have an account?{" "}
+        <button
+          className="text-red-600 hover:underline font-semibold"
+          onClick={() => onClose()}
+          type="button"
+        >
+          Login
+        </button>
+      </div>
     </div>
   );
 };

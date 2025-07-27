@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import StudentProfile from "./StudentProfile";
+import StudentProfile from "../StudentProfile";
 import ResumeCreator from "./ResumeCreator";
 
 export default function ProfileTransition() {
