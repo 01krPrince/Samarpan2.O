@@ -139,9 +139,10 @@ const Batchmates = () => {
                 <span
                   className={`absolute top-4 right-4 text-xs font-medium px-3 py-1 rounded-full ${
                     project.markAsCheck
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800'
+                      ? 'bg-indigo-500 text-white'
+                      : 'bg-yellow-100 text-yellow-700'
                   }`}
+                  // " : "
                 >
                   {project.markAsCheck ? 'Checked' : 'Unchecked'}
                 </span>
@@ -187,7 +188,7 @@ const Batchmates = () => {
         <button
           onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
           disabled={page === 0}
-          className="bg-indigo-600 text-white px-4 py-2 rounded disabled:opacity-50 cursor-pointer"
+          className="bg-gray-600 text-white px-4 py-2 rounded disabled:opacity-50 cursor-pointer"
           aria-label="Previous Page"
         >
           Previous
@@ -198,7 +199,7 @@ const Batchmates = () => {
         <button
           onClick={() => setPage((prev) => Math.min(prev + 1, totalPages - 1))}
           disabled={page >= totalPages - 1}
-          className="bg-indigo-600 text-white px-4 py-2 rounded disabled:opacity-50 cursor-pointer"
+          className="bg-gray-600 text-white px-4 py-2 rounded disabled:opacity-50 cursor-pointer"
           aria-label="Next Page"
         >
           Next

@@ -2,18 +2,13 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LogOut, Home, Users, BookOpen, Folder } from "lucide-react";
 
-const AdminSidebar = () => {
+const AdminSidebar = ({ setUserRole }) => {
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
 
-  const handleClick = () => {
-    localStorage.clear();
-    navigate('/');
-    console.log("Logged out");
-  };
-
+  // Resize listener to toggle sidebar width on mobile
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 640);
@@ -21,6 +16,23 @@ const AdminSidebar = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const handleLogout = () => {
+    // Clear localStorage keys related to auth/login
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("userRole");
+
+    // Update app state (userRole=null) so ProtectedRoute and routing reacts accordingly
+    if (setUserRole) {
+      setUserRole(null);
+    }
+
+    // Navigate to login page with replace to prevent history stack issues
+    navigate("/", { replace: true });
+
+    console.log("Logged out");
+  };
 
   return (
     <div className="flex h-screen md:pt-[5vh] pt-[4vh]">
@@ -65,7 +77,8 @@ const AdminSidebar = () => {
 
           <button
             className="flex items-center space-x-3 p-2 hover:bg-gray-300 rounded w-full text-left"
-            onClick={handleClick}
+            onClick={handleLogout}
+            aria-label="Logout"
           >
             <LogOut size={20} />
             {!isMobile && <span>Logout</span>}

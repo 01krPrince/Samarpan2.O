@@ -65,7 +65,7 @@ const staticProjects = [
   }
 ];
 
-export default function StudentProfile() {
+export default function StudentProfile({ onCreateResume }) {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -93,10 +93,6 @@ export default function StudentProfile() {
 
   const handleEditProfile = () => {
     navigate("/edit-profile");
-  };
-
-  const handleCreateResume = () => {
-    navigate("/create-resume");
   };
 
   const coachingInstitute =
@@ -129,14 +125,13 @@ export default function StudentProfile() {
     "Git & GitHub"
   ];
 
-  // Accordion toggle handler
   const toggleSection = (section) => {
-    setOpenSection(openSection === section ? section : section);
+    setOpenSection(section);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-10 px-4">
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
         <div className="flex flex-col md:flex-row gap-8 p-8">
           {/* Sidebar */}
           <div className="md:w-1/3 flex flex-col items-center text-center">
@@ -160,24 +155,16 @@ export default function StudentProfile() {
             {/* Edit Profile Button */}
             <button
               onClick={handleEditProfile}
-              className="mt-6 inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-indigo-700 font-semibold px-5 py-2 rounded-lg shadow transition"
+              className="mt-6 inline-flex items-center gap-2 cursor-pointer bg-gray-100 hover:bg-gray-200 text-indigo-700 font-semibold px-5 py-2 rounded-lg shadow transition"
             >
               <Edit3 size={18} /> Edit Profile
             </button>
-            {/* Create Resume Button */}
+            {/* Create Resume Button with transition callback */}
             <button
-              onClick={handleCreateResume}
-              className="mt-3 inline-flex items-center cursor-pointer gap-2 text-white font-semibold px-5 py-2 rounded-lg shadow transition"
+              onClick={onCreateResume}
+              className="mt-3 inline-flex items-center cursor-pointer gap-2 text-white font-semibold px-5 py-2 rounded-lg shadow transition bg-gray-800 hover:bg-gray-900"
             >
-              <FileText size={18} /> 
-            </button>
-
-            <button
-              type="submit"
-              className={`w-full md:w-auto px-4 py-2 cursor-pointer text-white text-base font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800 bg-gray-800 hover:bg-gray-900"
-                }`}
-            >
-             Create Resume
+              <FileText size={18} /> Create Resume
             </button>
           </div>
 
@@ -187,7 +174,7 @@ export default function StudentProfile() {
             {/* Personal Info Accordion */}
             <section>
               <button
-                className="w-full flex items-center justify-between text-lg font-semibold text-gray-900 mb-3 px-2 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
+                className="w-full flex cursor-pointer items-center justify-between text-lg font-semibold text-gray-900 mb-3 px-2 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
                 onClick={() => toggleSection("personal")}
                 aria-expanded={openSection === "personal"}
               >
@@ -215,7 +202,7 @@ export default function StudentProfile() {
             {/* Academic Info Accordion */}
             <section>
               <button
-                className="w-full flex items-center justify-between text-lg font-semibold text-gray-900 mb-3 px-2 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
+                className="w-full flex items-center cursor-pointer justify-between text-lg font-semibold text-gray-900 mb-3 px-2 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
                 onClick={() => toggleSection("academic")}
                 aria-expanded={openSection === "academic"}
               >
@@ -243,7 +230,7 @@ export default function StudentProfile() {
             {/* Skills Accordion */}
             <section>
               <button
-                className="w-full flex items-center justify-between text-lg font-semibold text-gray-900 mb-3 px-2 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
+                className="w-full flex items-center cursor-pointer justify-between text-lg font-semibold text-gray-900 mb-3 px-2 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
                 onClick={() => toggleSection("skills")}
                 aria-expanded={openSection === "skills"}
               >
@@ -266,7 +253,7 @@ export default function StudentProfile() {
             {/* Projects Accordion */}
             <section>
               <button
-                className="w-full flex items-center justify-between text-lg font-semibold text-gray-900 mb-3 px-2 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
+                className="w-full flex items-center cursor-pointer justify-between text-lg font-semibold text-gray-900 mb-3 px-2 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
                 onClick={() => toggleSection("projects")}
                 aria-expanded={openSection === "projects"}
               >
@@ -284,7 +271,7 @@ export default function StudentProfile() {
                         <span className={`px-2 py-1 text-xs rounded-full font-bold
                           ${proj.status === "Live" ? "bg-green-100 text-green-800"
                             : proj.status === "Reviewed" ? "bg-indigo-100 text-indigo-700"
-                            : "bg-yellow-100 text-yellow-700"}`}>
+                              : "bg-yellow-100 text-yellow-700"}`}>
                           {proj.status}
                         </span>
                       </div>
@@ -299,21 +286,19 @@ export default function StudentProfile() {
                 </div>
               )}
             </section>
-<div className="bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-2 rounded-md text-sm my-4">
-  ⚠️ <strong>Disclaimer:</strong> This page is currently under construction. Around 90% of the data is static and shown for demo purposes only. Updates coming soon!
-</div>
+            <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-2 rounded-md text-sm my-4">
+              ⚠️ <strong>Disclaimer:</strong> This page is currently under construction. Around 90% of the data is static and shown for demo purposes only. Updates coming soon!
+            </div>
 
             {/* Logout */}
             {!loading && (
               <div className="pt-4 text-right">
                 <button
                   onClick={handleLogout}
-                  className="inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-900 text-white font-semibold px-5 py-2 rounded-lg shadow"
+                  className="inline-flex items-center cursor-pointer gap-2 bg-gray-800 hover:bg-gray-900 text-white font-semibold px-5 py-2 rounded-lg shadow"
                 >
                   <LogOut size={18} /> Logout
                 </button>
-
-           
               </div>
             )}
           </div>

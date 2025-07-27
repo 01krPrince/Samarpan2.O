@@ -375,7 +375,7 @@ export default function SubmitProject() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-6 w-full mb-10">
             <button
               type="submit"
-              className={`w-full md:w-auto px-4 py-2 cursor-pointer text-white text-base font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800 ${isSubmitting ? "bg-gray-600 cursor-not-allowed" : "bg-gray-800 hover:bg-gray-900"
+              className={`w-full md:w-auto px-4 py-2 cursor-pointer justify-end text-white text-base font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800 ${isSubmitting ? "bg-gray-600 cursor-not-allowed" : "bg-gray-800 hover:bg-gray-900"
                 }`}
               disabled={isSubmitting}
             >

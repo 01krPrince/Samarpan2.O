@@ -1,15 +1,56 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaUser,
   FaEnvelope,
   FaLock,
-  FaSignInAlt,
   FaUserPlus,
   FaPhone,
   FaList,
+  FaEye,
+  FaEyeSlash,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import codingAgeLogo from '../../assets/codingAge.png';
+
+const InputField = ({
+  icon,
+  label,
+  value,
+  setValue,
+  type = "text",
+  autoComplete = "",
+  isPassword = false,
+  showPassword,
+  toggleShowPassword,
+}) => (
+  <div className="mb-2 relative"> {/* Reduced from mb-4 to mb-2 */}
+    <label className="block text-gray-700 font-medium mb-1">
+      {label} <span className="text-red-500">*</span>
+    </label>
+    <div className="flex items-center border rounded-md p-2 mt-1 bg-gray-50 focus-within:ring-2 focus-within:ring-red-200 transition">
+      <span className="text-gray-400 mr-2">{icon}</span>
+      <input
+        type={isPassword ? (showPassword ? "text" : "password") : type}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder={`Enter ${label.toLowerCase()}`}
+        className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-400"
+        required
+        autoComplete={autoComplete}
+      />
+      {isPassword && (
+        <button
+          type="button"
+          onClick={toggleShowPassword}
+          className="ml-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+          tabIndex={-1}
+          aria-label={showPassword ? "Hide password" : "Show password"}
+        >
+          {showPassword ? <FaEyeSlash /> : <FaEye />}
+        </button>
+      )}
+    </div>
+  </div>
+);
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -17,15 +58,19 @@ const SignUp = () => {
   const [contact, setContact] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [selectedBranchId, setSelectedBranchId] = useState("");
   const [selectedBatchId, setSelectedBatchId] = useState("");
   const [selectedBatchName, setSelectedBatchName] = useState("");
-  const [selectedBranchId, setSelectedBranchId] = useState("");
-  const [batches, setBatches] = useState([]);
   const [branches, setBranches] = useState([]);
-  const [step, setStep] = useState(1);
+  const [batches, setBatches] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -48,66 +93,55 @@ const SignUp = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedBranchId) {
-      const fetchBatches = async () => {
-        try {
-          const response = await fetch(
-            `https://samarpan2-o.onrender.com/api/v1/Batch/findAllByBranchId?branchId=${selectedBranchId}`,
-            { headers: { accept: "*/*" } }
-          );
-          if (!response.ok) throw new Error("Failed to fetch batches");
-          const data = await response.json();
-          setBatches(data);
-        } catch (err) {
-          console.error("Error fetching batches:", err);
-          setError("Failed to load batches");
-        }
-      };
-      fetchBatches();
-    }
-  }, [selectedBranchId]);
-
-  const handleNext = (e) => {
-    e.preventDefault();
-    setError("");
-    if (password !== confirmPassword) {
-      setError("Passwords do not match!");
+    if (!selectedBranchId) {
+      setBatches([]);
+      setSelectedBatchId("");
+      setSelectedBatchName("");
       return;
     }
-    setStep(2);
-  };
+    const fetchBatches = async () => {
+      try {
+        const response = await fetch(
+          `https://samarpan2-o.onrender.com/api/v1/Batch/findAllByBranchId?branchId=${selectedBranchId}`,
+          { headers: { accept: "*/*" } }
+        );
+        if (!response.ok) throw new Error("Failed to fetch batches");
+        const data = await response.json();
+        setBatches(data);
+        setSelectedBatchId("");
+        setSelectedBatchName("");
+      } catch (err) {
+        console.error("Error fetching batches:", err);
+        setError("Failed to load batches");
+      }
+    };
+    fetchBatches();
+  }, [selectedBranchId]);
 
-  const autoLogin = async (email, password) => {
+  const autoLogin = async (email, pass) => {
     try {
       const response = await fetch("https://samarpan2-o.onrender.com/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: email, password }),
+        body: JSON.stringify({ username: email, password: pass }),
       });
-
       const text = await response.text();
-      let data;
-
+      let data = {};
       try {
         data = JSON.parse(text);
-      } catch {
-        throw new Error(`Unexpected response from server: ${text}`);
-      }
+      } catch {}
 
       if (response.ok) {
         const role = data.user.roles ? data.user.roles[0] : data.user.role;
         if (!role) throw new Error("Role not found");
-
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("userRole", role.toUpperCase());
-
         navigate(role.toUpperCase() === "ADMIN" ? "/landingpage" : "/dashboard");
       } else {
         setError(data.message || "Auto-login failed.");
       }
     } catch (err) {
-      console.error("Auto-login error:", err);
       setError(err.message || "Auto-login failed.");
     }
   };
@@ -118,8 +152,13 @@ const SignUp = () => {
     setError("");
     setSuccessMessage("");
 
-    if (!selectedBatchId || !selectedBatchName || !selectedBranchId) {
-      setError("Please select a branch and a batch.");
+    if (password !== confirmPassword) {
+      setError("Passwords do not match!");
+      setLoading(false);
+      return;
+    }
+    if (!selectedBranchId || !selectedBatchId || !selectedBatchName) {
+      setError("Please select both a branch and a batch.");
       setLoading(false);
       return;
     }
@@ -150,7 +189,6 @@ const SignUp = () => {
       const responseText = await response.text();
 
       if (response.ok && responseText.includes("User registered successfully")) {
-        console.log("Sign up success:", responseText);
         setSuccessMessage("User registered successfully! Logging you in...");
         await autoLogin(username, password);
       } else if (!response.ok && responseText.includes("already in use")) {
@@ -159,7 +197,6 @@ const SignUp = () => {
         setError("Registration failed. Try again.");
       }
     } catch (err) {
-      console.error("Signup error:", err);
       setError("Failed to sign up. Check your internet connection.");
     } finally {
       setLoading(false);
@@ -167,127 +204,139 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      {step === 1 ? (
-        <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-          <div className="flex justify-center mb-4">
-            <img src={codingAgeLogo} className="h-16" alt="Coding Age" />
-          </div>
-          <h2 className="text-2xl font-bold text-center">Sign Up</h2>
-          <p className="text-center text-gray-600 mb-4">Create a new account</p>
-          {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-          {successMessage && <p className="text-green-500 text-center mb-4">{successMessage}</p>}
-          <form onSubmit={handleNext}>
-            <InputField icon={<FaUser />} label="Full Name" value={name} setValue={setName} />
-            <InputField icon={<FaEnvelope />} label="Email" type="email" value={username} setValue={setUsername} />
-            <InputField icon={<FaPhone />} label="Contact Number" value={contact} setValue={setContact} />
-            <InputField icon={<FaLock />} label="Password" type="password" value={password} setValue={setPassword} autoComplete="new-password" />
-            <InputField icon={<FaLock />} label="Confirm Password" type="password" value={confirmPassword} setValue={setConfirmPassword} autoComplete="new-password" />
-            <button
-              type="submit"
-              className="w-full bg-gray-900 text-white py-2 rounded-md flex justify-center items-center text-lg font-medium cursor-pointer"
-              disabled={loading}
+    <div className="flex justify-center items-center min-h-[80%] bg-grey-100 p-1">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white px-10 py-10 rounded-lg shadow-lg w-full max-w-5xl"
+        noValidate
+      >
+        <h2 className="text-3xl font-bold text-center mb-6">Sign Up</h2>
+
+        {error && <p className="text-red-600 text-center mb-4">{error}</p>}
+        {successMessage && <p className="text-green-600 text-center mb-4">{successMessage}</p>}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4"> {/* Reduced gap-y */}
+          <InputField
+            icon={<FaUser />}
+            label="Full Name"
+            value={name}
+            setValue={setName}
+            autoComplete="name"
+          />
+          <InputField
+            icon={<FaEnvelope />}
+            label="Email"
+            type="email"
+            value={username}
+            setValue={setUsername}
+            autoComplete="email"
+          />
+          <InputField
+            icon={<FaPhone />}
+            label="Contact Number"
+            value={contact}
+            setValue={setContact}
+            autoComplete="tel"
+          />
+          <InputField
+            icon={<FaLock />}
+            label="Password"
+            isPassword
+            showPassword={showPassword}
+            toggleShowPassword={() => setShowPassword((prev) => !prev)}
+            value={password}
+            setValue={setPassword}
+            autoComplete="new-password"
+          />
+          <InputField
+            icon={<FaLock />}
+            label="Confirm Password"
+            isPassword
+            showPassword={showConfirmPassword}
+            toggleShowPassword={() => setShowConfirmPassword((prev) => !prev)}
+            value={confirmPassword}
+            setValue={setConfirmPassword}
+            autoComplete="new-password"
+          />
+
+          <div>
+            <label
+              className="block text-gray-700 font-medium mb-1"
+              htmlFor="branch-select"
             >
-              {loading ? "Processing..." : "Next"}
-            </button>
-          </form>
-          <button
-            onClick={() => navigate("/")}
-            className="mt-2 w-full border border-gray-900 text-gray-900 py-2 rounded-md flex justify-center items-center text-sm font-medium cursor-pointer hover:bg-gray-900 hover:text-white transition"
-          >
-            <FaSignInAlt className="mr-2" /> Already have an account? Login
-          </button>
-        </div>
-      ) : (
-        <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-          <div className="flex justify-center mb-4">
-            <FaList className="text-4xl text-gray-700" />
-          </div>
-          <h2 className="text-2xl font-bold text-center">Select Branch & Batch</h2>
-          <p className="text-center text-gray-600 mb-4">Choose your branch and batch</p>
-          {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-          {successMessage && <p className="text-green-500 text-center mb-4">{successMessage}</p>}
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label className="block text-gray-700">Branch</label>
-              <div className="flex items-center border rounded-md p-2 mt-1">
-                <FaList className="text-gray-500 mr-2" />
-                <select
-                  value={selectedBranchId}
-                  onChange={(e) => setSelectedBranchId(e.target.value)}
-                  className="w-full outline-none"
-                  required
-                >
-                  <option value="">-- Select Branch --</option>
-                  {branches.map((branch) => (
-                    <option key={branch.id} value={branch.id}>
-                      {branch.branchName}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              Branch
+            </label>
+            <div className="flex items-center border rounded-md p-2 bg-gray-50">
+              <FaList className="text-gray-500 mr-2 mt-1" />
+              <select
+                id="branch-select"
+                className="w-full outline-none bg-transparent"
+                value={selectedBranchId}
+                onChange={(e) => setSelectedBranchId(e.target.value)}
+                required
+              >
+                <option value="">-- Select Branch --</option>
+                {branches.map((branch) => (
+                  <option key={branch.id} value={branch.id}>
+                    {branch.branchName}
+                  </option>
+                ))}
+              </select>
             </div>
-            {selectedBranchId && (
-              <div className="mb-4">
-                <label className="block text-gray-700">Batch</label>
-                <div className="flex items-center border rounded-md p-2 mt-1">
-                  <FaList className="text-gray-500 mr-2" />
-                  <select
-                    value={selectedBatchId}
-                    onChange={(e) => {
-                      const selectedBatch = batches.find((b) => b.id === e.target.value);
-                      setSelectedBatchId(e.target.value);
-                      setSelectedBatchName(selectedBatch?.batchName);
-                    }}
-                    className="w-full outline-none"
-                    required
-                  >
-                    <option value="">-- Select Batch --</option>
-                    {batches.map((b) => (
-                      <option key={b.id} value={b.id}>
-                        {b.batchName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            )}
-            <button
-              type="submit"
-              className="w-full bg-gray-900 text-white py-2 rounded-md flex justify-center items-center text-lg font-medium cursor-pointer"
-              disabled={loading}
+          </div>
+
+          <div>
+            <label
+              className="block text-gray-700 font-medium mb-1"
+              htmlFor="batch-select"
             >
-              {loading ? "Signing Up..." : <><FaUserPlus className="mr-2" /> Sign Up</>}
-            </button>
-          </form>
-          <button
-            onClick={() => setStep(1)}
-            className="mt-2 w-full border border-gray-900 text-gray-900 py-2 rounded-md flex justify-center items-center text-sm font-medium cursor-pointer hover:bg-gray-900 hover:text-white transition"
-          >
-            Back
-          </button>
+              Batch
+            </label>
+            <div className="flex items-center border rounded-md p-2 bg-gray-50">
+              <FaList className="text-gray-500 mr-2 mt-1" />
+              <select
+                id="batch-select"
+                className="w-full outline-none bg-transparent"
+                value={selectedBatchId}
+                onChange={(e) => {
+                  const selectedBatch = batches.find(
+                    (b) => b.id === e.target.value
+                  );
+                  setSelectedBatchId(e.target.value);
+                  setSelectedBatchName(selectedBatch?.batchName || "");
+                }}
+                required
+                disabled={branches.length === 0 || !selectedBranchId}
+              >
+                <option value="">-- Select Batch --</option>
+                {batches.map((batch) => (
+                  <option key={batch.id} value={batch.id}>
+                    {batch.batchName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
-      )}
+
+        <button
+          type="submit"
+          className={`mt-10 w-full bg-gray-900 text-white py-3 rounded-lg flex justify-center items-center text-xl font-semibold transition hover:bg-gray-800 ${
+            loading ? "cursor-not-allowed opacity-70" : "cursor-pointer"
+          }`}
+          disabled={loading}
+        >
+          {loading ? (
+            "Signing Up..."
+          ) : (
+            <>
+              <FaUserPlus className="mr-3" /> Sign Up
+            </>
+          )}
+        </button>
+      </form>
     </div>
   );
 };
-
-const InputField = ({ icon, label, value, setValue, type = "text", ...props }) => (
-  <div className="mb-4">
-    <label className="block text-gray-700">{label}</label>
-    <div className="flex items-center border rounded-md p-2 mt-1">
-      <span className="text-gray-500 mr-2">{icon}</span>
-      <input
-        type={type}
-        placeholder={label}
-        className="w-full outline-none"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        required
-        {...props}
-      />
-    </div>
-  </div>
-);
 
 export default SignUp;
