@@ -100,7 +100,7 @@ export default function Dashboard() {
       : projects.filter((p) => p.subject === selectedCategory);
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen pb-100 max-w-[100vw] px-5">
+    <div className="bg-red-500 min-h-screen pb-80 max-w-[100vw] px-5 ">
       <div className="pt-[10vh]">
         <main>
           <h2 className="text-xl sm:text-2xl font-semibold mb-4">Projects Overview</h2>

@@ -28,10 +28,8 @@ function App() {
   const navigate = useNavigate();
 
   const [userRole, setUserRole] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
 
-  // Redirect logic to avoid loops on logout/login
-useEffect(() => {
   const protectedPaths = [
     "/dashboard",
     "/submit-project",
@@ -47,50 +45,60 @@ useEffect(() => {
     "/admin/review-project",
   ];
 
-  // Normalize the current path - with or without trailing slash
-  const currentPath = location.pathname.replace(/\/+$/, "") || "/";
+  // ✅ Save last visited path (on every path change)
+  useEffect(() => {
+    const currentPath = location.pathname;
+    if (userRole && protectedPaths.includes(currentPath)) {
+      localStorage.setItem("lastPath", currentPath);
+    }
+  }, [location.pathname, userRole]);
 
-  if (!userRole) {
-    // User is not logged in
+  // ✅ Auto login on mount
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    const role = localStorage.getItem("userRole");
 
-    // If trying to access any protected route, redirect to "/"
-    if (protectedPaths.includes(currentPath)) {
-      navigate("/", { replace: true });
-      return; // exit early to avoid multiple navigations
+    if (token && user && (role === "STUDENT" || role === "ADMIN")) {
+      setUserRole(role);
+    } else {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("userRole");
     }
 
-    // Otherwise, allow access on public routes like "/" or "/login" or "/signup"
-    // so do nothing here
-    return;
-  }
+    setAuthChecked(true);
+  }, []);
 
-  // User is logged in
+  // ✅ Redirect user after auth check
+  useEffect(() => {
+    if (!authChecked) return;
 
-  // If user is on root "/" or "/login", redirect according to role
-  if (currentPath === "/" || currentPath === "/login") {
-    if (userRole === "ADMIN") {
-      navigate("/landingpage", { replace: true });
-    } else if (userRole === "STUDENT") {
-      navigate("/dashboard", { replace: true });
+    const currentPath = location.pathname.replace(/\/+$/, "") || "/";
+    const lastPath = localStorage.getItem("lastPath");
+
+    if (!userRole) {
+      if (protectedPaths.includes(currentPath)) {
+        navigate("/", { replace: true });
+      }
+    } else {
+      if (["/", "/login", "/signup"].includes(currentPath)) {
+        if (lastPath && protectedPaths.includes(lastPath)) {
+          navigate(lastPath, { replace: true });
+        } else {
+          navigate(userRole === "ADMIN" ? "/landingpage" : "/dashboard", {
+            replace: true,
+          });
+        }
+      }
     }
-  } else if (!protectedPaths.includes(currentPath)) {
-    // Optional: if logged user visits unknown/unhandled path (non-protected),
-    // could redirect them to their default dashboard to avoid 404 confusion
-    // This is optional, comment out if you don't want forced redirect
-    if (userRole === "ADMIN") {
-      navigate("/landingpage", { replace: true });
-    } else if (userRole === "STUDENT") {
-      navigate("/dashboard", { replace: true });
-    }
-  }
-}, [userRole, location.pathname, navigate]);
-
+  }, [authChecked, userRole, location.pathname, navigate]);
 
   const hideSidebarRoutes = ["/", "/forget-password/reset"];
+  const shouldShowSidebar =
+    authChecked && !hideSidebarRoutes.includes(location.pathname) && !!userRole;
 
-  const shouldShowSidebar = !hideSidebarRoutes.includes(location.pathname) && !!userRole;
-
-  if (loading) {
+  if (!authChecked) {
     return (
       <div className="flex items-center justify-center h-screen">
         <span>Loading...</span>
@@ -108,13 +116,13 @@ useEffect(() => {
       )}
       <div className="flex-1">
         <Routes>
-          {/* Public / Auth */}
-          <Route path="/" element={<Auth setUserRole={setUserRole} />} />
+          {/* Public */}
           <Route path="/login" element={<Navigate to="/" replace />} />
+          <Route path="/" element={<Auth setUserRole={setUserRole} />} />
           <Route path="/signup" element={<Navigate to="/" replace />} />
           <Route path="/forget-password/reset" element={<ForgetPassword />} />
 
-          {/* Student routes */}
+          {/* Student Routes */}
           <Route
             path="/dashboard"
             element={
@@ -158,10 +166,7 @@ useEffect(() => {
           <Route
             path="/profile"
             element={
-              <ProtectedRoute
-                userRole={userRole}
-                allowedRoles={["STUDENT", "ADMIN"]}
-              >
+              <ProtectedRoute userRole={userRole} allowedRoles={["STUDENT", "ADMIN"]}>
                 <StudentProfile />
               </ProtectedRoute>
             }
@@ -169,16 +174,13 @@ useEffect(() => {
           <Route
             path="/batchmates"
             element={
-              <ProtectedRoute
-                userRole={userRole}
-                allowedRoles={["STUDENT", "ADMIN"]}
-              >
+              <ProtectedRoute userRole={userRole} allowedRoles={["STUDENT", "ADMIN"]}>
                 <Batchmates />
               </ProtectedRoute>
             }
           />
 
-          {/* Admin routes */}
+          {/* Admin Routes */}
           <Route
             path="/landingpage"
             element={
