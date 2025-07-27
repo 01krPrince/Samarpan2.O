@@ -84,23 +84,18 @@ export default function StudentProfile({ onCreateResume }) {
     }
   }, []);
 
-  
-
   const handleLogout = () => {
-  if (window.confirm("Are you sure you want to logout?")) {
-    localStorage.removeItem("user");
-    console.log("User logged out successfully");
+    if (window.confirm("Are you sure you want to logout?")) {
+      localStorage.removeItem("user");
+      console.log("User logged out successfully");
 
-    navigate("/login", { replace: true });
+      navigate("/login", { replace: true });
 
-    setTimeout(() => {
-      window.location.reload();
-    }, 10);
-  }
-};
-
-
-
+      setTimeout(() => {
+        window.location.reload();
+      }, 10);
+    }
+  };
 
 
   const handleEditProfile = () => {

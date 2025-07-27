@@ -227,7 +227,7 @@ export default function UpdateProject() {
   };
 
   return (
-    <div className="pt-[10vh] items-center justify-center min-h-screen w-full bg-gray-100 px-2">
+    <div className="pt-[10vh] items-center justify-center min-h-screen w-full bg-gradient-to-b from-gray-50 to-gray-100 px-2">
       <main className="w-full max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-lg pb-8">
         <h2 className="text-lg md:text-2xl font-semibold text-gray-800 px-3 mb-6">
           Update Project

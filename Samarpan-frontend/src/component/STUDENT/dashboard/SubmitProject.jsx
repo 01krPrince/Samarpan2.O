@@ -245,7 +245,7 @@ export default function SubmitProject() {
   ];
 
   return (
-    <div className="pt-[10vh] items-center justify-center min-h-screen w-full bg-gray-100 pb-50">
+    <div className="pt-[10vh] items-center justify-center min-h-screen w-full bg-gradient-to-b from-gray-50 to-gray-100 pb-50">
       <h2 className="text-lg md:text-2xl font-semibold text-gray-800 px-3">Submit Your Project</h2>
 
       <div className="pt-5 px-4 sm:px-6 md:px-10 w-full max-w-6xl mx-auto">

@@ -84,7 +84,7 @@ const StudentSidebar = () => {
 
         {/* Content */}
         <main
-          className={`flex-1 ml-0 sm:ml-64 bg-amber-100 min-h-[calc(100vh-4rem-2.5rem)] p-4 ${isMobile ? "hidden" : "block"
+          className={`flex-1 ml-0 sm:ml-64 bg-gradient-to-b from-gray-50 to-gray-100 min-h-[calc(100vh-4rem-2.5rem)] p-4 ${isMobile ? "hidden" : "block"
             }`}
         >
         </main>
