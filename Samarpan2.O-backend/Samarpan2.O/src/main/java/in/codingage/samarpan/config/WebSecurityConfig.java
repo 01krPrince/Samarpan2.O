@@ -86,7 +86,8 @@ public class WebSecurityConfig {
                                 "https://samarpan2-o.netlify.app/",
                                 "/api/otp/**",
                                 "/ping",
-                                "/api/v1/Batch/findAllByBranchId"
+                                "/api/v1/Batch/findAllByBranchId",
+                                "/api/auth/update-email"
                         ).permitAll()
                         .requestMatchers("/api/v1/Batch/getAllBatch").hasAuthority("ADMIN")
                         .anyRequest().authenticated()

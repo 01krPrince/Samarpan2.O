@@ -33,8 +33,6 @@ public class ProjectController {
         return projectService.getAllProjectsForStudent(adminId, page, size);
     }
 
-    
-
     @GetMapping("/getProjectById")
     public Project getProjectById(@RequestParam String projectId) {
         return projectService.getProjectById(projectId);

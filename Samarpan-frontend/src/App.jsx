@@ -43,6 +43,7 @@ function App() {
     "/admin/create-subject",
     "/admin/view-all",
     "/admin/review-project",
+    "/edit-profile",
   ];
 
   // ✅ Save last visited path (on every path change)

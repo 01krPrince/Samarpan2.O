@@ -33,6 +33,7 @@ public class User {
     private boolean activated;
     private boolean accountNonExpired;
     private boolean forceLogOut;
+    private boolean isVerified;
 
     public User(String name, String email, String username, String password, String contact, boolean activated, boolean accountNonExpired) {
         this.name = name;

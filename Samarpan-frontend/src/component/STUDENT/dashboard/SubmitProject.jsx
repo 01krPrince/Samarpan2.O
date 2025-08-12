@@ -179,7 +179,7 @@ export default function SubmitProject() {
         navigate("/dashboard");
       }, 2000);
     } catch (err) {
-      setError("Something went wrong: " + err.message);
+      setError("Something went wrong: " + err.message); // Why?
       setIsSubmitting(false);
     }
   };

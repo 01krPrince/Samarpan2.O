@@ -9,6 +9,7 @@ import in.codingage.samarpan.security.jwt.JwtUtils;
 import in.codingage.samarpan.security.services.impl.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,7 +62,7 @@ public class AuthController {
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new ApplicationException("USER", "DOES_NOT_EXIST"));
         System.out.println();
         LoginResponse loginResponse = new LoginResponse(jwt, user, false);
-
+        System.out.println("User ID : " + user.getId());
         return ResponseEntity.ok(loginResponse);
     }
 
@@ -156,6 +158,67 @@ public class AuthController {
 
         return ResponseEntity.ok(new MessageResponse("Password has been reset successfully."));
     }
+
+    @PutMapping("/update-email")
+    public ResponseEntity<String> updateEmail(@RequestParam String email, @RequestParam String newEmail) {
+        // Validate input
+        if (email == null || email.isEmpty() || newEmail == null || newEmail.isEmpty()) {
+            return ResponseEntity.badRequest().body("Email and new email must not be empty.");
+        }
+
+        // Find the user by current email
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with the provided email not found.");
+        }
+
+        // Check if newEmail is already taken
+        if (userRepository.findByEmail(newEmail) != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("The new email is already in use.");
+        }
+
+        // Update the email and username
+        user.setEmail(newEmail);
+        user.setUsername(newEmail); // if username must match email
+        userRepository.save(user); // Don't forget to save the updated user
+
+        return ResponseEntity.ok("Email updated successfully.");
+    }
+
+    @RestController
+    @RequestMapping("/api/users")
+    public class UserController {
+
+        @Autowired
+        private UserRepository userRepository;
+
+        @DeleteMapping("/delete-specific")
+        public ResponseEntity<String> deleteSpecificUsers() {
+            List<String> emailsToDelete = Arrays.asList(
+                    "princekr3006@gmail.com",
+                    "admin@gmail.com",
+                    "student@gmail.com",
+                    "testing@gmail.com",
+                    "a@b.c",
+                    "web@dev.com"
+            );
+
+            StringBuilder response = new StringBuilder();
+
+            for (String email : emailsToDelete) {
+                User user = userRepository.findByEmail(email);
+                if (user != null) {
+                    userRepository.delete(user);
+                    response.append("Deleted: ").append(email).append("\n");
+                } else {
+                    response.append("Not found: ").append(email).append("\n");
+                }
+            }
+
+            return ResponseEntity.ok(response.toString());
+        }
+    }
+
 
 
 }

@@ -304,7 +304,6 @@ const SignUp = ({ onClose }) => {
           </div>
         </div>
 
-        {/* Submit button takes full width, so span both cols */}
         <div className="md:col-span-2 mt-6">
           <button
             type="submit"
@@ -324,7 +323,6 @@ const SignUp = ({ onClose }) => {
         </div>
       </form>
 
-      {/* Login redirect button */}
       <div className="mt-6 text-center text-gray-600 text-sm">
         Already have an account?{" "}
         <button

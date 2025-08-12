@@ -15,4 +15,7 @@ public interface UserService {
     Optional<User> getUserById(String userId);
 
     List<User> getAllUserByBatch(String batchId);
+
+    User getUserByEmail(String email);
+    boolean verification(String email);
 }

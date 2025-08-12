@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import StudentProfile from "../StudentProfile";
+import StudentProfile from "./StudentProfile";
 import ResumeCreator from "./ResumeCreator";
 
 export default function ProfileTransition() {
@@ -15,7 +15,6 @@ export default function ProfileTransition() {
     }, 1500); // 1.5 seconds
   };
 
-  // Optional: handle going back to profile (if you want a back button in ResumeCreator)
   const handleBackToProfile = () => {
     setShowResume(false);
   };

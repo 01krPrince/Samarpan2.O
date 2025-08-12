@@ -20,42 +20,6 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-    public User registerUser(UserResponse userResponse) {
-        if (userResponse == null) {
-            throw new IllegalArgumentException("User response cannot be null");
-        }
-
-        User existingUser = userRepository.findByEmail(userResponse.getEmail());
-        if (existingUser != null) {
-            throw new IllegalArgumentException("User with this email already exists");
-        }
-
-        User newUser = new User();
-        newUser.setName(userResponse.getName());
-        newUser.setEmail(userResponse.getEmail());
-        newUser.setPassword(userResponse.getPassword());
-        newUser.setPhone(userResponse.getPhone());
-
-        return userRepository.save(newUser);
-    }
-
-    public User loginUser(String email, String password) {
-        if (email == null || password == null) {
-            throw new IllegalArgumentException("Email and password cannot be null");
-        }
-
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new ResourceNotFoundException("User not found with email: " + email);
-        }
-
-        if (!user.getPassword().equals(password)) {
-            throw new IllegalArgumentException("Invalid password");
-        }
-
-        return user;
-    }
-
     public User updateUser(UserResponse userResponse) {
         if (userResponse == null) {
             throw new IllegalArgumentException("User response cannot be null");
@@ -106,6 +70,19 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("No users found for batch: " + batchId);
         }
         return users;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public boolean verification(String email) {
+        User user = getUserByEmail(email);
+        user.setVerified(true);
+        userRepository.save(user);
+        return true;
     }
 
     public Optional<User> findById(String studentId) {

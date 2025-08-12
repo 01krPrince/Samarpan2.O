@@ -18,6 +18,7 @@ const InputField = ({
   isPassword = false,
   showPassword,
   toggleShowPassword,
+  placeholder = "",
 }) => (
   <div className="mb-4 relative">
     <label className="block text-gray-700 font-medium mb-1">
@@ -29,8 +30,8 @@ const InputField = ({
         type={isPassword ? (showPassword ? "text" : "password") : type}
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder={`Enter ${label.toLowerCase()}`}
-        className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-400"
+        placeholder={placeholder}
+        className="w-full outline-none bg-transparent text-gray-900 ml-1 placeholder-gray-400"
         required
         autoComplete={autoComplete}
         spellCheck="false"
@@ -39,7 +40,7 @@ const InputField = ({
         <button
           type="button"
           onClick={toggleShowPassword}
-          className="ml-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+          className="ml-2 text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer"
           tabIndex={-1}
           aria-label={showPassword ? "Hide password" : "Show password"}
         >
@@ -50,6 +51,7 @@ const InputField = ({
   </div>
 );
 
+// LoginForm Component
 export default function LoginForm({ setUserRole, openSignup }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -61,7 +63,6 @@ export default function LoginForm({ setUserRole, openSignup }) {
   const location = useLocation();
 
   useEffect(() => {
-    // Redirect if already logged in
     const storedRole = localStorage.getItem("userRole");
     if (storedRole) {
       const targetPath = storedRole === "ADMIN" ? "/landingpage" : "/dashboard";
@@ -124,11 +125,20 @@ export default function LoginForm({ setUserRole, openSignup }) {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <h2 className="text-2xl font-bold text-center text-gray-900 mb-1">Sign In</h2>
+      <h2 className="text-2xl font-bold text-center text-gray-900 mb-1">
+        Sign In
+      </h2>
 
-      {error && <p className="text-red-500 text-center mb-4 font-medium">{error}</p>}
+      {error && (
+        <p className="text-red-500 text-center mb-4 font-medium">{error}</p>
+      )}
 
-      <form onSubmit={handleLoginSubmit} autoComplete="on" className="space-y-4" noValidate>
+      <form
+        onSubmit={handleLoginSubmit}
+        autoComplete="on"
+        className="space-y-4"
+        noValidate
+      >
         <InputField
           icon={<FaEnvelope />}
           label="Email"
@@ -136,6 +146,7 @@ export default function LoginForm({ setUserRole, openSignup }) {
           value={username}
           setValue={setUsername}
           autoComplete="username"
+          placeholder="cagers01@gmail.com"
         />
         <InputField
           icon={<FaLock />}
@@ -146,6 +157,7 @@ export default function LoginForm({ setUserRole, openSignup }) {
           value={password}
           setValue={setPassword}
           autoComplete="current-password"
+          placeholder="********"
         />
         <button
           type="submit"
@@ -154,14 +166,20 @@ export default function LoginForm({ setUserRole, openSignup }) {
           }`}
           disabled={loading}
         >
-          {loading ? "Logging in..." : <> <FaSignInAlt className="mr-2" /> Login</>}
+          {loading ? (
+            "Logging in..."
+          ) : (
+            <>
+              <FaSignInAlt className="mr-2" /> Login
+            </>
+          )}
         </button>
       </form>
 
       <button
         onClick={openSignup}
         type="button"
-        className="mt-6 w-full text-red-600 hover:underline text-sm flex justify-center items-center"
+        className="mt-6 w-full text-red-600 hover:underline text-sm flex justify-center items-center cursor-pointer"
         disabled={loading}
       >
         Don't have an account? Sign Up
