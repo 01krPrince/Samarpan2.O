@@ -12,6 +12,8 @@ public interface UserService {
 
     List<User> getAllUser();
 
+    List<User> getAllUsers();
+
     Optional<User> getUserById(String userId);
 
     List<User> getAllUserByBatch(String batchId);

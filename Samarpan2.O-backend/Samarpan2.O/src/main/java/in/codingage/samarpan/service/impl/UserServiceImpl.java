@@ -49,6 +49,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
     public Optional<User> getUserById(String userId) {
         if (userId == null) {
             throw new IllegalArgumentException("User ID cannot be null");

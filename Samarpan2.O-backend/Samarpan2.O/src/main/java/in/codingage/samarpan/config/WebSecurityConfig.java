@@ -87,7 +87,8 @@ public class WebSecurityConfig {
                                 "/api/otp/**",
                                 "/ping",
                                 "/api/v1/Batch/findAllByBranchId",
-                                "/api/auth/update-email"
+                                "/api/auth/update-email",
+                                "/api/v1/user/GetAllUsers"
                         ).permitAll()
                         .requestMatchers("/api/v1/Batch/getAllBatch").hasAuthority("ADMIN")
                         .anyRequest().authenticated()

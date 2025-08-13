@@ -131,7 +131,7 @@ export default function SubmitProject() {
       const cloudinaryData = await cloudinaryRes.json();
 
       if (!cloudinaryRes.ok) {
-        setError("Image upload failed: " + cloudinaryData.error?.message);
+        setError("Image upload failed: " + (cloudinaryData.error?.message || "Unknown error"));
         setIsSubmitting(false);
         return;
       }
@@ -159,7 +159,14 @@ export default function SubmitProject() {
         body: JSON.stringify(completeProjectData),
       });
 
-      const result = await response.json();
+      // const result = await response.json();
+      let result = {};
+      try {
+        const text = await response.text();
+        result = text ? JSON.parse(text) : {};
+      } catch (err) {
+        console.error("Error parsing JSON:", err);
+      }
 
       if (!response.ok) {
         if (response.status === 401) {
@@ -179,7 +186,11 @@ export default function SubmitProject() {
         navigate("/dashboard");
       }, 2000);
     } catch (err) {
-      setError("Something went wrong: " + err.message); // Why?
+      const errorMessage =
+        (typeof err === "string" && err) ||
+        err?.message ||
+        "Something went wrong while submitting.";
+      setError(errorMessage);
       setIsSubmitting(false);
     }
   };
@@ -252,7 +263,6 @@ export default function SubmitProject() {
         {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">{error}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
-
           <div className="md:grid md:grid-cols-2 md:gap-6">
             <div>
               <label className="block text-sm md:text-base font-medium text-gray-700">Project Name</label>
@@ -390,10 +400,7 @@ export default function SubmitProject() {
             )}
           </div>
         </form>
-
-
       </div>
     </div>
-
   );
 }

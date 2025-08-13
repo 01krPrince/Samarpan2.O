@@ -42,4 +42,9 @@ public class UserController {
         return userService.getAllUserByBatch(batchId);
     }
 
+
+    @GetMapping("GetAllUsers")
+    public List<User> getAllUsers(){
+        return userService.getAllUser();
+    }
 }
