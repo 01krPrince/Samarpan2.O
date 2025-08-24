@@ -31,7 +31,9 @@ const ProfileField = ({ label, value, icon: Icon }) => (
     <Icon size={20} className="text-indigo-600 mt-1" />
     <div className="flex-1">
       <p className="text-xs uppercase text-gray-500 font-semibold mb-1">{label}</p>
-      <p className="text-sm font-medium text-gray-900 break-all">{value || "N/A"}</p>
+      <p className="text-sm font-medium text-gray-900 break-all">
+        {value || "N/A"}
+      </p>
     </div>
   </div>
 );
@@ -73,9 +75,8 @@ export default function StudentProfile({ onCreateResume }) {
   const [loading, setLoading] = useState(true);
   const [openSection, setOpenSection] = useState("personal");
 
-  // Manage Email Verification Modal state
   const [showVerifyModal, setShowVerifyModal] = useState(false);
-  const [verificationStatus, setVerificationStatus] = useState("idle"); // idle, loading, error, success
+  const [verificationStatus, setVerificationStatus] = useState("idle");
   const [error, setError] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
 
@@ -116,13 +117,11 @@ export default function StudentProfile({ onCreateResume }) {
     setResendCooldown(30);
     setVerificationStatus("idle");
     setError("");
-    // Replace with your actual API call to resend OTP
   };
 
   const verifyOtpHandler = (otp) => {
     setVerificationStatus("loading");
     setError("");
-    // Replace this with your actual API call to verify OTP
     setTimeout(() => {
       if (otp === "123456") {
         setVerificationStatus("success");
@@ -170,51 +169,47 @@ export default function StudentProfile({ onCreateResume }) {
   const toggleSection = (section) => setOpenSection(section);
 
   const isEmailVerified = userData?.isEmailVerified;
+  const token = localStorage.getItem("token");
 
-const [isOtpSent, setIsOtpSent] = useState(false);
-const token = localStorage.getItem("token");
+  async function handleOpenVerifyModal() {
+    try {
+      console.log("Email to send OTP:", userData.email);
+      const response = await fetch(
+        `http://localhost:8080/api/v1/otp/send-otp?email=${encodeURIComponent(
+          userData.email
+        )}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-async function handleOpenVerifyModal() {
-  try {
-    console.log("Email to send OTP:", userData.email);
-
-    const response = await fetch(
-      `http://localhost:8080/api/v1/otp/send-otp?email=${encodeURIComponent(userData.email)}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error ${response.status}: ${errorText}`);
       }
-    );
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Error ${response.status}: ${errorText}`);
+      let data;
+      const contentType = response.headers.get("Content-Type");
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        data = { message: await response.text() };
+      }
+
+      console.log("Server Response:", data);
+      setShowVerifyModal(true);
+    } catch (error) {
+      console.error("Failed to send OTP:", error.message);
+      alert("Failed to send OTP: " + error.message);
     }
-
-    // Check response content type safely
-    let data;
-    const contentType = response.headers.get("Content-Type");
-    if (contentType && contentType.includes("application/json")) {
-      data = await response.json();
-    } else {
-      data = { message: await response.text() };
-    }
-
-    console.log("Server Response:", data);
-
-    setIsOtpSent(true);
-    setShowVerifyModal(true);
-  } catch (error) {
-    console.error("Failed to send OTP:", error.message);
-    alert("Failed to send OTP: " + error.message);
   }
-}
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-10 px-4">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-6 px-4">
       <EmailVerificationModal
         open={showVerifyModal}
         onClose={() => setShowVerifyModal(false)}
@@ -227,10 +222,10 @@ async function handleOpenVerifyModal() {
         resendDisabled={resendCooldown > 0}
       />
 
-      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
-        <div className="flex flex-col md:flex-row gap-8 p-8">
-          {/* Sidebar */}
-          <div className="md:w-1/3 flex flex-col items-center text-center">
+      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-100 h-auto md:h-[90vh]">
+        <div className="flex flex-col md:flex-row gap-8 p-14 h-full">
+          {/* Sidebar (normal on mobile, sticky on md+) */}
+          <div className="md:w-1/3 flex flex-col items-center text-center md:sticky md:top-0 self-start h-fit">
             <div className="w-28 h-28 rounded-full bg-gray-200 flex items-center justify-center border-4 border-white shadow overflow-hidden">
               <img src={profilePhoto} alt="Profile" className="object-cover w-full h-full" />
             </div>
@@ -260,17 +255,15 @@ async function handleOpenVerifyModal() {
               </a>
             </div>
 
-            {/* Email Verification Button */}
             {!loading && userData?.email && (
               <div className="flex flex-col items-center w-full mt-4 cursor-pointer">
                 <button
-                  onClick={() => handleOpenVerifyModal()}
+                  onClick={handleOpenVerifyModal}
                   disabled={isEmailVerified}
-                  className={`w-full flex items-center gap-2 justify-center px-5 py-2 rounded-lg font-semibold transition shadow mb-2 cursor-pointer ${
-                    isEmailVerified
+                  className={`w-full flex items-center gap-2 justify-center px-5 py-2 rounded-lg font-semibold transition shadow mb-2 cursor-pointer ${isEmailVerified
                       ? "bg-green-50 border border-green-200 text-green-700 cursor-not-allowed"
                       : "bg-yellow-100 hover:bg-yellow-200 text-yellow-800 border border-yellow-200 animate-pulse"
-                  }`}
+                    }`}
                   type="button"
                 >
                   {isEmailVerified ? (
@@ -289,7 +282,6 @@ async function handleOpenVerifyModal() {
               </div>
             )}
 
-            {/* Edit Profile Button */}
             <button
               onClick={handleEditProfile}
               className="mt-6 inline-flex items-center gap-2 cursor-pointer bg-gray-100 hover:bg-gray-200 text-indigo-700 font-semibold px-5 py-2 rounded-lg shadow transition"
@@ -298,7 +290,6 @@ async function handleOpenVerifyModal() {
               <Edit3 size={18} /> Edit Profile
             </button>
 
-            {/* Create Resume Button */}
             <button
               onClick={onCreateResume}
               className="mt-3 inline-flex items-center cursor-pointer gap-2 text-white font-semibold px-5 py-2 rounded-lg shadow transition bg-gray-800 hover:bg-gray-900"
@@ -309,11 +300,12 @@ async function handleOpenVerifyModal() {
           </div>
 
           {/* Main Content */}
-          <div className="md:w-2/3 space-y-6">
+          <div className="md:w-2/3 space-y-6 md:overflow-y-auto md:h-full pr-0 md:pr-2 scrollable-container">
+
             {/* Personal Info Accordion */}
             <section>
               <button
-                className="w-full flex cursor-pointer items-center justify-between text-lg font-semibold text-gray-900 mb-3 px-2 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
+                className="w-full flex cursor-pointer mt-4 items-center justify-between text-lg font-semibold text-gray-900 mb-3 px-2 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
                 onClick={() => toggleSection("personal")}
                 aria-expanded={openSection === "personal"}
                 type="button"
@@ -415,13 +407,12 @@ async function handleOpenVerifyModal() {
                       <div className="flex items-center justify-between mb-1">
                         <h4 className="text-md font-semibold text-gray-900">{proj.title}</h4>
                         <span
-                          className={`px-2 py-1 text-xs rounded-full font-bold ${
-                            proj.status === "Live"
+                          className={`px-2 py-1 text-xs rounded-full font-bold ${proj.status === "Live"
                               ? "bg-green-100 text-green-800"
                               : proj.status === "Reviewed"
-                              ? "bg-indigo-100 text-indigo-700"
-                              : "bg-yellow-100 text-yellow-700"
-                          }`}
+                                ? "bg-indigo-100 text-indigo-700"
+                                : "bg-yellow-100 text-yellow-700"
+                            }`}
                         >
                           {proj.status}
                         </span>
@@ -448,7 +439,6 @@ async function handleOpenVerifyModal() {
               the data is static and shown for demo purposes only. Updates coming soon!
             </div>
 
-            {/* Logout */}
             {!loading && (
               <div className="pt-4 text-right">
                 <button

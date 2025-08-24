@@ -7,7 +7,10 @@ import {
   FaEyeSlash,
 } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
+import SplashScreen from "../../SplashScreen";
 
+
+// ================== Reusable InputField ==================
 const InputField = ({
   icon,
   label,
@@ -51,8 +54,8 @@ const InputField = ({
   </div>
 );
 
-// LoginForm Component
-export default function LoginForm({ setUserRole, openSignup }) {
+// ================== LoginForm Component ==================
+function LoginForm({ setUserRole, openSignup }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -124,7 +127,7 @@ export default function LoginForm({ setUserRole, openSignup }) {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md mx-auto mt-10">
       <h2 className="text-2xl font-bold text-center text-gray-900 mb-1">
         Sign In
       </h2>
@@ -185,5 +188,33 @@ export default function LoginForm({ setUserRole, openSignup }) {
         Don't have an account? Sign Up
       </button>
     </div>
+  );
+}
+
+// ================== Wrapper with Splash & Conditional Rendering ==================
+export default function LoginPage({ setUserRole, openSignup }) {
+  const [showSplash, setShowSplash] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Check if user exists in storage
+      const storedRole = localStorage.getItem("userRole");
+      if (storedRole) {
+        const targetPath =
+          storedRole === "ADMIN" ? "/landingpage" : "/dashboard";
+        navigate(targetPath, { replace: true });
+      } else {
+        setShowSplash(false); // Show login form if no user
+      }
+    }, 2000); // 2 seconds splash
+
+    return () => clearTimeout(timer);
+  }, [navigate]);
+
+  return showSplash ? (
+    <SplashScreen />
+  ) : (
+    <LoginForm setUserRole={setUserRole} openSignup={openSignup} />
   );
 }
