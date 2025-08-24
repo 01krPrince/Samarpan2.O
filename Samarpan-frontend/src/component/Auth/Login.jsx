@@ -7,8 +7,7 @@ import {
   FaEyeSlash,
 } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
-import SplashScreen from "../../SplashScreen";
-
+import SplashScreen from "./SplashScreen";
 
 // ================== Reusable InputField ==================
 const InputField = ({
