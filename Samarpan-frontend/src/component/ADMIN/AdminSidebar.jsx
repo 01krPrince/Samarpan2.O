@@ -38,16 +38,15 @@ const AdminSidebar = ({ setUserRole }) => {
     <div className="flex h-screen md:pt-[5vh] pt-[4vh]">
       <div
         ref={sidebarRef}
-        className={`fixed left-0 h-full bg-white text-black shadow-lg flex flex-col justify-between transition-all duration-300 ${
-          isMobile ? "w-14" : "w-64"
-        }`}
+        className={`fixed left-0 h-full bg-white text-black shadow-lg flex flex-col justify-between transition-all duration-300 ${isMobile ? "w-14" : "w-64"
+          }`}
       >
         <div className="md:mt-16 mt-10 space-y-4 p-3">
           <NavItem
-            to="/"
+            to="/admin/dashboard"
             icon={<Home size={20} />}
             text="Dashboard"
-            active={location.pathname === "/"}
+            active={location.pathname === "/admin/dashboard"}
             isOpen={!isMobile}
           />
 
@@ -87,9 +86,8 @@ const AdminSidebar = ({ setUserRole }) => {
       </div>
 
       <div
-        className={`flex-1 flex flex-col transition-all duration-300 ${
-          isMobile ? "ml-14" : "ml-64"
-        }`}
+        className={`flex-1 flex flex-col transition-all duration-300 ${isMobile ? "ml-14" : "ml-64"
+          }`}
       >
         <Header />
       </div>
@@ -114,11 +112,10 @@ const NavItem = ({ to, icon, text, active, isOpen }) => {
   return (
     <Link
       to={to}
-      className={`flex items-center space-x-3 p-2 rounded transition-all duration-200 ${
-        active
-          ? "bg-blue-100 text-gray-600 font-semibold border-l-4 border-gray-800"
-          : "hover:bg-gray-100"
-      }`}
+      className={`flex items-center space-x-3 p-2 rounded transition-all duration-200 ${active
+        ? "bg-blue-100 text-gray-600 font-semibold border-l-4 border-gray-800"
+        : "hover:bg-gray-100"
+        }`}
     >
       {icon}
       {isOpen && <span>{text}</span>}

@@ -93,7 +93,7 @@ function App() {
         }
       }
     }
-  }, [authChecked, userRole, location.pathname, navigate]);
+  }, [authChecked, userRole, navigate]);
 
   const hideSidebarRoutes = ["/", "/forget-password/reset"];
   const shouldShowSidebar =
@@ -183,7 +183,7 @@ function App() {
 
           {/* Admin Routes */}
           <Route
-            path="/landingpage"
+            path="/admin/dashboard"
             element={
               <ProtectedRoute userRole={userRole} allowedRoles={["ADMIN"]}>
                 <Landing />

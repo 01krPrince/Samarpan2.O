@@ -15,7 +15,7 @@ const CreateBatch = () => {
     try {
       setLoadingBatches(true);
       const token = localStorage.getItem('token');
-      const response = await fetch('https://samarpan2-o.onrender.com/api/v1/Batch/getAllBatch', {
+      const response = await fetch('https://samarpan2-o.onrender.com/api/v1/Batch/getAllBatch', {  // http://localhost:8080/api/v1/Batch/getAllBatch
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
